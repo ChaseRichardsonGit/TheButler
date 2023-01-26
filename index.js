@@ -44,7 +44,7 @@ client.on("messageCreate", async function(message){
         model: "text-davinci-003",
         prompt: `\n${message.author.username}: ${message.content}\n`,
         max_tokens: 1000,
-        temperature: .7,
+        temperature: .5,
         top_p: 1,
         n: 1,
         stream: false,
