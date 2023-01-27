@@ -76,7 +76,7 @@ client.on("messageCreate", async function(message){
       if(response.length > 1999){
         response = response.substring(0, 1999);
       }
-      message.author.send(response);
+      message.author.send(response + ` - Cost: ${costTrimmed}  Tokens: ${total_tokens}`);
     } catch (error) {
       console.error(error);
     } 
