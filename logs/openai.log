@@ -98,3 +98,61 @@ Weather condition: few clouds
 [01/27/2023, 02:49:46 PM] TheButler: Butler: Hi AnarchE! How can I help you?Cost: 0.0005 Tokens: 23
 [01/27/2023, 02:51:37 PM] AnarchE: Hi!
 [01/27/2023, 02:51:38 PM] TheButler: Nina: Hi AnarchE! How are you doing? - Cost: 0.0004  Tokens: 21
+[01/27/2023, 04:15:42 PM] TheButler: The weather in Bear is currently broken clouds with a temperature of 40.48 F which feels like 35.15 F and a humidity of 46%. The wind speed is 8.05 mph.
+[01/27/2023, 05:02:25 PM] AnarchE: Hi, how are you today?
+[01/27/2023, 05:02:27 PM] TheButler: I'm doing well, thank you. How about you? - Cost: 0.0005  Tokens: 26
+[01/27/2023, 05:03:02 PM] AnarchE: Please write me example code for using discord.js and openweathermap 3.0 api to create a bot that listens for the /weather zipcode command and provides weather based on that zip code.
+[01/27/2023, 05:03:09 PM] TheButler: const Discord = require("discord.js");
+const client = new Discord.Client();
+const openweathermap = require("openweathermap");
+const apiKey = "your_openweathermap_api_key";
+
+client.on("message", async message => {
+    if (message.content.startsWith("/weather")) {
+        let zipcode = message.content.split(" ")[1];
+        let weatherData = await openweathermap.getWeatherByZip(zipcode, apiKey);
+        let weatherMessage = `The weather in ${zipcode} is ${weatherData.main.temp}°F and ${weatherData.weather[0].description}.`;
+        message.channel.send(weatherMessage);
+    }
+});
+
+client.login("your_discord_bot_token"); - Cost: 0.0046  Tokens: 229
+[01/27/2023, 05:08:44 PM] Seneca: sup
+[01/27/2023, 05:08:45 PM] TheButler: Hi there! How can I help you? - Cost: 0.0003  Tokens: 16
+[01/27/2023, 05:09:12 PM] Seneca: Tell me a bedtime story about salesforce and a guy named marc.
+[01/27/2023, 05:09:22 PM] TheButler: Once upon a time, there was a guy named Marc who was an ambitious young man with a passion for sales. He wanted to make a name for himself in the industry, so he decided to pursue a career in Salesforce. 
+
+Marc studied hard and worked hard, and eventually he was able to secure a job at one of the top Salesforce companies in the world. He was excited to get started and learn the ropes of the business. 
+
+He quickly became an expert in the Salesforce platform, learning all the ins and outs of the software and how to use it to its fullest potential. He was also able to develop a great rapport with his colleagues and customers, making him an invaluable asset to the company. 
+
+Marc eventually rose up the ranks and was promoted to a managerial position, overseeing the Salesforce team. He was able to use his knowledge of the software to help the team reach their goals and increase their sales. 
+
+Marc was a great leader and mentor, and his team was able to make great strides in the Salesforce industry. He was an inspiration to many and his story was an example of what hard work and dedication can achieve. 
+
+The moral of the story? Hard work and dedication can take you far in any industry. - Cost: 0.0057  Tokens: 283
+[01/27/2023, 05:10:18 PM] Seneca: Can you write a poem about this story?
+[01/27/2023, 05:10:24 PM] TheButler: The sun sets on the horizon,
+A golden light fades away.
+The night brings darkness and a chill,
+It's time for the story to begin.
+
+The story of a man, so wise,
+A sage of knowledge and truth.
+His words, so deep and meaningful,
+His wisdom, a powerful tool.
+
+He speaks of life and death,
+Of courage and of fear.
+He speaks of love and hate,
+He speaks of hope and cheer.
+
+He speaks of how to live a life,
+A life of purpose and of joy.
+He speaks of how to be brave,
+When the world is full of noise.
+
+His words are a beacon of light,
+Leading us to a better place.
+We can learn from his wisdom,
+And find the strength to face. - Cost: 0.0038  Tokens: 189
