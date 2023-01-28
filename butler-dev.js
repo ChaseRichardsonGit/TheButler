@@ -1,11 +1,14 @@
 require('dotenv').config(); 
+const Discord = require('discord.js');
+const fs = require('fs');
+const OWMapiKey = process.env.OWMapiKey;
 const weather = require('./src/weather.js');
 const calculateCost = require('./src/calccost.js');
-const OWMapiKey = process.env.OWMapiKey;
-const fs = require('fs');
-const Discord = require('discord.js');
 const clearchat = require('./src/clearchat');
-
+const butlerText = fs.readFileSync('./src/butler.txt', 'utf8');
+const jarvisText = fs.readFileSync('./src/jarvis.txt', 'utf8');
+const psychText = fs.readFileSync('./src/psych.txt', 'utf8');
+const sleepText = fs.readFileSync('./src/sleep.txt', 'utf8');
 
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
@@ -69,6 +72,7 @@ client.on("guildMemberAdd", (member) => {
   welcomeChannel.send(`Welcome ${member.user.username} to the server!`);
   console.log(`Welcome ${member.user.username} to the server!`);
 });
+let preprompttext = butlerText;
 
 client.on("messageCreate", async function(message){
   if(message.author.bot) return;
@@ -80,8 +84,18 @@ client.on("messageCreate", async function(message){
     if(!zip) return message.channel.send("Please provide a zip code after the command")
     weather.getWeather(zip, message, OWMapiKey);
 } else 
+  if(message.content.startsWith("/j")) {
+  preprompttext = butlerText + jarvisText;  
+  }
+  if(message.content.startsWith("/p")) {
+    preprompttext = butlerText + psychText;  
+    }
+  if(message.content.startsWith("/s")) {
+    preprompttext = butlerText + sleepText;  
+    }          
   if(message.channel.type === Discord.ChannelType.DM) {
     console.log("Received a direct message from " + message.author.username + ": " + message.content);   
+
     messageData.push({author: message.author.username, content: message.content});
     const previousMessages = getPreviousMessages();
 
@@ -97,14 +111,15 @@ client.on("messageCreate", async function(message){
   }   
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        messageData = []; 
-      }, 300000);   
+        messageData = [];
+        console.log("\x1b[33mCleared message data\x1b[0m") 
+      }, 30000);   
       
 
     try {
       const gptResponse = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: `\n${previousMessages} \n ${message.author.username}: ${message.content}\n`,
+        prompt: preprompttext + `\n${previousMessages} \n  ${message.content}\n`,
         max_tokens: 1000,
         temperature: .5,
         top_p: 1,
@@ -119,7 +134,7 @@ client.on("messageCreate", async function(message){
       let cost = calculateCost.calculateCost(total_tokens);
       let costTrimmed = parseFloat(cost.toFixed(4));
       console.log(`\x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`)
-      console.log(`PreviousMessages: ${previousMessages} \n  message.author.username : ${message.author.username}\n Message Content : ${message.content}`)
+      console.log(`PreviousMessages: ${previousMessages} \n  message.author.username : ${message.author.username}\n Message Content : ${message.content}\n Text: ${preprompttext}`)
       if(response.length > 1999){
         response = response.substring(0, 1999);
       }
