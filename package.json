@@ -1,9 +1,10 @@
 {
   "name": "TheButler",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "butler.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon butler-dev.js",
+    "prod": "nodemon butler.js"
   },
   "author": "",
   "license": "ISC",

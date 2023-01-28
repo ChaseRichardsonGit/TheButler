@@ -11,7 +11,7 @@
 
             MVP:(that we can show to someone)
             Welcomes bot, execute / commands in main channel, conversational in DM + / commands, and creating the base persona of TheButler. 
-            OpenAI DM integration with error catching, logging, scanback(5), and a way to make sure the conversation ends in a reasonable time.
+            OpenAI DM integration with error catching, logging, scanback(10), and a way to make sure the conversation ends in a reasonable time.
             Trying to arm the bot with functions that expand its capability beyond OpenAI.  Feed Zip Temp API to OpenAI and get response.
 
 
