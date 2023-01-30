@@ -17,8 +17,13 @@ module.exports = async function(message){
         return message.channel.send("Please provide a valid number of messages to delete.");
     }
     try {
-        message.channel.bulkDelete(numMessages);
-        message.channel.send(`Successfully deleted ${numMessages} messages.`);
+        const messages = await message.channel.messages.fetch({ limit: numMessages });
+        const messagesToDelete = messages.filter(m => !m.content.match(/https?:\/\/[^\s]+/));
+        message.channel.bulkDelete(messagesToDelete);
+        const confirmationMessage = await message.channel.send(`Successfully deleted ${messagesToDelete.size} messages.`);
+        setTimeout(function() {
+            confirmationMessage.delete();
+        }, 5000);
     } catch (err) {
         console.error(err);
     }

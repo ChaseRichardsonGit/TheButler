@@ -1,6 +1,8 @@
 require('dotenv').config(); 
 const Discord = require('discord.js');
 const fs = require('fs');
+const MongoClient = require('mongodb').MongoClient;
+const logging = require('./src/logging.js');
 const OWMapiKey = process.env.OWMapiKey;
 const weather = require('./src/weather.js');
 const calculateCost = require('./src/calccost.js');
@@ -50,13 +52,19 @@ client.on('ready', () => {
 
   announcementChannel.send(`TheButler Dev is now online!  Interact with /weather zip or by DM'ing me!`);
 });
-    
+
+const uri = "mongodb://192.168.1.235:27017/";
+const mongoClient = new MongoClient(uri, { useNewUrlParser: true });
 
 client.on('messageCreate', async function(message){
   if(message.channel.type === Discord.ChannelType.DM) {
-    let now = new Date();
-    fs.appendFileSync('logs/openai.log', `[${now.toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${message.author.username}: ${message.content}\n`);
-    }
+    mongoClient.connect(err => {
+      console.log("Connected to MongoDB");
+      client.on('message', logging(Client, mongoClient));
+      console.log("Logging enabled");
+      mongoClient.close();
+    });
+  }
     });
 
 let messageData = []; 
@@ -84,15 +92,15 @@ client.on("messageCreate", async function(message){
     if(!zip) return message.channel.send("Please provide a zip code after the command")
     weather.getWeather(zip, message, OWMapiKey);
 } else 
-  if(message.content.startsWith("/j")) {
-  preprompttext = butlerText + jarvisText;  
-  }
-  if(message.content.startsWith("/p")) {
-    preprompttext = butlerText + psychText;  
-    }
-  if(message.content.startsWith("/s")) {
-    preprompttext = butlerText + sleepText;  
-    }          
+  // if(message.content.startsWith("/j")) {
+  // preprompttext = butlerText + jarvisText;  
+  // }
+  // if(message.content.startsWith("/p")) {
+  //   preprompttext = butlerText + psychText;  
+  //   }
+  // if(message.content.startsWith("/s")) {
+  //   preprompttext = butlerText + sleepText;  
+  //   }          
   if(message.channel.type === Discord.ChannelType.DM) {
     console.log("Received a direct message from " + message.author.username + ": " + message.content);   
 
@@ -131,14 +139,15 @@ client.on("messageCreate", async function(message){
 
       let response = gptResponse.data.choices[0].text.trim(); 
       let total_tokens = (gptResponse.data.usage.total_tokens);
+//      let response_time = gptResponse.data.;
       let cost = calculateCost.calculateCost(total_tokens);
       let costTrimmed = parseFloat(cost.toFixed(4));
       console.log(`\x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`)
       console.log(`PreviousMessages: ${previousMessages} \n  message.author.username : ${message.author.username}\n Message Content : ${message.content}\n Text: ${preprompttext}`)
-      if(response.length > 1999){
-        response = response.substring(0, 1999);
+      if(response.length > 1900){
+        response = response.substring(0, 1900);
       }
-      message.author.send(response + ` - Cost: ${costTrimmed}  Tokens: ${total_tokens}/1000`);
+      message.author.send(response + `\nCost: ${costTrimmed}  Tokens: ${total_tokens}/1000 Characters: ${response.length}/1999`);
     } catch (error) {
       console.error(error);
     } 
