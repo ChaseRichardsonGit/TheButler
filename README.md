@@ -1,5 +1,10 @@
 # The Butler
 
+           Fine Tuning Data: 
+           [2023-01-28 17:54:39] Created fine-tune: ft-KaqNnVsU8brR0B7MVWeC9MUB
+           openai api completions.create -m davinci:ft-personal-2023-01-28-22-59-23 -p "Who is Dr. Sleep?"
+           
+
             Scope & Approach:
             We want to create a Discord chatbot.  We want this bot to send a private message to new users with an introduction.
                 - On Demand messaging through a command, time based messaging through timers, trigger based off criteria (user hasn't interacted in a day), Gauge and engage to gain sentiment. 
