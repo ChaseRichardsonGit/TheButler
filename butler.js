@@ -10,20 +10,8 @@ const butlerText = fs.readFileSync('./src/butler.txt', 'utf8');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 const client = new Client({ 
-	intents: [ 
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.MessageContent,
-    GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.GuildMembers,
-	],
-  partials: [
-    Partials.Channel,
-    Partials.GuildMember,
-    Partials.Message,
-    Partials.Reaction,
-    Partials.User,
-    ]
+	intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent,GatewayIntentBits.DirectMessages,],
+    partials: [Partials.Channel,Partials.Message,Partials.User,]
 }); 
 
 const { Configuration , OpenAIApi } = require('openai');
@@ -45,7 +33,7 @@ client.on('ready', () => {
       return;
   }
 
-  announcementChannel.send(`TheButler Dev is now online!  Interact with /weather zip or by DM'ing me!`);
+  announcementChannel.send(`TheButler Prod is now online!  Interact with /weather zip or by DM'ing me!`);
 });
     
 

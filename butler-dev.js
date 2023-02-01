@@ -1,8 +1,8 @@
 require('dotenv').config(); 
 const Discord = require('discord.js');
 const fs = require('fs');
-const MongoClient = require('mongodb').MongoClient;
-const logging = require('./src/logging.js');
+const mongoose = require("mongoose");
+const LogModel = require("./src/mongo");
 const OWMapiKey = process.env.OWMapiKey;
 const weather = require('./src/weather.js');
 const calculateCost = require('./src/calccost.js');
@@ -15,21 +15,40 @@ const sleepText = fs.readFileSync('./src/sleep.txt', 'utf8');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 const client = new Client({ 
-	intents: [ 
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.MessageContent,
-    GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.GuildMembers,
-	],
-  partials: [
-    Partials.Channel,
-    Partials.GuildMember,
-    Partials.Message,
-    Partials.Reaction,
-    Partials.User,
-    ]
+	intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent,GatewayIntentBits.DirectMessages,],
+    partials: [Partials.Channel,Partials.Message,Partials.User,]
 }); 
+
+mongoose.set('strictQuery', true);
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connection.on("error", error => {
+  console.error("MongoDB connection error: ", error);
+});
+
+mongoose.connection.once("open", () => {
+  console.log("Connected to MongoDB");
+
+  if (mongoose.models.Log) {
+    Log = mongoose.model("Log");
+  } else {
+    Log = mongoose.model("Log", messageSchema);
+  }
+});
+
+client.on("messageCreate", async message => {
+  const log = new Log({
+    username: message.author.username,
+    message: message.content,
+    time: new Date().toString()
+  });
+
+  log.save().then(() => {
+    console.log("Message logged to MongoDB");
+  }).catch(err => {
+    console.error(err);
+  });
+});
 
 const { Configuration , OpenAIApi } = require('openai');
 
@@ -43,29 +62,22 @@ const openai = new OpenAIApi(configuration);
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 
-  const announcementChannel = client.channels.cache.get(process.env.ANNOUNCEMENT_CHANNEL_ID);
-
-  if (!announcementChannel) {
-      console.error(`The channel with ID ${process.env.ANNOUNCEMENT_CHANNEL_ID} doesn't exist or the bot doesn't have access to it.`);
-      return;
-  }
-
-  announcementChannel.send(`TheButler Dev is now online!  Interact with /weather zip or by DM'ing me!`);
-});
-
-const uri = "mongodb://192.168.1.235:27017/";
-const mongoClient = new MongoClient(uri, { useNewUrlParser: true });
-
 client.on('messageCreate', async function(message){
   if(message.channel.type === Discord.ChannelType.DM) {
-    mongoClient.connect(err => {
-      console.log("Connected to MongoDB");
-      client.on('message', logging(Client, mongoClient));
-      console.log("Logging enabled");
-      mongoClient.close();
+    let now = new Date();
+    fs.appendFileSync('logs/openai.log', `[${now.toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${message.author.username}: ${message.content}\n`);
+    }
     });
-  }
-    });
+  
+const announcementChannel = client.channels.cache.get(process.env.ANNOUNCEMENT_CHANNEL_ID);
+
+if (!announcementChannel) {
+    console.error(`The channel with ID ${process.env.ANNOUNCEMENT_CHANNEL_ID} doesn't exist or the bot doesn't have access to it.`);
+    return;
+}
+
+announcementChannel.send(`TheButler Dev is now online!  Interact with /weather zip or by DM'ing me!`);
+});
 
 let messageData = []; 
 let timeoutId;
@@ -121,7 +133,7 @@ client.on("messageCreate", async function(message){
       timeoutId = setTimeout(() => {
         messageData = [];
         console.log("\x1b[33mCleared message data\x1b[0m") 
-      }, 30000);   
+      }, 300000);   
       
 
     try {
@@ -139,7 +151,6 @@ client.on("messageCreate", async function(message){
 
       let response = gptResponse.data.choices[0].text.trim(); 
       let total_tokens = (gptResponse.data.usage.total_tokens);
-//      let response_time = gptResponse.data.;
       let cost = calculateCost.calculateCost(total_tokens);
       let costTrimmed = parseFloat(cost.toFixed(4));
       console.log(`\x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`)
