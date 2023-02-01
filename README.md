@@ -15,9 +15,10 @@
             We want DMs for OpenAI and conversation with the bot.  Main chat for / commands for interaction with the bot.
 
             MVP:(that we can show to someone)
-            Welcomes bot, execute / commands in main channel, conversational in DM + / commands, and creating the base persona of TheButler. 
+            Welcome bot, execute / commands in main channel, conversational in DM + / commands, and creating the base persona of TheButler. 
             OpenAI DM integration with error catching, logging, scanback(10), and a way to make sure the conversation ends in a reasonable time.
             Trying to arm the bot with functions that expand its capability beyond OpenAI.  Feed Zip Temp API to OpenAI and get response.
+            Log all 
 
 
             Requirements:
@@ -70,7 +71,26 @@
                 If they have our beta token they are given basic access to OpenAI functionality.
                 If they have our free token, they receive a DM from the bot daily gauging sentiment on something.
                 
-            
+            0.07 Backlog:
+            Collection at midnight of user message count for the day.
+                Users table, messages table
+                    Okay if users are manually populated
+                    Script a counter/timer when the clock strikes 00:00
+                    User, Post Count, last activity time
+                    Collect images and links/urls
+                Get list of users that haven't interacted in 7 days and give em a whaddup
+           
+            0.09 Wishlist:
+            Create a token count for how many OpenAI tokens are used by each user.
+            Count total times a user has inteacted with OpenAI.
+            Token limits?
+
+
+            Three Bots:
+            TheButler - Simplified code + mongoose.
+            Puerus - A side bot.
+            Jarvis - B side bot.
+
             
             Decision:  RIDAC
             TheButler will have certain core capabilities.  The personas will have sub-capabilities, but also the same features as TheButler.
