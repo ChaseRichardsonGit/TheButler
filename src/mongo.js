@@ -22,21 +22,24 @@ const messageSchema = new mongoose.Schema({
       required: true
     }
   });
+  
 
-  mongoose.set('strictQuery', true);
+mongoose.set('strictQuery', true);
 
-  const Log = mongoose.model("Log", messageSchema);
-  
-  const connect = () => {
-  mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-  
-  mongoose.connection.on("error", error => {
-  console.error("MongoDB connection error: ", error);
-  });
-  
-  mongoose.connection.once("open", () => {
-  console.log("Connected to MongoDB");
-  });
-  };
-  
-  module.exports = { connect, Log };
+const Log = mongoose.model("Log", messageSchema);
+
+const connect = () => {
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connection.on("error", error => {
+console.error("MongoDB connection error: ", error);
+});
+
+mongoose.connection.once("open", () => {
+console.log("Connected to MongoDB");
+});
+};
+
+connect();
+
+module.exports = { Log };
