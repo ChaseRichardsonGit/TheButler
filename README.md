@@ -81,6 +81,7 @@
                 Get list of users that haven't interacted in 7 days and give em a whaddup
            
             0.09 Wishlist:
+            Website to ineract with personas
             Create a token count for how many OpenAI tokens are used by each user.
             Count total times a user has inteacted with OpenAI.
             Token limits?

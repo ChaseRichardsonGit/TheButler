@@ -19,7 +19,7 @@ module.exports = {
                 if (res.statusCode === 200) {
                     // The request was successful
                     // You can access the weather data here
-                    message.author.send(`The weather in ${weatherData.name} is currently ${weatherData.weather[0].description} with a temperature of ${weatherData.main.temp} F which feels like ${weatherData.main.feels_like} F and a humidity of ${weatherData.main.humidity}%. The wind speed is ${weatherData.wind.speed} mph.  The forecast for the next 5 days is: ${weatherData.weather[0].description} with a high of ${weatherData.main.temp_max} F and a low of ${weatherData.main.temp_min} F.`);
+                    message.author.send(`The weather in ${weatherData.name} is currently ${weatherData.weather[0].description} with a temperature of ${weatherData.main.temp} F which feels like ${weatherData.main.feels_like} F and a humidity of ${weatherData.main.humidity}%. The wind speed is ${weatherData.wind.speed} mph.  The forecast for the day is a high of ${weatherData.main.temp_max} F and a low of ${weatherData.main.temp_min} F.`);
                 } else if(res.statusCode === 400) {
                     // Handle Bad Request error
                     message.channel.send(`Error: Bad request, please check your input`);

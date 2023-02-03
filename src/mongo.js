@@ -1,6 +1,14 @@
 const mongoose = require("mongoose");
 
 const messageSchema = new mongoose.Schema({
+    server: {
+      type: String,
+      required: true
+    },
+    channel: {
+      type: String,
+      required: true
+    },
     username: {
       type: String,
       required: true
@@ -15,6 +23,20 @@ const messageSchema = new mongoose.Schema({
     }
   });
 
-  const Log = mongoose.model("Log", messageSchema);
+  mongoose.set('strictQuery', true);
 
-module.exports = mongoose;
+  const Log = mongoose.model("Log", messageSchema);
+  
+  const connect = () => {
+  mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+  
+  mongoose.connection.on("error", error => {
+  console.error("MongoDB connection error: ", error);
+  });
+  
+  mongoose.connection.once("open", () => {
+  console.log("Connected to MongoDB");
+  });
+  };
+  
+  module.exports = { connect, Log };

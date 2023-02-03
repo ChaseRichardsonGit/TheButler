@@ -1,11 +1,16 @@
 require('dotenv').config(); 
+const Discord = require('discord.js');
+const fs = require('fs');
+const mongoose = require("mongoose");
+const { connect, LogModel } = require("./src/mongo");
+const OWMapiKey = process.env.OWMapiKey;
 const weather = require('./src/weather.js');
 const calculateCost = require('./src/calccost.js');
-const OWMapiKey = process.env.OWMapiKey;
-const fs = require('fs');
-const Discord = require('discord.js');
 const clearchat = require('./src/clearchat');
 const butlerText = fs.readFileSync('./src/butler.txt', 'utf8');
+const jarvisText = fs.readFileSync('./src/jarvis.txt', 'utf8');
+const psychText = fs.readFileSync('./src/psych.txt', 'utf8');
+const sleepText = fs.readFileSync('./src/sleep.txt', 'utf8');
 
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
@@ -13,6 +18,42 @@ const client = new Client({
 	intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent,GatewayIntentBits.DirectMessages,],
     partials: [Partials.Channel,Partials.Message,Partials.User,]
 }); 
+
+
+
+mongoose.set('strictQuery', true);
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connection.on("error", error => {
+  console.error("MongoDB connection error: ", error);
+});
+
+mongoose.connection.once("open", () => {
+  console.log("Connected to MongoDB");
+
+  if (mongoose.models.Log) {
+    Log = mongoose.model("Log");
+  } else {
+    Log = mongoose.model("Log", messageSchema);
+  }
+});
+
+client.on("messageCreate", async message => {
+  if(message.channel.type != Discord.ChannelType.DM) {
+  const log = new Log({
+    server: message.guild.name,
+    channel: message.channel.name,
+    username: message.author.username,
+    message: message.content,
+    time: new Date().toString()
+  });
+
+  log.save().then(() => {
+    console.log("Message logged to MongoDB");
+  }).catch(err => {
+    console.error(err);
+  });
+  }});   
 
 const { Configuration , OpenAIApi } = require('openai');
 
@@ -26,23 +67,22 @@ const openai = new OpenAIApi(configuration);
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 
-  const announcementChannel = client.channels.cache.get(process.env.ANNOUNCEMENT_CHANNEL_ID);
-
-  if (!announcementChannel) {
-      console.error(`The channel with ID ${process.env.ANNOUNCEMENT_CHANNEL_ID} doesn't exist or the bot doesn't have access to it.`);
-      return;
-  }
-
-  announcementChannel.send(`TheButler Prod is now online!  Interact with /weather zip or by DM'ing me!`);
-});
-    
-
 client.on('messageCreate', async function(message){
   if(message.channel.type === Discord.ChannelType.DM) {
     let now = new Date();
     fs.appendFileSync('logs/openai.log', `[${now.toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${message.author.username}: ${message.content}\n`);
     }
     });
+  
+const announcementChannel = client.channels.cache.get(process.env.ANNOUNCEMENT_CHANNEL_ID);
+
+if (!announcementChannel) {
+    console.error(`The channel with ID ${process.env.ANNOUNCEMENT_CHANNEL_ID} doesn't exist or the bot doesn't have access to it.`);
+    return;
+}
+
+announcementChannel.send(`TheButler Prod is now online!  Interact with /weather zip or by DM'ing me!`);
+});
 
 let messageData = []; 
 let timeoutId;
@@ -69,8 +109,18 @@ client.on("messageCreate", async function(message){
     if(!zip) return message.channel.send("Please provide a zip code after the command")
     weather.getWeather(zip, message, OWMapiKey);
 } else 
+  if(message.content.startsWith("/j")) {
+  preprompttext = butlerText + jarvisText;  
+  }
+  if(message.content.startsWith("/p")) {
+    preprompttext = butlerText + psychText;  
+    }
+  if(message.content.startsWith("/s")) {
+    preprompttext = butlerText + sleepText;  
+    }          
   if(message.channel.type === Discord.ChannelType.DM) {
     console.log("Received a direct message from " + message.author.username + ": " + message.content);   
+
     messageData.push({author: message.author.username, content: message.content});
     const previousMessages = getPreviousMessages();
 
@@ -86,14 +136,15 @@ client.on("messageCreate", async function(message){
   }   
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        messageData = []; 
+        messageData = [];
+        console.log("\x1b[33mCleared message data\x1b[0m") 
       }, 300000);   
       
 
     try {
       const gptResponse = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: preprompttext + `\n${previousMessages} \n ${message.author.username}: ${message.content}\n`,
+        prompt: preprompttext + `\n${previousMessages} \n  ${message.content}\n`,
         max_tokens: 1000,
         temperature: .5,
         top_p: 1,
@@ -109,10 +160,10 @@ client.on("messageCreate", async function(message){
       let costTrimmed = parseFloat(cost.toFixed(4));
       console.log(`\x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`)
       console.log(`PreviousMessages: ${previousMessages} \n  message.author.username : ${message.author.username}\n Message Content : ${message.content}\n Text: ${preprompttext}`)
-      if(response.length > 1999){
-        response = response.substring(0, 1999);
+      if(response.length > 1900){
+        response = response.substring(0, 1900);
       }
-      message.author.send(response + ` - Cost: ${costTrimmed}  Tokens: ${total_tokens}/1000`);
+      message.author.send(response + `\nCost: ${costTrimmed}  Tokens: ${total_tokens}/1000 Characters: ${response.length}/1999`);
     } catch (error) {
       console.error(error);
     } 
