@@ -3,14 +3,7 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const mongoose = require("mongoose");
 const { connect, LogModel } = require("./src/mongo");
-const OWMapiKey = process.env.OWMapiKey;
-const weather = require('./src/weather.js');
-const calculateCost = require('./src/calccost.js');
-const clearchat = require('./src/clearchat');
-const butlerText = fs.readFileSync('./src/butler.txt', 'utf8');
-const jarvisText = fs.readFileSync('./src/jarvis.txt', 'utf8');
-const psychText = fs.readFileSync('./src/psych.txt', 'utf8');
-const sleepText = fs.readFileSync('./src/sleep.txt', 'utf8');
+
 
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
