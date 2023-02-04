@@ -54,7 +54,7 @@ client.on('messageCreate', async function(message){
     });
   
     // Check if the message contains a link
-    if(message.content.includes(`/https?:\/\/[^\s]+/`)) {
+    if(message.content.includes("http")) {
       const link = new Link({
         server: message.guild.name,
         channel: message.channel.id,
