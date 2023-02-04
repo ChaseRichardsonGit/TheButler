@@ -36,10 +36,10 @@ const client = new Client({
 client.on('messageCreate', async function(message){
     if(message.channel.type !== Discord.ChannelType.DM) {
     if(message.author.bot) return;
-    let userInfo = await UserInfo.findOne({ serverId: message.guild.id, userId: message.author.id });
+    let userInfo = await UserInfo.findOne({ server: message.guild.name, userId: message.author.id });
       if(!userInfo) {
       userInfo = new UserInfo({
-          server: message.guild.id,
+          server: message.guild.name,
           userId: message.author.id,
           username: message.author.username,
           messagesSent: 1
@@ -133,6 +133,26 @@ client.on("messageCreate", async function(message){
         if(!zip) return message.channel.send("Please provide a zip code after the command")
             weather.getWeather(zip, message, OWMapiKey);
     }}
+    });
+
+    // Listener for Your Response
+    client.on('messageCreate', async function(message){
+      if(message.channel.type === Discord.ChannelType.DM) {
+    
+        const log = new Log({
+          server: "Direct Message",
+          channel: "Direct Message",
+          username: message.author.username,
+          message: message.content,
+          time: new Date().toString()
+        });
+      
+        log.save().then(() => {
+          console.log("Direct Message logged to MongoDB");
+        }).catch(err => {
+          console.error(err);
+        });
+      }
     });
 
 console.log(`TheButler is online!\n`);

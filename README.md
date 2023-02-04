@@ -71,20 +71,25 @@
                 If they have our beta token they are given basic access to OpenAI functionality.
                 If they have our free token, they receive a DM from the bot daily gauging sentiment on something.
                 
-            0.07 Backlog:
-            Collection at midnight of user message count for the day.
-                Users table, messages table
-                    Okay if users are manually populated
-                    Script a counter/timer when the clock strikes 00:00
-                    User, Post Count, last activity time
-                    Collect images and links/urls
-                Get list of users that haven't interacted in 7 days and give em a whaddup
+            0.076 Backlog:
+            
            
+            0.0.8 Wishlist:
+            Use Mongo to store preprompts for three personas (TheButler, Jarvis/Melfi, Puerus/MasterDebater)
+                Reading from the database, a database read that filters the personas out.
+
             0.09 Wishlist:
             Website to ineract with personas
             Create a token count for how many OpenAI tokens are used by each user.
             Count total times a user has inteacted with OpenAI.
             Token limits?
+            Collection at midnight of user message count for the day.
+                 Users table, messages table
+            Okay if users are manually populated
+            Script a counter/timer when the clock strikes 00:00
+            User, Post Count, last activity time
+            Collect images and links/urls
+                 Get list of users that haven't interacted in 7 days and give em a whaddup
 
 
             Three Bots:
