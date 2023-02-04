@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "main": "butler.js",
   "scripts": {
-    "dev": "nodemon butler-dev.js",
-    "prod": "nodemon butler.js"
+    "dev": "nodemon butler.js",
+    "prod": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
