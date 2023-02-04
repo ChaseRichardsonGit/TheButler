@@ -1,5 +1,7 @@
 const { Configuration , OpenAIApi } = require('openai');
 
+const calculateCost = require('./calccost.js');
+
 const configuration = new Configuration({ 
     organization: process.env.OPENAI_ORG, 
     apiKey: process.env.OPENAI_KEY, 
@@ -42,11 +44,10 @@ module.exports = {
         });
     
         let response = gptResponse.data.choices[0].text.trim(); 
-        // let total_tokens = (gptResponse.data.usage.total_tokens);
-        // let cost = calculateCost.calculateCost(total_tokens);
-        // let costTrimmed = parseFloat(cost.toFixed(4));
-        // console.log\(`x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`)
-        console.log(`FromModule: openai-lower`);
+        let total_tokens = (gptResponse.data.usage.total_tokens);
+        let cost = calculateCost.calculateCost(total_tokens);
+        let costTrimmed = parseFloat(cost.toFixed(4));
+        console.log(`\x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`);
         console.log(`PrePromptText: ${preprompttext}`);
         console.log(`PreviousMessages: ${previousMessages}`);
         console.log(`message: ${message}`);
@@ -57,8 +58,7 @@ module.exports = {
         if(response.length > 1999){
             response = response.substring(0, 1999);
         }
-        // message.author.send(response + ` - Cost: ${costTrimmed}  Tokens: ${total_tokens}/1000`);
-        // message.author = author;
-        message.author.send(response);
-        } 
-};
+        message.author.send(response + ` - Cost: ${costTrimmed}  Tokens: ${total_tokens}/1000 Characters: ${response.length}/1999`);
+        }
+    };
+    
