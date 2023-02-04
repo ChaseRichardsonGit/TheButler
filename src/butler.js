@@ -39,7 +39,7 @@ client.on('messageCreate', async function(message){
     let userInfo = await UserInfo.findOne({ serverId: message.guild.id, userId: message.author.id });
       if(!userInfo) {
       userInfo = new UserInfo({
-          serverId: message.guild.id,
+          server: message.guild.id,
           userId: message.author.id,
           username: message.author.username,
           messagesSent: 1

@@ -10,7 +10,7 @@ const userInfoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    servername: {
+    server: {
         type: String,
         required: true
     },
