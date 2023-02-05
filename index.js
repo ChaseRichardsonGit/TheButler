@@ -2,7 +2,7 @@
 require('dotenv').config(); 
 
 // Get your persona from your environment
-let whoami = process.env.WHOAMI;
+let whoami = process.env.WHOAMI; 
 
 // Import discord.js
 const client = require(`./src/${whoami}.js`); 

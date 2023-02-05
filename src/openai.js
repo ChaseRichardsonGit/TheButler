@@ -2,6 +2,8 @@ const { Configuration , OpenAIApi } = require('openai');
 
 const calculateCost = require('./calccost.js');
 
+const { getPersonaData } = require("./mongo.js");
+
 const configuration = new Configuration({ 
     organization: process.env.OPENAI_ORG, 
     apiKey: process.env.OPENAI_KEY, 
@@ -12,9 +14,7 @@ const openai = new OpenAIApi(configuration);
 module.exports = {
     callopenai: async function(message) {
         let messageData = []; 
-        let preprompttext = "You're a discord bot";
         console.log(`FromModule: openai-upper`);
-        console.log(`PrePromptText: ${preprompttext}`);
         console.log(`message: ${message}`);
         console.log(`message.author: ${message.author}`);
         console.log(`message.author.username: ${message.author.username}`);
@@ -31,18 +31,20 @@ module.exports = {
             }
             return previousMessages;
         }
+        let preprompttext = await getPersonaData(process.env.WHOAMI).then(personaData => {
+            return (personaData.data);   
+            });
         const gptResponse = await openai.createCompletion({
             model: "text-davinci-003",
-            prompt: preprompttext + `\n${previousMessages} \n ${message.author}: ${message.content}\n`,
+            prompt:  preprompttext + `\n${previousMessages} \n ${message.author}: ${message.content}\n`,
             max_tokens: 2000,
             temperature: .5,
-            // top_p: 1,
+            top_p: 1,
             n: 1,
             stream: false,
             logprobs: null,
             stop: ""
         });
-    
         let response = gptResponse.data.choices[0].text.trim(); 
         let total_tokens = (gptResponse.data.usage.total_tokens);
         let cost = calculateCost.calculateCost(total_tokens);
