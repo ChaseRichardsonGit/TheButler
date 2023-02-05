@@ -16,6 +16,7 @@ const { Client, GatewayIntentBits, Partials } = require('discord.js');
 // Define Mongo and load the database
 const { UserInfo, Link, Log } = require('./mongo.js'); 
 
+
 // Define Intents and Partials for Discord
 const client = new Client({ 
 	intents: [ 
@@ -103,6 +104,7 @@ client.on('messageCreate', async function(message){
     if(message.channel.type === Discord.ChannelType.DM) {
       if(message.author.bot) return;
         const log = new Log({
+        bot: whoami,
         server: "-",
         channel: "directMessage",
         username: message.author.username,
@@ -123,6 +125,7 @@ client.on('messageCreate', async function(message){
   if(message.channel.type === Discord.ChannelType.DM) {
 
     const log = new Log({
+      bot: whoami,
       server: "-",
       channel: "directMessage",
       username: message.author.username,
