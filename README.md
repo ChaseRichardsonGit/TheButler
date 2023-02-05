@@ -76,7 +76,10 @@
            
             0.0.8 Wishlist:
             Use Mongo to store preprompts for three personas (TheButler, Jarvis/Melfi, Puerus/MasterDebater)
+                Gut JarvisBot for its persona code
                 Reading from the database, a database read that filters the personas out.
+            Remove duplicate code for logging and logic like slash commands.
+            
 
             0.09 Wishlist:
             Website to ineract with personas
