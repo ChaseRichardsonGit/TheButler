@@ -3,8 +3,6 @@ require('dotenv').config();
 
 // Load the external functions
 const openai = require('./openai.js');
-// const clearchat = require('./clearchat.js');
-// const weather = require('./weather.js');
 
 // Get your persona from your environment
 let whoami = process.env.WHOAMI;
@@ -38,9 +36,10 @@ const client = new Client({
 // Listener for General only console logs for right now. 
 client.on('messageCreate', async function(message){
     if(message.channel.type !== Discord.ChannelType.DM) {
-    if(message.author.bot) return;
+    if(message.author.bot) return; {
+    if(message.content.includes('!puerus'));
         console.log('Message received from ' + message.author.username + ': ' + message.content);
-    }
+    }}
 });
 
 // Listener for Direct Message OpenAI Dialogue
@@ -56,6 +55,7 @@ client.on('messageCreate', async function(message){
     if(message.channel.type === Discord.ChannelType.DM) {
       if(message.author.bot) return;
         const log = new Log({
+        bot: whoami,
         server: "-",
         channel: "directMessage",
         username: message.author.username,
@@ -76,6 +76,7 @@ client.on('messageCreate', async function(message){
     if(message.channel.type === Discord.ChannelType.DM) {
     if(message.author.bot) {
     const log = new Log({
+        bot: whoami,
         server: "-",
         channel: "directMessage",
         username: message.author.username,
