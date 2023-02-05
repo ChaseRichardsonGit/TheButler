@@ -1,4 +1,4 @@
-// Load the environment variables
+// Load the environment variables 
 require('dotenv').config(); 
 
 // Load the external functions
