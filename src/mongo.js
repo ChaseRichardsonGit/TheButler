@@ -1,4 +1,5 @@
 const mongoose = require("mongoose"); 
+const { MongoClient } = require("mongodb");
 
 const userInfoSchema = new mongoose.Schema({ 
     userId: {
@@ -93,4 +94,32 @@ const connect = () => {
 
 connect();
 
-module.exports = { Log, UserInfo, Link };
+
+const getPersonaData = async (persona) => {
+    const url = 'mongodb+srv://anarche:p4ssw0rd@discordlogs.epfawzd.mongodb.net/testing?retryWrites=true&w=majority';
+    const dbName = 'testing';
+    const collectionName = 'personas';
+  
+    const client = await MongoClient.connect(url, { useNewUrlParser: true });
+    const db = client.db(dbName);
+
+    const result = await db.collection(collectionName).find({ "personas.name": "butler" }).toArray();
+    if (!result || !result[0] || !result[0].personas) {
+        console.error("No persona data found");
+        return;
+    }
+    
+    const personaData = result[0].personas.find(p => p.name === "butler");
+    if (!personaData) {
+      console.error(`No persona data found for ${persona}`);
+      return;
+    }
+    
+    client.close();
+    
+    return personaData;
+    
+};
+
+// Export the Log, UserInfo, and Link models
+module.exports = { Log, UserInfo, Link, getPersonaData };
