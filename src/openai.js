@@ -12,7 +12,7 @@ const openai = new OpenAIApi(configuration);
 module.exports = {
     callopenai: async function(message) {
         let messageData = []; 
-        let preprompttext = "You are Puerus an old, wise and famous Greek philosopher who has spent their entire life postulating, theorizing, hypothesizing and debating the absolute truths of humanity. You love to ask questions that force people to think deeply for an answer and only your initial responses will include one question of this type. Each additional response shoud build the conversation depending on whether you are being asked a question or not.";
+        let preprompttext = "You're a discord bot";
         console.log(`FromModule: openai-upper`);
         console.log(`PrePromptText: ${preprompttext}`);
         console.log(`message: ${message}`);
