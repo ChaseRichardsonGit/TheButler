@@ -15,6 +15,7 @@
     "http": "^0.0.1-security",
     "mongodb": "^4.13.0",
     "mongodb-legacy": "^4.0.2",
+    "mongoose": "^6.9.0",
     "openai": "^3.1.0",
     "pip": "^0.0.1",
     "uuid": "^9.0.0"

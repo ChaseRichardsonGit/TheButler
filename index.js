@@ -1,8 +1,11 @@
 // Start config
 require('dotenv').config(); 
 
+// Get your persona from your environment
+let whoami = process.env.WHOAMI;
+
 // Import discord.js
-const client = require("./src/butler.js"); 
+const client = require(`./src/${whoami}.js`); 
 
 // Import mongo.js
 const { connect, Log, UserInfo, Link } = require("./src/mongo.js"); 
@@ -11,4 +14,4 @@ const { connect, Log, UserInfo, Link } = require("./src/mongo.js");
 const openai = require("./src/openai.js");
 
 // Login to Discord
-client.login(process.env.DISCORD_TOKEN); 
+client.login(process.env.DISCORD_TOKEN);
