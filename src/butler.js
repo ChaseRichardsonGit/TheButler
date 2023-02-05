@@ -6,6 +6,9 @@ const openai = require('./openai.js');
 const clearchat = require('./clearchat.js');
 const weather = require('./weather.js');
 
+// Get your persona from your environment
+let whoami = process.env.WHOAMI;
+
 // Load the Discord 
 const Discord = require('discord.js');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
@@ -16,11 +19,11 @@ const { UserInfo, Link, Log } = require('./mongo.js');
 // Define Intents and Partials for Discord
 const client = new Client({ 
 	intents: [ 
-	GatewayIntentBits.Guilds,
-	GatewayIntentBits.GuildMessages,
+	  GatewayIntentBits.Guilds,
+	  GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.DirectMessages,
-	GatewayIntentBits.GuildMembers,
+	  GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessageReactions,
 	],
   partials: [
@@ -69,15 +72,16 @@ client.on('messageCreate', async function(message){
         console.error(err);
       });
     }
-  
-    const log = new Log({
+
+// Log the message to MongoDB    
+    const log = new Log({ 
+        bot: whoami,
         server: message.guild.name,
         channel: message.channel.name,
         username: message.author.username,
         message: message.content,
         time: new Date().toString()
       });
-    
       log.save().then(() => {
         console.log(`Message logged to MongoDB: ${message.author.username}: ${message.content}\n`);
       }).catch(err => {
@@ -86,7 +90,15 @@ client.on('messageCreate', async function(message){
     }
 });
 
-// Listener for DM
+// Listener for Direct Message OpenAI Dialogue
+client.on('messageCreate', async function(message){
+  if(message.channel.type === Discord.ChannelType.DM) {
+  if(message.author.bot) return; 
+     openai.callopenai(message);
+  }
+});
+
+// Listener to Log Direct Messages
 client.on('messageCreate', async function(message){
     if(message.channel.type === Discord.ChannelType.DM) {
       if(message.author.bot) return;
@@ -106,15 +118,27 @@ client.on('messageCreate', async function(message){
     }
   });
 
-// Listener for DM Messages for OpenAI
+// Listener to Log Bot Direct Message Responses
 client.on('messageCreate', async function(message){
-    if(message.channel.type === Discord.ChannelType.DM) {
-    if(message.author.bot) return; 
-       openai.callopenai(message);
-    }
+  if(message.channel.type === Discord.ChannelType.DM) {
+
+    const log = new Log({
+      server: "-",
+      channel: "directMessage",
+      username: message.author.username,
+      message: message.content,
+      time: new Date().toString()
+    });
+  
+    log.save().then(() => {
+      console.log("Direct Message logged to MongoDB");
+    }).catch(err => {
+      console.error(err);
+    });
+  }
 });
 
-// Listner for Channel Messages
+// Listner for Slash Commands
 client.on("messageCreate", async function(message){
     if(message.channel.type != Discord.ChannelType.DM){
     if(message.author.bot) return;
@@ -135,26 +159,6 @@ client.on("messageCreate", async function(message){
     }}
     });
 
-    // Listener for Your Response
-    client.on('messageCreate', async function(message){
-      if(message.channel.type === Discord.ChannelType.DM) {
-    
-        const log = new Log({
-          server: "Direct Message",
-          channel: "Direct Message",
-          username: message.author.username,
-          message: message.content,
-          time: new Date().toString()
-        });
-      
-        log.save().then(() => {
-          console.log("Direct Message logged to MongoDB");
-        }).catch(err => {
-          console.error(err);
-        });
-      }
-    });
-
-console.log(`TheButler is online!\n`);
+console.log(`${whoami} is online!\n`);
 
 module.exports = client;

@@ -26,6 +26,10 @@ mongoose.set('strictQuery', true);
 const UserInfo = mongoose.model("UserInfo", userInfoSchema);
 
 const messageSchema = new mongoose.Schema({
+    bot: {
+        type: String,
+        required: true
+    }, 
     server: {
         type: String,
         required: true
