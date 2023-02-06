@@ -145,15 +145,15 @@ client.on('messageCreate', async function(message){
 client.on("messageCreate", async function(message){
     if(message.channel.type != Discord.ChannelType.DM){
     if(message.author.bot) return;
-    if(message.content.startsWith("/PC")) {
+    if(message.content.startsWith("/BC")) {
         console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
         clearchat(message);
     } else
-    if(message.content.startsWith("/PM")) {
+    if(message.content.startsWith("/BM")) {
         console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
         message.author.send(`Hello, I'm Puerus.  How can I help you?`);
     } else
-    if(message.content.startsWith("/PW")) {
+    if(message.content.startsWith("/BW")) {
         console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
         const OWMapiKey = process.env.OWMapiKey;
         const zip = message.content.split(' ')[1];

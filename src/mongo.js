@@ -103,13 +103,13 @@ const getPersonaData = async (persona) => {
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName);
 
-    const result = await db.collection(collectionName).find({ "personas.name": "butler" }).toArray();
+    const result = await db.collection(collectionName).find({ "personas.name": "puerus" }).toArray();
     if (!result || !result[0] || !result[0].personas) {
         console.error("No persona data found");
         return;
     }
     
-    const personaData = result[0].personas.find(p => p.name === "butler");
+    const personaData = result[0].personas.find(p => p.name === "puerus");
     if (!personaData) {
       console.error(`No persona data found for ${persona}`);
       return;
@@ -121,5 +121,46 @@ const getPersonaData = async (persona) => {
     
 };
 
+// const getChatLog = async (persona) => {
+//     const url = 'mongodb+srv://anarche:p4ssw0rd@discordlogs.epfawzd.mongodb.net/testing?retryWrites=true&w=majority';
+//     const dbName = 'testing';
+//     const collectionName = 'logs';
+  
+//     const client = await MongoClient.connect(url, { useNewUrlParser: true });
+//     const db = client.db(dbName);
+
+//     const ChatLog = await db.collection(collectionName).find({
+//         $or: [ 
+//             {username: persona}
+//         ]
+//     }).sort({_id: -1}).limit(3).toArray();
+    
+//     console.log(ChatLog);
+
+//     client.close();
+    
+//     return ChatLog; 
+// };
+
+const getChatLog = async (persona, bot) => {
+    const url = 'mongodb+srv://anarche:p4ssw0rd@discordlogs.epfawzd.mongodb.net/testing?retryWrites=true&w=majority';
+    const dbName = 'testing';
+    const collectionName = 'logs';
+  
+    const client = await MongoClient.connect(url, { useNewUrlParser: true });
+    const db = client.db(dbName);
+
+    const ChatLog = await db.collection(collectionName).find({
+        username: persona,
+        bot: bot
+    }).sort({_id: -1}).limit(3).toArray();
+    
+    console.log(ChatLog);
+
+    client.close();
+    
+    return ChatLog; 
+};
+
 // Export the Log, UserInfo, and Link models
-module.exports = { Log, UserInfo, Link, getPersonaData };
+module.exports = { Log, UserInfo, Link, getPersonaData, getChatLog };
