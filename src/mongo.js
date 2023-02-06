@@ -97,7 +97,7 @@ const connect = () => {
 
 connect();
 
-
+//getPersonaData from MongoDB
 const getPersonaData = async (persona) => {
     const url = process.env.MONGO_URI;
     const dbName = 'testing';
@@ -121,31 +121,12 @@ const getPersonaData = async (persona) => {
     client.close();
     
     return personaData;
-    
-};
+    };
 
-// const getChatLog = async (persona) => {
-//     const url = 'mongodb+srv://anarche:p4ssw0rd@discordlogs.epfawzd.mongodb.net/testing?retryWrites=true&w=majority';
-//     const dbName = 'testing';
-//     const collectionName = 'logs';
-  
-//     const client = await MongoClient.connect(url, { useNewUrlParser: true });
-//     const db = client.db(dbName);
 
-//     const ChatLog = await db.collection(collectionName).find({
-//         $or: [ 
-//             {username: persona}
-//         ]
-//     }).sort({_id: -1}).limit(3).toArray();
-    
-//     console.log(ChatLog);
 
-//     client.close();
-    
-//     return ChatLog; 
-// };
-
-const getChatLog = async (persona, bot) => {
+//getChatLog from Mongo for context
+const getChatLog = async (persona, bot) => { 
     const url = process.env.MONGO_URI;
     const dbName = 'testing';
     const collectionName = 'logs';
@@ -153,17 +134,17 @@ const getChatLog = async (persona, bot) => {
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName);
 
-    const ChatLog = await db.collection(collectionName).find({
+    const chatLog = await db.collection(collectionName).find({
         username: persona,
         bot: bot
-    }).sort({_id: -1}).limit(3).toArray();
+    }).sort({_id: -1}).limit(10).toArray();
     
-    console.log(ChatLog);
+//    console.log(chatLog);
 
     client.close();
     
-    return ChatLog; 
+    return chatLog; 
 };
 
-// Export the Log, UserInfo, and Link models
+// Export the Log, UserInfo, PersonData, getChatLog, and Link models
 module.exports = { Log, UserInfo, Link, getPersonaData, getChatLog };

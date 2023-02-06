@@ -14,4 +14,4 @@ const { connect, Log, UserInfo, Link } = require("./src/mongo.js");
 const openai = require("./src/openai.js");
 
 // Login to Discord
-client.login(process.env.BUTLER_TOKEN);
+client.login(process.env[`${whoami}_TOKEN`]);
