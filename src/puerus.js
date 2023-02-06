@@ -37,10 +37,16 @@ const client = new Client({
 client.on('messageCreate', async function(message){
     if(message.channel.type !== Discord.ChannelType.DM) {
     if(message.author.bot) return; {
-    if(message.content.includes('!puerus'));
-        console.log('Message received from ' + message.author.username + ': ' + message.content);
-    }}
-});
+        if(message.content.includes("puerus")) {
+            console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
+            openai.callopenai(message);
+            message.channel.send(`I heard your call ${message.author.username} and have sent you a message so we can chat privately.`);
+        } else
+        if(message.content.startsWith("/PM")) {
+            console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
+            message.author.send(`Hello, I'm Puerus.  How can I help you?`);
+        }}}
+    }); 
 
 // Listener for Direct Message OpenAI Dialogue
 client.on('messageCreate', async function(message){

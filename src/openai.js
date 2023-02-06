@@ -4,6 +4,8 @@ const calculateCost = require('./calccost.js');
 
 const { getPersonaData } = require("./mongo.js");
 
+const { getChatLog } = require("./mongo.js");
+
 const configuration = new Configuration({ 
     organization: process.env.OPENAI_ORG, 
     apiKey: process.env.OPENAI_KEY, 
@@ -20,23 +22,47 @@ module.exports = {
         console.log(`message.author.username: ${message.author.username}`);
         console.log(`message.content: ${message.content}\n`);
 
-        const previousMessages = getPreviousMessages();
-            function getPreviousMessages() { 
+        // const previousMessages = getPreviousMessages();
+        //     function getPreviousMessages() { 
+        //     let previousMessages = "";
+        //     for (let i = messageData.length - 2; i > messageData.length - 10; i--) { 
+        //         if (i < 0) {
+        //             break;
+        //         }
+        //         previousMessages += `${messageData[i].author}: ${messageData[i].content}\n`;
+        //     }
+        //     return previousMessages;
+        // }
+
+        // let previousMessages = await getChatLog(process.env.WHOAMI).then(chatLog => {
+        //     for (let i = messageData.length - 2; i > messageData.length - 10; i--) { 
+        //         if (i < 0) {
+        //             break;
+        //         }
+        //         previousMessages += `${messageData[i].author}: ${messageData[i].content}\n`;
+        //     }
+        //     return (chatLog.data);
+        // });
+
+        let previousMessages = await getChatLog("Seneca", process.env.WHOAMI).then(chatLog => {
             let previousMessages = "";
-            for (let i = messageData.length - 2; i > messageData.length - 10; i--) { 
+            for (let i = previousMessages.length - 2; i > previousMessages.length - 10; i--) { 
                 if (i < 0) {
                     break;
                 }
-                previousMessages += `${messageData[i].author}: ${messageData[i].content}\n`;
+                // previousMessages += `${previousMessages[i].author}: ${previousMessages[i].content}\n`;
+                previousMessages += `${previousMessages}`;
             }
-            return previousMessages;
-        }
+            return (previousMessages);
+        });
+        
         let preprompttext = await getPersonaData(process.env.WHOAMI).then(personaData => {
             return (personaData.data);   
-            });
-        const gptResponse = await openai.createCompletion({
+        });
+       
+            const gptResponse = await openai.createCompletion({
             model: "text-davinci-003",
-            prompt:  preprompttext + `\n${previousMessages} \n ${message.author}: ${message.content}\n`,
+            prompt:  preprompttext + `${previousMessages} \n ${message.author}: ${message.content}\n`,
             max_tokens: 2000,
             temperature: .5,
             top_p: 1,
