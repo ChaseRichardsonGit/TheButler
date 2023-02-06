@@ -1,6 +1,9 @@
 const mongoose = require("mongoose"); 
 const { MongoClient } = require("mongodb");
 
+// Get your persona from your environment
+let whoami = process.env.WHOAMI; 
+
 const userInfoSchema = new mongoose.Schema({ 
     userId: {
         type: String,
@@ -103,13 +106,13 @@ const getPersonaData = async (persona) => {
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName);
 
-    const result = await db.collection(collectionName).find({ "personas.name": "butler" }).toArray();
+    const result = await db.collection(collectionName).find({ "personas.name": `${whoami}` }).toArray();
     if (!result || !result[0] || !result[0].personas) {
         console.error("No persona data found");
         return;
     }
     
-    const personaData = result[0].personas.find(p => p.name === "butler");
+    const personaData = result[0].personas.find(p => p.name ===  `${whoami}` );
     if (!personaData) {
       console.error(`No persona data found for ${persona}`);
       return;
