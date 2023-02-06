@@ -151,7 +151,7 @@ client.on("messageCreate", async function(message){
     } else
     if(message.content.startsWith("/BM")) {
         console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
-        message.author.send(`Hello, I'm Puerus.  How can I help you?`);
+        message.author.send(`Hello, I'm TheButler.  How can I help you?`);
     } else
     if(message.content.startsWith("/BW")) {
         console.log(`User: ${message.author.username} | Message: ${message.content}\n`);

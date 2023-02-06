@@ -96,20 +96,20 @@ connect();
 
 
 const getPersonaData = async (persona) => {
-    const url = 'mongodb+srv://anarche:p4ssw0rd@discordlogs.epfawzd.mongodb.net/testing?retryWrites=true&w=majority';
+    const url = process.env.MONGO_URI;
     const dbName = 'testing';
     const collectionName = 'personas';
   
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName);
 
-    const result = await db.collection(collectionName).find({ "personas.name": "puerus" }).toArray();
+    const result = await db.collection(collectionName).find({ "personas.name": "butler" }).toArray();
     if (!result || !result[0] || !result[0].personas) {
         console.error("No persona data found");
         return;
     }
     
-    const personaData = result[0].personas.find(p => p.name === "puerus");
+    const personaData = result[0].personas.find(p => p.name === "butler");
     if (!personaData) {
       console.error(`No persona data found for ${persona}`);
       return;
@@ -143,7 +143,7 @@ const getPersonaData = async (persona) => {
 // };
 
 const getChatLog = async (persona, bot) => {
-    const url = 'mongodb+srv://anarche:p4ssw0rd@discordlogs.epfawzd.mongodb.net/testing?retryWrites=true&w=majority';
+    const url = process.env.MONGO_URI;
     const dbName = 'testing';
     const collectionName = 'logs';
   
