@@ -55,18 +55,8 @@ module.exports = {
             let total_tokens = (gptResponse.data.usage.total_tokens);
             let cost = calculateCost.calculateCost(total_tokens);
             let costTrimmed = parseFloat(cost.toFixed(4));
-
-            // console.log(`\x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`);
-            // console.log(`PrePromptText: ${preprompttext}`);
-            // console.log(`PreviousMessages: ${previousMessages}`);
-            // console.log(`message: ${message}`);
-            // console.log(`message.author: ${message.author}`);
-            // console.log(`message.author.username: ${message.author.username}`);
-            // console.log(`message.content: ${message.content}\n`);
-            
-            // Add this at the end of the try block in openai.js
+    
             if(costTrimmed > 0.0001){
-                console.log(costTrimmed);
                   const costRecord = new Cost({
                     username: message.author.username,
                     characters: response.length,
