@@ -37,7 +37,7 @@ const client = new Client({
 client.on('messageCreate', async function(message){
     if(message.channel.type !== Discord.ChannelType.DM) {
     if(message.author.bot) return; {
-        if(message.content.includes("puerus")) {
+        if(message.content.includes(process.env.WHOAMI)) {
             console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
             openai.callopenai(message);
             message.channel.send(`I heard your call ${message.author.username} and have sent you a message so we can chat privately.`);
@@ -61,7 +61,7 @@ client.on('messageCreate', async function(message){
     if(message.channel.type === Discord.ChannelType.DM) {
       if(message.author.bot) return;
         const log = new Log({
-        bot: whoami,
+        bot: process.env.WHOAMI,
         server: "-",
         channel: "directMessage",
         username: message.author.username,
@@ -82,7 +82,7 @@ client.on('messageCreate', async function(message){
     if(message.channel.type === Discord.ChannelType.DM) {
     if(message.author.bot) {
     const log = new Log({
-        bot: whoami,
+        bot: process.env.WHOAMI,
         server: "-",
         channel: "directMessage",
         username: message.author.username,
@@ -98,6 +98,6 @@ client.on('messageCreate', async function(message){
     }}
 });
 
-console.log(`${whoami} is online!\n`);
+console.log(`${process.env.WHOAMI} is online!\n`);
 
 module.exports = client;

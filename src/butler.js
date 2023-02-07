@@ -118,12 +118,12 @@ client.on('messageCreate', async function(message){
         console.error(err);
       });
     }
-  });
+});
 
 // Listener to Log Bot Direct Message Responses
 client.on('messageCreate', async function(message){
   if(message.channel.type === Discord.ChannelType.DM) {
-
+    if(message.author.bot){
     const log = new Log({
       bot: whoami,
       server: "-",
@@ -138,7 +138,7 @@ client.on('messageCreate', async function(message){
     }).catch(err => {
       console.error(err);
     });
-  }
+  }}
 });
 
 // Listner for Slash Commands
@@ -160,7 +160,7 @@ client.on("messageCreate", async function(message){
         if(!zip) return message.channel.send("Please provide a zip code after the command")
             weather.getWeather(zip, message, OWMapiKey);
     }}
-    });
+});
 
 console.log(`${whoami} is online!\n`);
 

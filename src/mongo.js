@@ -126,19 +126,22 @@ const getPersonaData = async (persona) => {
 
 
 //getChatLog from Mongo for context
-const getChatLog = async (persona, bot) => { 
+const getChatLog = async (username, bot) => { 
     const url = process.env.MONGO_URI;
     const dbName = 'testing';
     const collectionName = 'logs';
   
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName);
+   
+    // const chatLog = await db.collection(collectionName).find({
+    //     $or: [{username: username}, {bot: bot}]
+    // }).sort({_id: -1}).limit(5).toArray();
 
-    const chatLog = await db.collection(collectionName).find({
-        username: persona,
-        bot: bot
-    }).sort({_id: -1}).limit(10).toArray();
-    
+    const chatLog = await db.collection(collectionName).find(
+        (username && { username: username }) || (bot && { bot: bot }) || {}
+      ).sort({ _id: -1 }).limit(5).toArray();
+
 //    console.log(chatLog);
 
     client.close();

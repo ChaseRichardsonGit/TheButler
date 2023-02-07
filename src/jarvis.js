@@ -33,6 +33,8 @@ const client = new Client({
     ]
 }); 
 
+
+
 // Listener for General only console logs for right now. 
 client.on('messageCreate', async function(message){
     if(message.channel.type !== Discord.ChannelType.DM) {

@@ -15,7 +15,6 @@ const openai = new OpenAIApi(configuration);
 
 module.exports = { 
     callopenai: async function(message) {
-        let messageData = []; 
         console.log(`FromModule: openai-upper`);
         console.log(`message: ${message}`);
         console.log(`message.author: ${message.author}`);
@@ -25,7 +24,7 @@ module.exports = {
         // Get previous messages from mongo
         let previousMessages = await getChatLog(message.author.username, process.env.WHOAMI).then(chatLog => { 
             let previousMessages = "";
-            for (let i = chatLog.length - 2; i >= chatLog.length - 10; i--) { 
+            for (let i = chatLog.length - 2; i >= chatLog.length - 5; i--) { 
                 if (i < 0) {
                     break;
                 }
@@ -34,7 +33,7 @@ module.exports = {
             return (previousMessages);
         });
 
-        // Get preprompt text from mongo
+        // Get preprompt text from mongo for Persona
         let preprompttext = await getPersonaData(process.env.WHOAMI).then(personaData => { 
             return (personaData.data);   
         });
@@ -64,10 +63,11 @@ module.exports = {
             console.log(`message.author.username: ${message.author.username}`);
             console.log(`message.content: ${message.content}\n`);
           
-            if(response.length > 1999){
-                response = response.substring(0, 1999);
+            if(response.length > 1950){
+                response = response.substring(0, 1950);
             }
-            message.author.send(response + ` - Cost: ${costTrimmed}  Tokens: ${total_tokens}/1000 Characters: ${response.length}/1999`);
+//           message.author.send(response + ` - Cost: ${costTrimmed}  Tokens: ${total_tokens}/1000 Characters: ${response.length}/1999`);
+             message.author.send(response);
         } catch (error) {
             console.error(`An error occurred while calling OpenAI API: ${error}`);
         }
