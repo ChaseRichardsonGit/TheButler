@@ -83,6 +83,31 @@ const linkSchema = new mongoose.Schema({
 
 const Link = mongoose.model("Link", linkSchema);
 
+const costSchema = new mongoose.Schema({
+    username: {
+      type: String,
+      required: true
+    },
+    characters: {
+      type: String,
+      required: true
+    },
+    tokens: {
+      type: String,
+      required: true
+    },
+    cost: {
+      type: String,
+      required: true
+    },
+    time: {
+      type: String,
+      required: true
+    }
+});
+  
+  const Cost = mongoose.model("Cost", costSchema);
+
 const connect = () => {
     mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -121,9 +146,7 @@ const getPersonaData = async (persona) => {
     client.close();
     
     return personaData;
-    };
-
-
+};
 
 //getChatLog from Mongo for context
 const getChatLog = async (username, bot) => { 
@@ -150,4 +173,4 @@ const getChatLog = async (username, bot) => {
 };
 
 // Export the Log, UserInfo, PersonData, getChatLog, and Link models
-module.exports = { Log, UserInfo, Link, getPersonaData, getChatLog };
+module.exports = { Log, UserInfo, Link, Cost, getPersonaData, getChatLog };

@@ -2,9 +2,9 @@ const { Configuration , OpenAIApi } = require('openai');
 
 const calculateCost = require('./calccost.js');
 
-const { getPersonaData } = require("./mongo.js");
+const { getPersonaData, getChatLog } = require("./mongo.js");
 
-const { getChatLog } = require("./mongo.js");
+const { Cost } = require("./mongo.js");
 
 const configuration = new Configuration({ 
     organization: process.env.OPENAI_ORG, 
@@ -55,19 +55,41 @@ module.exports = {
             let total_tokens = (gptResponse.data.usage.total_tokens);
             let cost = calculateCost.calculateCost(total_tokens);
             let costTrimmed = parseFloat(cost.toFixed(4));
-            console.log(`\x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`);
-            console.log(`PrePromptText: ${preprompttext}`);
-            console.log(`PreviousMessages: ${previousMessages}`);
-            console.log(`message: ${message}`);
-            console.log(`message.author: ${message.author}`);
-            console.log(`message.author.username: ${message.author.username}`);
-            console.log(`message.content: ${message.content}\n`);
-          
-            if(response.length > 1950){
-                response = response.substring(0, 1950);
+
+            // console.log(`\x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`);
+            // console.log(`PrePromptText: ${preprompttext}`);
+            // console.log(`PreviousMessages: ${previousMessages}`);
+            // console.log(`message: ${message}`);
+            // console.log(`message.author: ${message.author}`);
+            // console.log(`message.author.username: ${message.author.username}`);
+            // console.log(`message.content: ${message.content}\n`);
+            
+            // Add this at the end of the try block in openai.js
+            if(costTrimmed > 0.0001){
+                console.log(costTrimmed);
+                  const costRecord = new Cost({
+                    username: message.author.username,
+                    characters: response.length,
+                    tokens: total_tokens,
+                    cost: costTrimmed,
+                    time: new Date()
+                });
+    
+                costRecord.save((error) => {
+                    if (error) {
+                        console.error("Error saving cost record: ", error);
+                    } else {
+                        console.log("Cost record saved successfully.");
+                    }
+                });
             }
-//           message.author.send(response + ` - Cost: ${costTrimmed}  Tokens: ${total_tokens}/1000 Characters: ${response.length}/1999`);
-             message.author.send(response);
+
+            if(response.length > 1999){
+                response = response.substring(0, 1999);
+            }
+            
+            message.author.send(response);
+
         } catch (error) {
             console.error(`An error occurred while calling OpenAI API: ${error}`);
         }
