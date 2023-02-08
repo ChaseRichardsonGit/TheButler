@@ -2,9 +2,7 @@ const { Configuration , OpenAIApi } = require('openai');
 
 const calculateCost = require('./calccost.js');
 
-const { getPersonaData, getChatLog } = require("./mongo.js");
-
-const { Cost } = require("./mongo.js");
+const { getPersonaData, getChatLog, Cost, UserInfo } = require("./mongo.js");
 
 const configuration = new Configuration({ 
     organization: process.env.OPENAI_ORG, 
@@ -30,6 +28,7 @@ module.exports = {
                 }
                 previousMessages += `${chatLog[i].message}\n`;
             }
+//            console.log(`previousMessages: ${previousMessages}`)
             return (previousMessages);
         });
 
@@ -42,7 +41,7 @@ module.exports = {
         try {
             const gptResponse = await openai.createCompletion({
                 model: "text-davinci-003",
-                prompt:  preprompttext + `${previousMessages} \n ${message.author}: ${message.content}\n`,
+                prompt:  preprompttext + `${previousMessages} \n`,
                 max_tokens: 2000,
                 temperature: .5,
                 top_p: 1,
@@ -55,7 +54,20 @@ module.exports = {
             let total_tokens = (gptResponse.data.usage.total_tokens);
             let cost = calculateCost.calculateCost(total_tokens);
             let costTrimmed = parseFloat(cost.toFixed(4));
-    
+//            console.log(`${preprompttext} \n ${previousMessages} \n ${message.content}\n`);
+
+            // Find the UserInfo in the database and update it with the cost
+            const userInfo = await UserInfo.findOne({ userId: message.author.id });
+            if (userInfo) {
+                userInfo.cost_total += costTrimmed;
+                userInfo.save().then(() => {
+                    console.log(`UserInfo updated for user ${message.author.username} with cost_total: ${userInfo.cost_total}\n`);
+                }).catch(err => {
+                    console.error(err);
+                });
+            }
+            
+            // Create a new Cost record and save it to the database
             if(costTrimmed > 0.0001){
                   const costRecord = new Cost({
                     username: message.author.username,
