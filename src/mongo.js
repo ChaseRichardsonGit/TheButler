@@ -1,9 +1,6 @@
 const mongoose = require("mongoose"); 
 const { MongoClient } = require("mongodb");
 
-// Get your persona from your environment
-let whoami = process.env.WHOAMI; 
-
 const userInfoSchema = new mongoose.Schema({ 
     userId: {
         type: String,
@@ -19,6 +16,11 @@ const userInfoSchema = new mongoose.Schema({
         required: true
     },
     messagesSent: {
+        type: Number,
+        default: 0,
+        required: true
+    },
+    cost_total: {
         type: Number,
         default: 0,
         required: true
@@ -131,13 +133,13 @@ const getPersonaData = async (persona) => {
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName);
 
-    const result = await db.collection(collectionName).find({ "personas.name": `${whoami}` }).toArray();
+    const result = await db.collection(collectionName).find({ "personas.name": `${process.env.WHOAMI}` }).toArray();
     if (!result || !result[0] || !result[0].personas) {
         console.error("No persona data found");
         return;
     }
     
-    const personaData = result[0].personas.find(p => p.name ===  `${whoami}` );
+    const personaData = result[0].personas.find(p => p.name ===  `${process.env.WHOAMI}` );
     if (!personaData) {
       console.error(`No persona data found for ${persona}`);
       return;
@@ -151,26 +153,42 @@ const getPersonaData = async (persona) => {
 //getChatLog from Mongo for context
 const getChatLog = async (username, bot) => { 
     const url = process.env.MONGO_URI;
-    const dbName = 'testing';
+    const dbName = 'Prod';
     const collectionName = 'logs';
   
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName);
    
-    // const chatLog = await db.collection(collectionName).find({
-    //     $or: [{username: username}, {bot: bot}]
-    // }).sort({_id: -1}).limit(5).toArray();
-
     const chatLog = await db.collection(collectionName).find(
         (username && { username: username }) || (bot && { bot: bot }) || {}
       ).sort({ _id: -1 }).limit(5).toArray();
 
-//    console.log(chatLog);
+//A   console.log(chatLog);
 
     client.close();
     
     return chatLog; 
 };
+
+//const getChatLog = async (username, bot) => {
+//    const url = process.env.MONGO_URI;
+//    const dbName = process.env.MONGO_DB_NAME;
+    // const dbName = process.env.MONGO_URI.substr(process.env.MONGO_URI.lastIndexOf("/") + 1);  
+    // const collectionName = process.env.MONGO_COLLECTION_LOGS_NAME;
+    
+  
+    // const client = await MongoClient.connect(url, { useNewUrlParser: true });
+    // const db = client.db(dbName);
+    
+    // const chatLog = await db.collection(collectionName).find(
+    //     (username && { username: username }) || (bot && { bot: bot }) || {}
+    //   ).sort({ _id: -1 }).limit(5).toArray();
+    //  console.log(chatLog);
+    
+    // client.close();
+    
+    // return chatLog; 
+    // };
 
 // Export the Log, UserInfo, PersonData, getChatLog, and Link models
 module.exports = { Log, UserInfo, Link, Cost, getPersonaData, getChatLog };

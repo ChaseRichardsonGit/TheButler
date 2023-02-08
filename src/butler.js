@@ -14,7 +14,7 @@ const Discord = require('discord.js');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 // Define Mongo and load the database
-const { UserInfo, Link, Log } = require('./mongo.js'); 
+const { UserInfo, Link, Cost, Log } = require('./mongo.js'); 
 
 
 // Define Intents and Partials for Discord
