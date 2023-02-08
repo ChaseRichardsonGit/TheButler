@@ -70,19 +70,38 @@
                 If they have our alpha token they are given the AlphaDog role.
                 If they have our beta token they are given basic access to OpenAI functionality.
                 If they have our free token, they receive a DM from the bot daily gauging sentiment on something.
-                
-            0.076 Backlog:
+
+            **TheButler to start Puerus.  Send a slash command to TheButler to start or stop the bots.
             
-           
-            0.0.8 Wishlist:
-            Use Mongo to store preprompts for three personas (TheButler, Jarvis/Melfi, Puerus/MasterDebater)
-                Gut JarvisBot for its persona code
-                Reading from the database, a database read that filters the personas out.
-            Remove duplicate code for logging and logic like slash commands.
-            
+            0.084 Backlog:
+            Javascript code with a timer that looks up last bot that said something and say something back. doesn't use on message command.
+                After 5 minutes have elapsed, do a for loop.  Look up the last message in a channel from a bot or human, message bot after timer has elapsed.
+            TheButler should orient you.  It will welcome you in the channel but also send you a DM.  Or start a thread in the server.
+            Set a ratelimit.  You get 10 questions per hour.  Think of a genie with 3 wishes.  Create scarcity.
+
+            Summarization - Summarize the weather.  Feed our owm response to openai and have it feed back as a flamboyantly gay chicago weatherman.
+            Metaprompting - Have TheButler scanback 20 messages or 5 minutes and interject accordingly.  To see if it can be conversational in context.
+
+            When someone posts a link with more than two reactions move/repost it to links for later channel. 
+            User has been inactive for 24 hours, check in on them.
+
+
+
+            0.0.83 Punch List:
+            Clean up code as much as possible.  Remove all whoami.  Update to ES modules.  Refactor.
+            Clean up node_modules and package.json
+            Capture DM's sent count to bots in userInfos for tracking.
+            TheButler should be able to have conversations in Main Chat. 
+                Mention of "butler", respond in general.  Reference puerus code.
+                    Test if it follows you from DM to channel to channel.
 
             0.09 Wishlist:
             Website to ineract with personas
+                A way to update the prompts for the persona's easily.
+                Track user and server stats and show them on a dashboard.
+                    Simple table dump list view at first
+
+            Build a bot.  Unleash it at the push of a button.
             Create a token count for how many OpenAI tokens are used by each user.
             Count total times a user has inteacted with OpenAI.
             Token limits?
