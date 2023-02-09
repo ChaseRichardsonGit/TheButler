@@ -1,6 +1,6 @@
 {
   "name": "TheButler",
-  "version": "0.1.0",
+  "version": "0.0.81",
   "main": "butler.js",
   "scripts": {
     "dev": "nodemon butler.js",

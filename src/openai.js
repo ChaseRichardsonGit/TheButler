@@ -13,16 +13,16 @@ const openai = new OpenAIApi(configuration);
 
 module.exports = { 
     callopenai: async function(message) {
-        console.log(`FromModule: openai-upper`);
-        console.log(`message: ${message}`);
-        console.log(`message.author: ${message.author}`);
-        console.log(`message.author.username: ${message.author.username}`);
-        console.log(`message.content: ${message.content}\n`);
+        // console.log(`FromModule: openai-upper`);
+        // console.log(`message: ${message}`);
+        // console.log(`message.author: ${message.author}`);
+        // console.log(`message.author.username: ${message.author.username}`);
+        // console.log(`message.content: ${message.content}\n`);
         
         // Get previous messages from mongo
         let previousMessages = await getChatLog(message.author.username, process.env.WHOAMI).then(chatLog => { 
             let previousMessages = "";
-            for (let i = chatLog.length - 2; i >= chatLog.length - 5; i--) { 
+            for (let i = chatLog.length - 2; i >= chatLog.length - 10; i--) { 
                 if (i < 0) {
                     break;
                 }
@@ -61,7 +61,7 @@ module.exports = {
             if (userInfo) {
                 userInfo.cost_total += costTrimmed;
                 userInfo.save().then(() => {
-                    console.log(`UserInfo updated for user ${message.author.username} with cost_total: ${userInfo.cost_total}\n`);
+ //                   console.log(`UserInfo updated for user ${message.author.username} with cost_total: ${userInfo.cost_total}\n`);
                 }).catch(err => {
                     console.error(err);
                 });
@@ -81,7 +81,7 @@ module.exports = {
                     if (error) {
                         console.error("Error saving cost record: ", error);
                     } else {
-                        console.log("Cost record saved successfully.");
+                        //console.log("Cost record saved successfully.");
                     }
                 });
             }
