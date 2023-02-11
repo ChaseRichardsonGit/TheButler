@@ -37,7 +37,7 @@ mongoose.set('strictQuery', true);
 const UserInfo = mongoose.model("UserInfo", userInfoSchema);
 
 const messageSchema = new mongoose.Schema({
-    bot: {
+    createdBy: {
         type: String,
         required: true
     }, 
@@ -49,9 +49,13 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    username: {
+    sender: {
         type: String,
         required: true
+    },
+    receiver: {
+      type: String,
+      required: true
     },
     message: {
         type: String,
@@ -157,19 +161,36 @@ const getPersonaData = async (persona) => {
 };
 
 //getChatLog from Mongo for context
-const getChatLog = async (username, bot) => { 
+const getChatLog = async (sender, receiver) => { 
   const url = process.env.MONGO_URI;
   const dbName = process.env.MONGO_DB_NAME;
   const collectionName = process.env.MONGO_COLLECTION_LOGS_NAME;
-
   const client = await MongoClient.connect(url, { useNewUrlParser: true });
   const db = client.db(dbName);
- 
   const chatLog = await db.collection(collectionName).find(
-      { $or: [ (username && { username: username }), (bot && { bot: bot }) ] }
+      // { 
+      //   $and: [
+      //     { $or: [ (sender && { sender: sender }), (receiver && { sender: receiver }) ] },
+      //     { channel: 'directMessage' }
+      //   ] 
+      //  }
+      // { 
+      //   $and: [
+      //     { $or: [ (sender && { sender: sender }), (receiver && { receiver: receiver }) ] },
+      //     { $or: [ (receiver && { sender: sender }), (sender && { receiver: receiver }) ] },
+      //     // { $and: [ (sender && { sender: receiver }), (receiver && { receiver: sender }) ] },
+      //     { channel: 'directMessage' }
+      //     ] 
+      //  }
+      {
+        $or: [
+          { $and: [{sender: receiver},{receiver: sender}]},
+          { $and: [{sender: sender},{receiver: receiver}]},
+        ]
+      }
     ).sort({ _id: -1 }).limit(10).toArray();
-//  console.log(chatLog);
   client.close();
+  console.log("sender: " + sender + " receiver: " + receiver);
   return chatLog; 
 };
 

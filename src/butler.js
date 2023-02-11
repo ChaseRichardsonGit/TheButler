@@ -5,13 +5,14 @@ require('dotenv').config();
 const openai = require('./openai.js');
 const clearchat = require('./clearchat.js');
 const weather = require('./weather.js');
+const response = require('./openai.js');
 
 // Load the Discord 
 const Discord = require('discord.js');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 // Define Mongo and load the database
-const { UserInfo, Link, Cost, Log } = require('./mongo.js'); 
+const { UserInfo, Link, Cost, Log, getChatLog } = require('./mongo.js'); 
 
 
 // Define Intents and Partials for Discord
@@ -42,7 +43,7 @@ client.on('messageCreate', async function(message){
       userInfo = new UserInfo({
           server: message.guild.name,
           userId: message.author.id,
-          username: message.author.username,
+          sender: message.author.username,
           messagesSent: 1
       });
     } else {
@@ -59,7 +60,7 @@ client.on('messageCreate', async function(message){
       const link = new Link({
         server: message.guild.name,
         channel: message.channel.id,
-        username: message.author.username,
+        sender: message.author.username,
         link: message.content,
         time: message.createdAt.toString()
       });
@@ -73,10 +74,11 @@ client.on('messageCreate', async function(message){
 
 // Log the message to MongoDB    
     const log = new Log({ 
-        bot: process.env.WHOAMI,
+        createdBy: process.env.WHOAMI,
         server: message.guild.name,
         channel: message.channel.name,
-        username: message.author.username,
+        sender: message.author.username,
+        receiver: "all",
         message: message.content,
         time: new Date().toString()
       });
@@ -88,13 +90,69 @@ client.on('messageCreate', async function(message){
     }
 });
 
+// Listener for your name only console logs for right now. 
+client.on('messageCreate', async function(message){
+  if(message.channel.type !== Discord.ChannelType.DM) {
+  if(message.author.bot) return; {
+      if(message.content.includes(process.env.WHOAMI)) {
+        let response = await openai.callopenai(message);
+        openai.callopenai(message);
+        message.channel.send(response);
+}}
+}});
+
+
 // Listener for Direct Message OpenAI Dialogue
 client.on('messageCreate', async function(message){
   if(message.channel.type === Discord.ChannelType.DM) {
   if(message.author.bot) return; 
-     openai.callopenai(message);
+  try {
+    const log = new Log({
+      createdBy: process.env.WHOAMI,
+      server: "-",
+      channel: "directMessage",
+      sender: message.author.username,
+      receiver: process.env.WHOAMI,
+      message: message.content,
+      time: new Date().toString()
+    });
+    log.save().then(() => {
+    }).catch(err => {
+      console.error(err);
+    });
+    
+    let response = await openai.callopenai(message);
+    const whoami = process.env.WHOAMI;
+    const whoamiLower = whoami.toLowerCase();
+    const regex = new RegExp(`^${whoamiLower}: (.*)`, 'g');
+    const match = response.match(regex);
+    if (match) {
+      const parsedData = match[1];
+      console.log(parsedData);
+    } else {
+      console.log("No match found");
+    }
+    message.author.send(response);
+
+    const log2 = new Log({
+      createdBy: process.env.WHOAMI,
+      server: "-",
+      channel: "directMessage",
+      sender: process.env.WHOAMI,
+      receiver: message.author.username,
+      message: response,
+      time: new Date().toString()
+    });
+    log2.save().then(() => {
+    }).catch(err => {
+      console.error(err);
+    });
+  } catch (err) {
+    console.error(err);
   }
+} 
 });
+
 
 // Listener to Log Direct Messages UserInfo to MongoDB
 client.on('messageCreate', async function(message){
@@ -104,7 +162,7 @@ client.on('messageCreate', async function(message){
   userInfo = new UserInfo({
   server: "-",
   userId: message.author.id,
-  username: message.author.username,
+  sender: message.author.username,
   messagesSent: 1,
   time: new Date()
   });
@@ -117,49 +175,6 @@ client.on('messageCreate', async function(message){
   console.error(err);
   });
   }
-});
-
-// Listener to Log Direct Messages
-client.on('messageCreate', async function(message){
-  if(message.channel.type === Discord.ChannelType.DM) {
-    if(message.author.bot) return;
-      const log = new Log({
-      bot: process.env.WHOAMI,
-      server: "-",
-      channel: "directMessage",
-      username: message.author.username,
-      message: message.content,
-      time: new Date().toString()
-    });
-  
-    log.save().then(() => {
-//      console.log(`Message logged to MongoDB: ${message.author.username}: ${message.content}\n`);
-    }).catch(err => {
-      console.error(err);
-    });
-  }
-});
-
-
-// Listener to Log Bot Direct Message Responses
-client.on('messageCreate', async function(message){
-  if(message.channel.type === Discord.ChannelType.DM) {
-    if(message.author.bot){
-    const log = new Log({
-      bot: process.env.WHOAMI,
-      server: "-",
-      channel: "directMessage",
-      username: message.author.username,
-      message: message.content,
-      time: new Date().toString()
-    });
-  
-    log.save().then(() => {
-//      console.log("Direct Message logged to MongoDB");
-    }).catch(err => {
-      console.error(err);
-    });
-  }}
 });
 
 // Listner for Slash Commands
@@ -180,12 +195,12 @@ client.on("messageCreate", async function(message){
         const zip = message.content.split(' ')[1];
         if(!zip) return message.channel.send("Please provide a zip code after the command")
             weather.getWeather(zip, message, OWMapiKey);
-    }}
-});
+    }
+}});
 
-console.log(`${process.env.WHOAMI} is online!\n`);
+console.log(`${process.env.WHOAMI} is online as of ${Date()}!\n`);
 
-// Checks every user on the server for their last message and DM's them if it's been > 120 minutes since their last Butler DM
+// Checks every user on the server for their last message and DM's them if it's been > 360 minutes since their last Butler DM
 setInterval(async function() {
   try {
     let users = await UserInfo.find({});
@@ -195,18 +210,18 @@ setInterval(async function() {
       let lastMessage = new Date(user.time);
       let timeDiff = currTime - lastMessage;
       let minutesDiff = timeDiff / 60000;
-      if(minutesDiff > 360 ) {
+      if(minutesDiff > 1080 ) {
         let userDM = client.users.cache.get(user.userId);
         if (userDM && !userDM.bot) {
           userDM.send("It's been a while since you last sent a message, I hope everything is going well! Is there anything you would like to talk about?");
-          console.log(`Sent message to ${user.username} after ${minutesDiff} minutes\n`);
-          console.log(users[i].time);
+          console.log(`Sent message to ${user.sender} after ${minutesDiff} minutes at ${Date()}\n`);
+//          console.log(users[i].time);
         }
       }
     }
   } catch (error) {
     console.error(error);
   }
-}, 600000); 
-module.exports = client;
+}, 300000); 
 
+module.exports = client;
