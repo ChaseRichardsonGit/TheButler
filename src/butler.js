@@ -12,7 +12,7 @@ const Discord = require('discord.js');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 // Define Mongo and load the database
-const { UserInfo, Link, Cost, Log, getChatLog } = require('./mongo.js'); 
+const { UserInfo, Link, Cost, Log } = require('./mongo.js'); 
 
 
 // Define Intents and Partials for Discord
@@ -93,13 +93,13 @@ client.on('messageCreate', async function(message){
 // Listener for your name only console logs for right now. 
 client.on('messageCreate', async function(message){
   if(message.channel.type !== Discord.ChannelType.DM) {
-  if(message.author.bot) return; {
+//  if(message.author.bot) return; {
       if(message.content.includes(process.env.WHOAMI)) {
         let response = await openai.callopenai(message);
         openai.callopenai(message);
         message.channel.send(response);
 }}
-}});
+});
 
 
 // Listener for Direct Message OpenAI Dialogue
@@ -223,5 +223,23 @@ setInterval(async function() {
     console.error(error);
   }
 }, 300000); 
+
+
+// Timer to check for inactivity in private channel
+setInterval(async function() {
+  try {
+  const privateChannel = client.channels.cache.find(channel => channel.name === 'private');
+  const messages = await privateChannel.messages.fetch();
+  const lastMessage = messages.last();
+  const timeDiff = new Date() - lastMessage.createdAt;
+  const minutesDiff = timeDiff / 60000;
+  if(minutesDiff > 1 ) {
+  const jarvisMessage = "jarvis how are you today?";
+  privateChannel.send(jarvisMessage);
+  }
+  } catch (error) {
+  console.error(error);
+  }
+  }, 30000);
 
 module.exports = client;

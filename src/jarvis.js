@@ -1,27 +1,28 @@
-// Load the environment variables
+// Load the environment variables 
 require('dotenv').config(); 
 
 // Load the external functions
 const openai = require('./openai.js');
-
-// Get your persona from your environment
-let whoami = process.env.WHOAMI;
+const clearchat = require('./clearchat.js');
+const weather = require('./weather.js');
+const response = require('./openai.js');
 
 // Load the Discord 
 const Discord = require('discord.js');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 // Define Mongo and load the database
-const { UserInfo, Link, Log } = require('./mongo.js'); 
+const { UserInfo, Log } = require('./mongo.js'); 
+
 
 // Define Intents and Partials for Discord
 const client = new Client({ 
 	intents: [ 
-	GatewayIntentBits.Guilds,
-	GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.DirectMessages,
-	GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessageReactions,
 	],
   partials: [
@@ -33,67 +34,95 @@ const client = new Client({
     ]
 }); 
 
-
-
-// Listener for General only console logs for right now. 
+// Listener for your name only console logs for right now. 
 client.on('messageCreate', async function(message){
-    if(message.channel.type !== Discord.ChannelType.DM) {
-    if(message.author.bot) return; {
-    if(message.content.includes('!puerus'));
-        console.log('Message received from ' + message.author.username + ': ' + message.content);
-    }}
-});
+  if(message.channel.type !== Discord.ChannelType.DM) {
+  if(message.author.bot) return; {
+      if(message.content.includes(process.env.WHOAMI)) {
+        let response = await openai.callopenai(message);
+        openai.callopenai(message);
+        message.channel.send(response);
+}}
+}});
+
 
 // Listener for Direct Message OpenAI Dialogue
 client.on('messageCreate', async function(message){
-    if(message.channel.type === Discord.ChannelType.DM) {
-    if(message.author.bot) return; 
-       openai.callopenai(message);
-    }
-});
-
-// Listener to Log Direct Messages
-client.on('messageCreate', async function(message){
-    if(message.channel.type === Discord.ChannelType.DM) {
-      if(message.author.bot) return;
-        const log = new Log({
-        bot: whoami,
-        server: "-",
-        channel: "directMessage",
-        username: message.author.username,
-        message: message.content,
-        time: new Date().toString()
-      });
-    
-      log.save().then(() => {
-        console.log(`Message logged to MongoDB: ${message.author.username}: ${message.content}\n`);
-      }).catch(err => {
-        console.error(err);
-      });
-    }
-});
-
-// Listener to Log Bot Direct Message Responses
-client.on('messageCreate', async function(message){
-    if(message.channel.type === Discord.ChannelType.DM) {
-    if(message.author.bot) {
+  if(message.channel.type === Discord.ChannelType.DM) {
+  if(message.author.bot) return; 
+  try {
     const log = new Log({
-        bot: whoami,
-        server: "-",
-        channel: "directMessage",
-        username: message.author.username,
-        message: message.content,
-        time: new Date().toString(),
+      createdBy: process.env.WHOAMI,
+      server: "-",
+      channel: "directMessage",
+      sender: message.author.username,
+      receiver: process.env.WHOAMI,
+      message: message.content,
+      time: new Date().toString()
+    });
+    log.save().then(() => {
+    }).catch(err => {
+      console.error(err);
     });
     
-    log.save().then(() => {
-        console.log(`Message logged to MongoDB: ${message.author.username}: ${message.content}\n`);
+    let response = await openai.callopenai(message);
+    const whoami = process.env.WHOAMI;
+    const whoamiLower = whoami.toLowerCase();
+    const regex = new RegExp(`^${whoamiLower}: (.*)`, 'g');
+    const match = response.match(regex);
+    if (match) {
+      const parsedData = match[1];
+      console.log(parsedData);
+    } else {
+      console.log("No match found");
+    }
+    message.author.send(response);
+
+    const log2 = new Log({
+      createdBy: process.env.WHOAMI,
+      server: "-",
+      channel: "directMessage",
+      sender: process.env.WHOAMI,
+      receiver: message.author.username,
+      message: response,
+      time: new Date().toString()
+    });
+    log2.save().then(() => {
     }).catch(err => {
-        console.error(err);
-    })
-    }}
+      console.error(err);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+} 
 });
 
-console.log(`${whoami} is online!\n`);
+
+// Listener to Log Direct Messages UserInfo to MongoDB
+client.on('messageCreate', async function(message){
+  if(message.channel.type === Discord.ChannelType.DM) {
+  let userInfo = await UserInfo.findOne({ userId: message.author.id });
+  if(!userInfo) {
+  userInfo = new UserInfo({
+  server: "-",
+  userId: message.author.id,
+  sender: message.author.username,
+  messagesSent: 1,
+  time: new Date()
+  });
+  } else {
+  userInfo.time = new Date();
+  }
+  userInfo.save().then(() => {
+//  console.log(`UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
+  }).catch(err => {
+  console.error(err);
+  });
+  }
+});
+
+
+
+console.log(`${process.env.WHOAMI} is online as of ${Date()}!\n`);
 
 module.exports = client;

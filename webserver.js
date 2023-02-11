@@ -6,15 +6,15 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 
-// Connect to your MongoDB database
-//mongoose.connect(process.env.MONGOURI, { useNewUrlParser: true });
+// // Connect to your MongoDB database
+// //mongoose.connect(process.env.MONGOURI, { useNewUrlParser: true });
 
-// Define a schema and model for your MongoDB data
-const mySchema = new mongoose.Schema({
-  // Define your schema fields here
-});
+// // Define a schema and model for your MongoDB data
+// const mySchema = new mongoose.Schema({
+//   // Define your schema fields here
+// });
 
-const MyModel = mongoose.model('MyModel', mySchema);
+// const MyModel = mongoose.model('MyModel', mySchema);
 
 // Set up your Express.js routes
 app.get('/', (req, res) => {
