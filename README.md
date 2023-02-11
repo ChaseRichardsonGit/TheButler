@@ -85,7 +85,10 @@
             When someone posts a link with more than two reactions move/repost it to links for later channel. 
             User has been inactive for 24 hours, check in on them.
 
-
+            2.11.23 Task List
+            fix bugs like: no match found, undefined, regex, timer, channel chat, etc.
+            Isolate the two parties in channel message invoking a bot by saying its name.  And having a discussion between the two of you.
+                
 
             0.0.83 Punch List:
             Clean up code as much as possible.  Remove all whoami.  Update to ES modules.  Refactor.
