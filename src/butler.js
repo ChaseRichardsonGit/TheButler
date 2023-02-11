@@ -233,8 +233,10 @@ setInterval(async function() {
   const lastMessage = messages.last();
   const timeDiff = new Date() - lastMessage.createdAt;
   const minutesDiff = timeDiff / 60000;
+  
+  
   if(minutesDiff > 1 ) {
-  const jarvisMessage = "jarvis how are you today?";
+  const jarvisMessage = "jervis how are you today?";
   privateChannel.send(jarvisMessage);
   }
   } catch (error) {

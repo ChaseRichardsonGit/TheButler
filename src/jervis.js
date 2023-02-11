@@ -37,13 +37,13 @@ const client = new Client({
 // Listener for your name only console logs for right now. 
 client.on('messageCreate', async function(message){
   if(message.channel.type !== Discord.ChannelType.DM) {
-  if(message.author.bot) return; {
+  // if(message.author.bot) return; {
       if(message.content.includes(process.env.WHOAMI)) {
         let response = await openai.callopenai(message);
         openai.callopenai(message);
         message.channel.send(response);
 }}
-}});
+});
 
 
 // Listener for Direct Message OpenAI Dialogue
