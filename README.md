@@ -85,10 +85,33 @@
             When someone posts a link with more than two reactions move/repost it to links for later channel. 
             User has been inactive for 24 hours, check in on them.
 
-            2.11.23 Task List
-            fix bugs like: no match found, undefined, regex, timer, channel chat, etc.
-            Isolate the two parties in channel message invoking a bot by saying its name.  And having a discussion between the two of you.
-                
+            2.12.23 Work List:
+            Backend:
+            Starting it with a parameter.
+            Get regex parsing working.  Even if triplicated.  Parse it going into the DB and not on the way out.
+            Clean up node-modules and package.json    
+            Add feature for timer to be smarter.  It should not fire if the last message was from any bot.  
+                Extend the timer to private channel.
+                Botpacalypse - Start for 5 minutes.
+            Listening for their name in all channels.
+
+            Frontend:
+            Wire in openai.
+                Comment out the request side to stop the error and console log this is where the bot should respond.
+                See if we can use the openai discord function we built to get the response.
+            Style Changes:
+            Clean up colors.
+
+            Structure Changes:
+            Icon in the top left that is Mu.
+            Top right - Pull down for persona selection
+            Middle of page is a picture of persona, when you change the persona the picture changes and theme.
+            Input field is at the bottom center
+            Conversation history above
+            Bar on left side for chat history and username (Put name somewhere to show it works)
+                If you provide matching discord name your conversation history pops up (nice name)
+
+
 
             0.0.83 Punch List:
             Clean up code as much as possible.  Remove all whoami.  Update to ES modules.  Refactor.
