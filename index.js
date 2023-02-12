@@ -11,13 +11,7 @@ const { connect, Log, UserInfo, Link } = require("./src/mongo.js");
 const openai = require("./src/openai.js");
 
 // Start Webserver
-// const webserver = require('./webserver');
-
-// const PORT = process.env.PORT || 3000;
-
-// webserver.listen(PORT, () => {
-//   console.log(`Server started on port ${PORT}`);
-// });
+const webserver = require('./webserver');
 
 // Login to Discord
 client.login(process.env[`${process.env.WHOAMI}_TOKEN`]);

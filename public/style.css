@@ -1,0 +1,42 @@
+/* Set the background color and text color for the entire page */
+body {
+	background-color: #242424;
+	color: #F5F5F5;
+}
+
+/* Style the chat window */
+#chat-window {
+	background-color: #2C2C2C;
+	height: 300px;
+	overflow-y: scroll;
+}
+
+/* Style the chat messages */
+#chat-window p {
+	margin-bottom: 0;
+}
+
+/* Style the message form */
+#message-form {
+	display: flex;
+}
+
+#message-input {
+	background-color: #2C2C2C;
+	border-color: #4D4D4D;
+	color: #F5F5F5;
+}
+
+#message-input::placeholder {
+	color: #B3B3B3;
+}
+
+button[type="submit"] {
+	background-color: #1E90FF;
+	border-color: #1E90FF;
+}
+
+button[type="submit"]:hover {
+	background-color: #2E8B57;
+	border-color: #2E8B57;
+}

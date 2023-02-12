@@ -93,13 +93,13 @@ client.on('messageCreate', async function(message){
 // Listener for your name only console logs for right now. 
 client.on('messageCreate', async function(message){
   if(message.channel.type !== Discord.ChannelType.DM) {
-//  if(message.author.bot) return; {
+  if(message.author.bot) return; {
       if(message.content.includes(process.env.WHOAMI)) {
         let response = await openai.callopenai(message);
         openai.callopenai(message);
         message.channel.send(response);
 }}
-});
+}});
 
 
 // Listener for Direct Message OpenAI Dialogue
@@ -123,16 +123,22 @@ client.on('messageCreate', async function(message){
     
     let response = await openai.callopenai(message);
     const whoami = process.env.WHOAMI;
+//    console.log(whoami);
     const whoamiLower = whoami.toLowerCase();
-    const regex = new RegExp(`^${whoamiLower}: (.*)`, 'g');
+//    console.log(whoamiLower);
+    const regex = new RegExp(`^${whoamiLower}: (.*)`);
+//    console.log(regex);
     const match = response.match(regex);
+//    console.log(match);
     if (match) {
       const parsedData = match[1];
-      console.log(parsedData);
+//      console.log(parsedData);
+      message.author.send(parsedData);
     } else {
+      message.author.send(response);
       console.log("No match found");
     }
-    message.author.send(response);
+
 
     const log2 = new Log({
       createdBy: process.env.WHOAMI,
@@ -200,29 +206,29 @@ client.on("messageCreate", async function(message){
 
 console.log(`${process.env.WHOAMI} is online as of ${Date()}!\n`);
 
-// Checks every user on the server for their last message and DM's them if it's been > 360 minutes since their last Butler DM
-setInterval(async function() {
-  try {
-    let users = await UserInfo.find({});
-    let currTime = new Date();
-    for(let i = 0; i < users.length; i++) {
-      let user = users[i];
-      let lastMessage = new Date(user.time);
-      let timeDiff = currTime - lastMessage;
-      let minutesDiff = timeDiff / 60000;
-      if(minutesDiff > 1080 ) {
-        let userDM = client.users.cache.get(user.userId);
-        if (userDM && !userDM.bot) {
-          userDM.send("It's been a while since you last sent a message, I hope everything is going well! Is there anything you would like to talk about?");
-          console.log(`Sent message to ${user.sender} after ${minutesDiff} minutes at ${Date()}\n`);
-//          console.log(users[i].time);
-        }
-      }
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}, 300000); 
+// // Checks every user on the server for their last message and DM's them if it's been > 360 minutes since their last Butler DM
+// setInterval(async function() {
+//   try {
+//     let users = await UserInfo.find({});
+//     let currTime = new Date();
+//     for(let i = 0; i < users.length; i++) {
+//       let user = users[i];
+//       let lastMessage = new Date(user.time);
+//       let timeDiff = currTime - lastMessage;
+//       let minutesDiff = timeDiff / 60000;
+//       if(minutesDiff > 1080 ) {
+//         let userDM = client.users.cache.get(user.userId);
+//         if (userDM && !userDM.bot) {
+//           userDM.send("It's been a while since you last sent a message, I hope everything is going well! Is there anything you would like to talk about?");
+//           console.log(`Sent message to ${user.sender} after ${minutesDiff} minutes at ${Date()}\n`);
+// //          console.log(users[i].time);
+//         }
+//       }
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }, 300000); 
 
 
 // Timer to check for inactivity in private channel

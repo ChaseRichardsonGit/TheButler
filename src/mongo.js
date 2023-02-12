@@ -168,20 +168,6 @@ const getChatLog = async (sender, receiver) => {
   const client = await MongoClient.connect(url, { useNewUrlParser: true });
   const db = client.db(dbName);
   const chatLog = await db.collection(collectionName).find(
-      // { 
-      //   $and: [
-      //     { $or: [ (sender && { sender: sender }), (receiver && { sender: receiver }) ] },
-      //     { channel: 'directMessage' }
-      //   ] 
-      //  }
-      // { 
-      //   $and: [
-      //     { $or: [ (sender && { sender: sender }), (receiver && { receiver: receiver }) ] },
-      //     { $or: [ (receiver && { sender: sender }), (sender && { receiver: receiver }) ] },
-      //     // { $and: [ (sender && { sender: receiver }), (receiver && { receiver: sender }) ] },
-      //     { channel: 'directMessage' }
-      //     ] 
-      //  }
       {
         $or: [
           { $and: [{sender: receiver},{receiver: sender}]},

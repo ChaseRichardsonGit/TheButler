@@ -1,46 +1,21 @@
-
-// Start config
-require('dotenv').config(); 
 const express = require('express');
 const app = express();
-const path = require('path');
-const mongoose = require('mongoose');
+const port = process.env.PORT || 3000;
 
-// // Connect to your MongoDB database
-// //mongoose.connect(process.env.MONGOURI, { useNewUrlParser: true });
+app.use(express.static('public'));
 
-// // Define a schema and model for your MongoDB data
-// const mySchema = new mongoose.Schema({
-//   // Define your schema fields here
-// });
-
-// const MyModel = mongoose.model('MyModel', mySchema);
-
-// Set up your Express.js routes
 app.get('/', (req, res) => {
-  res.render('index', { title: 'My Website' });
+  res.sendFile(__dirname + '/public/index.html');
 });
 
-app.post('/search', (req, res) => {
-  const searchTerm = req.body.search;
-
-  // Use Mongoose to query your MongoDB database for data based on the search term
-  MyModel.find({ field: searchTerm }, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send('Error searching database');
-    }
-
-    res.render('results', { title: 'Search Results', results });
-  });
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
-// Set up your Express.js middleware
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
+const openai = require('./src/openai');
 
-// Set up your templating engine (EJS in this example)
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-module.exports = app;
+app.get('/api/response', async (req, res) => {
+  const prompt = req.query.prompt;
+  const response = await openai.generateResponse(prompt);
+  res.send(response);
+});
