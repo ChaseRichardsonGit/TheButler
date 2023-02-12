@@ -226,22 +226,22 @@ setInterval(async function() {
 
 
 // Timer to check for inactivity in private channel
-setInterval(async function() {
-  try {
-  const privateChannel = client.channels.cache.find(channel => channel.name === 'private');
-  const messages = await privateChannel.messages.fetch();
-  const lastMessage = messages.last();
-  const timeDiff = new Date() - lastMessage.createdAt;
-  const minutesDiff = timeDiff / 60000;
+// setInterval(async function() {
+//   try {
+//   const privateChannel = client.channels.cache.find(channel => channel.name === 'private');
+//   const messages = await privateChannel.messages.fetch();
+//   const lastMessage = messages.last();
+//   const timeDiff = new Date() - lastMessage.createdAt;
+//   const minutesDiff = timeDiff / 60000;
   
   
-  if(minutesDiff > 1 ) {
-  const jarvisMessage = "jervis how are you today?";
-  privateChannel.send(jarvisMessage);
-  }
-  } catch (error) {
-  console.error(error);
-  }
-  }, 30000);
+//   if(minutesDiff > 1 ) {
+//   const jarvisMessage = "jervis how are you today?";
+//   privateChannel.send(jarvisMessage);
+//   }
+//   } catch (error) {
+//   console.error(error);
+//   }
+//   }, 30000);
 
 module.exports = client;
