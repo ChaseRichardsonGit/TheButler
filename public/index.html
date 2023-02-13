@@ -7,12 +7,29 @@
     <link rel="stylesheet" href="/style.css">
   </head>
   <body>
-    <h1>OpenAI ChatGPT</h1>
-    <div id="chat-window"></div>
-    <div id="input-container">
-      <input type="text" id="user-input">
-      <button id="send-button">Send</button>
+    <div id="app-container">
+      <div id="main-container">
+        <div id="header-frame">
+          <div id="logo-container">
+            <img src="/img/mu.png" alt="Logo" />
+          </div>
+          <div id="username-frame">
+            <div id="username-container">
+              <label for="username-input">Username:</label>
+              <input type="text" id="username-input" placeholder="Enter your username">
+              <button id="username-submit-button">Submit</button>
+            </div>
+          </div>
+        </div>
+        <div id="chat-container">
+          <div id="chat-window"></div>
+          <div id="input-container">
+            <input type="text" id="user-input" placeholder="Type your message here.">
+            <button id="send-button">Send</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <script src="/app.js"></script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>

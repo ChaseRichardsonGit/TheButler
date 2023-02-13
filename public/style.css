@@ -1,42 +1,148 @@
-/* Set the background color and text color for the entire page */
-body {
-	background-color: #242424;
-	color: #F5F5F5;
-}
-
-/* Style the chat window */
-#chat-window {
-	background-color: #2C2C2C;
-	height: 300px;
-	overflow-y: scroll;
-}
-
-/* Style the chat messages */
-#chat-window p {
-	margin-bottom: 0;
-}
-
-/* Style the message form */
-#message-form {
+* {
+	box-sizing: border-box;
+  }
+  
+  body {
+	margin: 0;
+	font-family: sans-serif;
+	background-color: #252525;
+	color: #f2f2f2;
+  }
+  
+  #app-container {
+	max-width: 100%;
+	margin: 0;
+	padding: 0;
 	display: flex;
-}
-
-#message-input {
-	background-color: #2C2C2C;
-	border-color: #4D4D4D;
-	color: #F5F5F5;
-}
-
-#message-input::placeholder {
-	color: #B3B3B3;
-}
-
-button[type="submit"] {
-	background-color: #1E90FF;
-	border-color: #1E90FF;
-}
-
-button[type="submit"]:hover {
-	background-color: #2E8B57;
-	border-color: #2E8B57;
-}
+  }
+  
+  #main-container {
+	display: flex;
+	flex-direction: row;
+	flex: 1;
+	padding-left: 16px;
+  }
+  
+  #header-frame {
+	width: 200px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 16px;
+	background-color: #1d1d1d;
+  }
+  
+  #logo-container {
+	margin-bottom: 16px;
+  }
+  
+  #logo-container img {
+	width: 50px;
+	height: 50px;
+  }
+  
+  #username-frame {
+	width: 100%;
+  }
+  
+  #username-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+  }
+  
+  #username-container label {
+	margin-bottom: 8px;
+  }
+  
+  #username-container input, #username-container button {
+	width: 100%;
+	background-color: #1d1d1d;
+	color: #f2f2f2;
+	border: none;
+	padding: 8px;
+	margin-bottom: 8px;
+  }
+  
+  #username-container input::placeholder {
+	color: #b2b2b2;
+  }
+  
+  #username-container button {
+	background-color: #1d1d1d;
+	color: #f2f2f2;
+	border: none;
+	cursor: pointer;
+  }
+  
+  #chat-container {
+	flex: 1;
+	padding-right: 16px;
+	background-color: #1d1d1d;
+	color: #f2f2f2;
+  }
+  
+  .message {
+	margin-bottom: 8px;
+	padding: 8px;
+	border-radius: 4px;
+	background-color: #404040;
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+  }
+  
+  .user {
+	text-align: right;
+  }
+  
+  .user span {
+	font-weight: bold;
+	margin-right: 8px;
+	color: #9ac0ff;
+  }
+  
+  .bot span {
+	font-weight: bold;
+	margin-right: 8px;
+	color: #ff8a80;
+  }
+  
+  .bot {
+	text-align: left;
+  }
+  
+  #input-container {
+	margin-top: 16px;
+	display: flex;
+	align-items: center;
+  }
+  
+  #input-container input {
+	flex: 1;
+	padding: 8px;
+	border-radius: 4px;
+	border: none;
+	background-color: #404040;
+	color: #f2f2f2;
+  }
+  
+  #input-container input::placeholder {
+	color: #b2b2b2;
+  }
+  
+  #input-container button {
+	margin-left: 8px;
+	padding: 8px;
+	border-radius: 4px;
+	border: none;
+	background-color: #404040;
+	color: #f2f2f2;
+	cursor: pointer;
+  }
+  
+  #input-container button:hover {
+	background-color: #333;
+  }
+  
+  #input-container button:active {
+	background-color: #4d4d4d;
+  }  
