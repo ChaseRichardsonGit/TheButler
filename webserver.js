@@ -1,10 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
-
+const openai = require('openai');
+const callopenai = require('./src/openai.js');
 const app = express();
 const port = process.env.PORT || 3000;
-
 const mongoUrl = 'mongodb+srv://anarche:p4ssw0rd@discordlogs.epfawzd.mongodb.net/testing?retryWrites=true&w=majority';
 const dbName = 'testing';
 
@@ -59,8 +59,8 @@ app.post('/api/save-message', (req, res) => {
 
 app.get('/api/response', async (req, res) => {
   const prompt = req.query.prompt;
-  const response = await openai.generateResponse(prompt);
-  res.send(response);
+  const response = await openai.prompt(prompt);
+  res.send({ response });
 });
 
 app.use(express.static('public', { 'extensions': ['html', 'js', 'css'] }));

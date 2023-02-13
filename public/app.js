@@ -11,7 +11,21 @@ usernameSubmitButton.addEventListener('click', () => {
     usernameInput.value = '';
     usernameInput.disabled = true;
     usernameSubmitButton.disabled = true;
-    console.log('Username set:', username);
+    const usernameContainer = document.getElementById('username-container');
+    usernameContainer.innerHTML = `Hello, ${username}!`;
+  }
+});
+
+usernameInput.addEventListener('keyup', (event) => {
+  if (event.key === 'Enter') {
+    usernameSubmitButton.click();
+  }
+});
+
+userInput.addEventListener('keyup', (event) => {
+  event.preventDefault();
+  if (event.keyCode === 13) {
+    sendButton.click();
   }
 });
 
@@ -21,10 +35,7 @@ sendButton.addEventListener('click', async () => {
     const message = userInput.value;
     console.log('Input value:', message);
     userInput.value = '';
-    addMessage(username, message); // Pass the username variable to addMessage
-    if (typeof openai.generateResponse !== 'function') {
-      throw new Error('The generateResponse function is not defined');
-    }
+    addMessage(username, message);
     const response = await callopenai(message);
     console.log('Bot Response:', response);
     addMessage('bot', response);
@@ -34,12 +45,25 @@ sendButton.addEventListener('click', async () => {
   }
 });
 
+async function callopenai(prompt) {
+  const response = await fetch('/api/response', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ prompt })
+  });
+  const result = await response.json();
+  return result.response;
+}
+
 function addMessage(sender, message) {
   const timestamp = Date.now();
   const div = document.createElement('div');
   div.className = `message ${sender}`;
   div.innerHTML = `<span>${sender}: </span>${message}`;
   chatWindow.appendChild(div);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
 
   // Send message data to server
   $.ajax({
@@ -58,10 +82,3 @@ function addMessage(sender, message) {
     console.error('Error saving message to database:', error);
   });
 }
-
-
-app.post('/api/response', async (req, res) => {
-  const prompt = req.body.prompt;
-  const response = await callopenai(prompt);
-  res.send({ response });
-});

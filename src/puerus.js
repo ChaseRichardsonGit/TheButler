@@ -1,7 +1,13 @@
 // Get your persona from your environment otheriwse assume the butler
 let whoami = process.argv[2];
-if (whoami) { const whoami = process.argv[2];
-} else { const whoami = 'butler'; }
+if (whoami) {   
+    const whoami = process.argv[2];
+//    console.log("args from startup in puerus.js: " + whoami);
+}
+    else {  
+    const whoami = 'butler';  
+//    console.log("No persona passed... starting as" + whoami); 
+}
 
 // Load the environment variables
 require('dotenv').config(); 
@@ -55,6 +61,7 @@ client.on('messageCreate', async function(message){
       userInfo.messagesSent += 1;
     }
       userInfo.save().then(() => {
+//      console.log(`UserInfo updated for user ${message.author.username} with messagesSent: ${userInfo.messagesSent}\n`);
     }).catch(err => {
       console.error(err);
     });
@@ -70,6 +77,7 @@ client.on('messageCreate', async function(message){
       });
   
       link.save().then(() => {
+//        console.log(`Link saved for user ${message.author.username} with link: ${link.link}\n`);
       }).catch(err => {
         console.error(err);
       });
@@ -86,6 +94,7 @@ client.on('messageCreate', async function(message){
         time: new Date().toString()
       });
       log.save().then(() => {
+//        console.log(`Message logged to MongoDB: ${message.author.username}: ${message.content}\n`);
       }).catch(err => {
         console.error(err);
         });
@@ -106,33 +115,37 @@ client.on('messageCreate', async function(message){
 // Listens for DM's, Log the message and starts an OpenAI Dialogue
 client.on('messageCreate', async function(message){
     if(message.channel.type === Discord.ChannelType.DM) {
-        try {
-            const log = new Log({
-                createdBy: whoami,
-                server: "-",
-                channel: "directMessage",
-                sender: message.author.username,
-                receiver: whoami,
-                message: message.content,
-                time: new Date().toString()
-            });
-                log.save().then(() => {
-            }).catch(err => {
-                console.error(err);
-            });
-            
+        if(message.author.bot) return; 
+            try {
+                const log = new Log({
+                    createdBy: whoami,
+                    server: "-",
+                    channel: "directMessage",
+                    sender: message.author.username,
+                    receiver: whoami,
+                    message: message.content,
+                    time: new Date().toString()
+                });
+                    log.save().then(() => {
+                }).catch(err => {
+                    console.error(err);
+                });
+                
     let response = await openai.callopenai(message);
+//    console.log(whoami);
     const whoamiLower = whoami.toLowerCase();
+//    console.log(whoamiLower);
     const regex = new RegExp(`^${whoamiLower}: (.*)`);
+//    console.log(regex);
     const match = response.match(regex);
 //    console.log(match);
     if (match) {
       const parsedData = match[1];
 //      console.log(parsedData);
-        message.author.send(parsedData);
+      message.author.send(parsedData);
     } else {
-        message.author.send(response);
-        console.log("No match found");
+      message.author.send(response);
+      console.log("No match found");
     }
 
 
@@ -156,30 +169,29 @@ client.on('messageCreate', async function(message){
 });
 
 // Listener to Log Direct Messages UserInfo to MongoDB
-// client.on('messageCreate', async function(message){
-//   if(message.channel.type === Discord.ChannelType.DM) {
-//   let userInfo = await UserInfo.findOne({ userId: message.author.id });
-//   if(!userInfo) {
-//   userInfo = new UserInfo({
-//   server: "-",
-//   userId: message.author.id,
-//   sender: message.author.username,
-//   messagesSent: 1,
-//   time: new Date()
-//   });
-//   } else {
-//   userInfo.time = new Date();
-//   }
-//   userInfo.save().then(() => {
-// //  console.log(`UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
-//   }).catch(err => {
-//   console.error(err);
-//   });
-//   }
-// });
+client.on('messageCreate', async function(message){
+  if(message.channel.type === Discord.ChannelType.DM) {
+  let userInfo = await UserInfo.findOne({ userId: message.author.id });
+  if(!userInfo) {
+  userInfo = new UserInfo({
+  server: "-",
+  userId: message.author.id,
+  sender: message.author.username,
+  messagesSent: 1,
+  time: new Date()
+  });
+  } else {
+  userInfo.time = new Date();
+  }
+  userInfo.save().then(() => {
+//  console.log(`UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
+  }).catch(err => {
+  console.error(err);
+  });
+  }
+});
 
 // Listner for Slash Commands
-
 client.on("messageCreate", async function(message){
     if(message.channel.type != Discord.ChannelType.DM){
     if(message.author.bot) return;
@@ -187,9 +199,10 @@ client.on("messageCreate", async function(message){
         console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
         clearchat(message);
     } else
-    if(message.content.startsWith("/BM")) {
-        console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
-        message.author.send(`Hello, I'm TheButler.  How can I help you?`);
+    if(message.content.startsWith("/BP")) {
+        // console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
+        // message.author.send(`Hello, I'm TheButler.  How can I help you?`);
+        console.log("Puerus starting here I hope!");
     } else
     if(message.content.startsWith("/BW")) {
         console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
