@@ -2,7 +2,7 @@ const chatWindow = document.querySelector('#chat-window');
 const userInput = document.querySelector('#user-input');
 const sendButton = document.querySelector('#send-button');
 
-sendButton.addEventListener('click', async () => {
+sendButton.addEventListener('click', async () => { 
   console.log('Button clicked!');
   const message = userInput.value;
   console.log('Input value:', message);
