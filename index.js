@@ -1,17 +1,27 @@
-// Start config
+// Get your persona from your environment
+
+let whoami = process.argv[2];
+if (whoami) { const whoami = process.argv[2];
+} else { const whoami = 'butler'; }
+
+// Load the Environment Variables from .env
 require('dotenv').config(); 
 
-// Import discord.js
-const client = require(`./src/${process.env.WHOAMI}.js`); 
+// Import discord.js to Load Discord Modules and AI Persona
+if (whoami && whoami !== "butler") {
+  let personaToken = whoami + "_TOKEN";
+  let DiscordToken = process.env[personaToken];
+  const client = require(`./src/${whoami}.js`); 
+//  console.log("Starting " + whoami);
+  client.login(DiscordToken);
+} else {
+  const client = require(`./src/butler.js`); 
+//  console.log("Starting the butler");
+  const webserver = require('./webserver');
+}
 
-// Import mongo.js
+// Import mongo.js to Load Database
 const { connect, Log, UserInfo, Link } = require("./src/mongo.js"); 
 
-// Import OpenAI
+// Import openAI to Load OpenAI
 const openai = require("./src/openai.js");
-
-// Start Webserver
-const webserver = require('./webserver');
-
-// Login to Discord
-client.login(process.env[`${process.env.WHOAMI}_TOKEN`]);
