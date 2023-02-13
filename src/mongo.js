@@ -1,3 +1,8 @@
+// Get your persona from your environment otheriwse assume the butler
+let whoami = process.argv[2];
+if (whoami) { const whoami = process.argv[2];
+} else { const whoami = 'butler'; }
+
 const mongoose = require("mongoose"); 
 const { MongoClient } = require("mongodb");
 
@@ -31,9 +36,7 @@ const userInfoSchema = new mongoose.Schema({
   }
     
 });
-
 mongoose.set('strictQuery', true);
-
 const UserInfo = mongoose.model("UserInfo", userInfoSchema);
 
 const messageSchema = new mongoose.Schema({
@@ -66,7 +69,6 @@ const messageSchema = new mongoose.Schema({
         required: true
     }
 });
-
 const Log = mongoose.model("Log", messageSchema);
 
 const linkSchema = new mongoose.Schema({
@@ -91,7 +93,6 @@ const linkSchema = new mongoose.Schema({
     required: true
   }
 });
-
 const Link = mongoose.model("Link", linkSchema);
 
 const costSchema = new mongoose.Schema({
@@ -116,8 +117,7 @@ const costSchema = new mongoose.Schema({
       required: true
     }
 });
-  
-  const Cost = mongoose.model("Cost", costSchema);
+const Cost = mongoose.model("Cost", costSchema);
 
 const connect = () => {
     mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -143,13 +143,13 @@ const getPersonaData = async (persona) => {
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName);
 
-    const result = await db.collection(collectionName).find({ "personas.name": `${process.env.WHOAMI}` }).toArray();
+    const result = await db.collection(collectionName).find({ "personas.name": `${whoami}` }).toArray();
     if (!result || !result[0] || !result[0].personas) {
         console.error("No persona data found");
         return;
     }
     
-    const personaData = result[0].personas.find(p => p.name ===  `${process.env.WHOAMI}` );
+    const personaData = result[0].personas.find(p => p.name ===  `${whoami}` );
     if (!personaData) {
       console.error(`No persona data found for ${persona}`);
       return;

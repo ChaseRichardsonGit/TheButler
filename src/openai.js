@@ -1,3 +1,12 @@
+// Get your persona from your environment otheriwse assume the butler
+let whoami = process.argv[2];
+if (whoami) {   
+    const whoami = process.argv[2];
+}
+    else {  
+    const whoami = 'butler';  
+}
+
 const { Configuration , OpenAIApi } = require('openai');
 
 const calculateCost = require('./calccost.js');
@@ -13,7 +22,7 @@ const openai = new OpenAIApi(configuration);
 
 module.exports = { 
     callopenai: async function(message) {
-        let previousMessages = await getChatLog(message.author.username, process.env.WHOAMI).then(chatLog => { 
+        let previousMessages = await getChatLog(message.author.username, whoami).then(chatLog => { 
             let previousMessages = "";
             for (let i = chatLog.length - 2; i >= chatLog.length - 10; i--) { 
                 if (i < 0) {
@@ -25,7 +34,7 @@ module.exports = {
             return (previousMessages);
         });
        
-        let preprompttext = await getPersonaData(process.env.WHOAMI).then(personaData => { 
+        let preprompttext = await getPersonaData(whoami).then(personaData => { 
             return (personaData.data);   
         });
        
