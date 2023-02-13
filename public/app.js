@@ -25,7 +25,7 @@ sendButton.addEventListener('click', async () => {
     if (typeof openai.generateResponse !== 'function') {
       throw new Error('The generateResponse function is not defined');
     }
-    const response = await openai.generateResponse(message);
+    const response = await callopenai(message);
     console.log('Bot Response:', response);
     addMessage('bot', response);
   } catch (error) {
@@ -35,8 +35,33 @@ sendButton.addEventListener('click', async () => {
 });
 
 function addMessage(sender, message) {
+  const timestamp = Date.now();
   const div = document.createElement('div');
   div.className = `message ${sender}`;
   div.innerHTML = `<span>${sender}: </span>${message}`;
   chatWindow.appendChild(div);
+
+  // Send message data to server
+  $.ajax({
+    url: '/api/save-message',
+    type: 'POST',
+    data: {
+      username,
+      message,
+      timestamp
+    }
+  })
+  .done((response) => {
+    console.log('Message saved to database:', response);
+  })
+  .fail((error) => {
+    console.error('Error saving message to database:', error);
+  });
 }
+
+
+app.post('/api/response', async (req, res) => {
+  const prompt = req.body.prompt;
+  const response = await callopenai(prompt);
+  res.send({ response });
+});

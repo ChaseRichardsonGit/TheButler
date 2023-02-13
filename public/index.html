@@ -3,26 +3,42 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenAI ChatGPT</title>
+    <title>MuGPT</title>
     <link rel="stylesheet" href="/style.css">
   </head>
   <body>
     <div id="app-container">
-      <div id="main-container">
-        <div id="header-frame">
-          <div id="logo-container">
-            <img src="/img/mu.png" alt="Logo" />
+      <div id="header-frame">
+        <div id="logo-container">
+          <img src="/img/mu.png" alt="Logo">
+        </div>
+        <h1>MuGPT</h1>
+        <div id="username-frame">
+          <div id="username-container">
+            <label for="username-input">Username:</label>
+            <input type="text" id="username-input" placeholder="Enter your username">
+            <button id="username-submit-button">Submit</button>
           </div>
-          <div id="username-frame">
-            <div id="username-container">
-              <label for="username-input">Username:</label>
-              <input type="text" id="username-input" placeholder="Enter your username">
-              <button id="username-submit-button">Submit</button>
+        </div>
+      </div>
+      <div id="content-container">
+        <div id="frame-container">
+          <div id="chat-container">
+            <div id="chat-window"></div>
+          </div>
+          <div id="left-frame">
+          </div>
+          <div id="right-frame">
+            <div id="username-frame-right">
+              <div id="username-container-right">
+                <label for="username-input-right">Username:</label>
+                <input type="text" id="username-input-right" placeholder="Enter your username">
+                <button id="username-submit-button-right">Submit</button>
+              </div>
             </div>
           </div>
         </div>
-        <div id="chat-container">
-          <div id="chat-window"></div>
+        <div id="bottom-frame">
           <div id="input-container">
             <input type="text" id="user-input" placeholder="Type your message here.">
             <button id="send-button">Send</button>
@@ -31,5 +47,6 @@
       </div>
     </div>
     <script type="module" src="app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </body>
 </html>

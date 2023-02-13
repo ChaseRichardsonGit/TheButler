@@ -11,6 +11,7 @@
   "dependencies": {
     "app": "^0.1.0",
     "args": "^5.0.3",
+    "body-parser": "^1.20.1",
     "bootstrap": "^5.2.3",
     "discord": "^0.8.2",
     "discord.js": "^14.7.1",
@@ -27,7 +28,9 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "keywords": [],
   "description": ""
