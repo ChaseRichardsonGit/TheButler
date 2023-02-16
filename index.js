@@ -1,5 +1,4 @@
 // Get your persona from your environment
-
 let whoami = process.argv[2];
 if (whoami) { const whoami = process.argv[2];
 } else { const whoami = 'butler'; }
@@ -10,6 +9,8 @@ require('dotenv').config();
 // Import discord.js to Load Discord Modules and AI Persona
 let personaToken = whoami + "_TOKEN";
 let DiscordToken = process.env[personaToken];
+
+
 
 let client;
 if (whoami && whoami !== "butler") {

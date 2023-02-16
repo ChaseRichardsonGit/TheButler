@@ -1,36 +1,19 @@
 {
-  "name": "TheButler",
+  "name": "Butler",
   "version": "0.0.81",
-  "main": "butler.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "nodemon butler.js",
     "prod": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "app": "^0.1.0",
-    "args": "^5.0.3",
     "body-parser": "^1.20.1",
-    "bootstrap": "^5.2.3",
-    "discord": "^0.8.2",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
-    "ejs": "^3.1.8",
     "express": "^4.18.2",
-    "http": "^0.0.1-security",
-    "mongodb": "^4.13.0",
-    "mongodb-legacy": "^4.0.2",
-    "mongoose": "^6.9.0",
-    "openai": "^3.1.0",
-    "path": "^0.12.7",
-    "pip": "^0.0.1",
-    "uuid": "^9.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.20",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "mongoose": "^6.9.1",
+    "openai": "^3.1.0"
   },
   "keywords": [],
   "description": ""
