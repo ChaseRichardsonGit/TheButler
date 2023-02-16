@@ -3,7 +3,11 @@ const userInput = document.querySelector('#user-input');
 const sendButton = document.querySelector('#send-button');
 const usernameInput = document.querySelector('#username-input');
 const usernameSubmitButton = document.querySelector('#username-submit-button');
+
+import { openai } from './webserver.js';
+
 let username = '';
+
 
 usernameSubmitButton.addEventListener('click', () => {
   username = usernameInput.value.trim();
@@ -36,7 +40,17 @@ sendButton.addEventListener('click', async () => {
     console.log('Input value:', message);
     userInput.value = '';
     addMessage(username, message);
-    const response = await callopenai(message);
+    const response = await openai.createCompletion({
+      engine: 'text-davinci-003',
+      prompt: message,
+      max_tokens: 1000,
+      temperature: .7,
+      top_p: 1,
+      n: 1,
+      stream: false,
+      logprobs: null,
+      stop: ""
+    });
     console.log('Bot Response:', response);
     addMessage('bot', response);
   } catch (error) {
@@ -44,18 +58,6 @@ sendButton.addEventListener('click', async () => {
     addMessage('bot', 'Sorry, an error occurred. Please try again.');
   }
 });
-
-async function callopenai(prompt) {
-  const response = await fetch('/api/response', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ prompt })
-  });
-  const result = await response.json();
-  return result.response;
-}
 
 function addMessage(sender, message) {
   const timestamp = Date.now();
@@ -82,3 +84,4 @@ function addMessage(sender, message) {
     console.error('Error saving message to database:', error);
   });
 }
+
