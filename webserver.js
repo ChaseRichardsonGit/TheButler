@@ -90,6 +90,30 @@ app.post('/api/response', async (req, res) => {
   }
 });
 
+app.get('/api/personas', (req, res) => {
+  MongoClient.connect(mongoUrl, { useUnifiedTopology: true }, (err, client) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({ error: 'Error connecting to database' });
+      return;
+    }
+
+    const db = client.db(dbName);
+    const collection = db.collection('personas');
+
+    collection.find().toArray((err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Error getting personas from database' });
+        return;
+      }
+
+      res.send(results);
+      client.close();
+    });
+  });
+});
+
 app.use(express.static('public', { 'extensions': ['html', 'js', 'css'] }));
 
 app.listen(port, () => {
