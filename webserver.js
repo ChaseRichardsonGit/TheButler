@@ -5,8 +5,6 @@ const port = process.env.PORT || 3000;
 const MongoClient = require('mongodb').MongoClient;
 const { Configuration, OpenAIApi } = require("openai");
 
-
-
 // OpenAI API configuration
 const configuration = new Configuration({ 
   organization: process.env.OPENAI_ORG, 
@@ -60,6 +58,7 @@ app.post('/api/save-message', (req, res) => {
         return;
       }
 
+//      console.log(result);
       res.send({ success: true });
       client.close();
     });
@@ -72,7 +71,7 @@ app.post('/api/response', async (req, res) => {
   console.log('Calling OpenAI API with message:', prompt);
   try {
     const response = await openai.createCompletion({
-      engine: 'text-davinci-003',
+      model: 'text-davinci-003',
       prompt: prompt,
       max_tokens: 1000,
       temperature: .7,
@@ -82,7 +81,7 @@ app.post('/api/response', async (req, res) => {
       logprobs: null,
       stop: ""
     });
-    console.log(response); 
+    console.log('OpenAI API Response:', response);
     const result = response.data.choices[0].text.trim();
     res.send({ response: result });
   } catch (error) {
