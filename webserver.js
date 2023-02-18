@@ -16,26 +16,25 @@ const openai = new OpenAIApi(configuration);
 const mongoUrl = process.env.MONGO_URI;
 const dbName = process.env.MONGO_DBNAME;
 
-app.use(bodyParser.urlencoded({ extended: false })); // Parse URL-encoded bodies
-app.use(bodyParser.json()); // Parse JSON bodies
-app.use(express.static('public')); // Serve static files from public folder
+app.use(bodyParser.urlencoded({ extended: false })); 
+app.use(bodyParser.json()); 
+app.use(express.static('public')); 
 
 app.get('/', (req, res) => { 
-  res.sendFile(__dirname + '/public/index.html'); // Serve index.html file
+  res.sendFile(__dirname + '/public/index.html'); 
 }); 
 
 app.post('/api/save-message', (req, res) => {
-  const timestamp = new Date().toLocaleString('en-US', {
-    month: '2-digit',
-    day: '2-digit',
-    year: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-  });
+  const time = new Date().toString();
   const username = req.body.username;
   const message = req.body.message;
+  const createdBy = "butler"
+  const server = "web"
+  const channel = "chat"
+  const sender = req.body.username
+  const receiver = "butler"
+
+
   if (!username || !message) {
     res.status(400).send({ error: 'Username or message not provided' });
     return;
@@ -49,9 +48,9 @@ app.post('/api/save-message', (req, res) => {
     }
 
     const db = client.db(dbName);
-    const collection = db.collection('website');
+    const collection = db.collection('logs');
 
-    collection.insertOne({ timestamp, username, message }, (err, result) => {
+    collection.insertOne({ createdBy, server, channel, sender, receiver, message, time }, (err, result) => {
       if (err) {
         console.error(err);
         res.status(500).send({ error: 'Error saving message to database' });
