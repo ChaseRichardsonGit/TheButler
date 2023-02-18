@@ -16,13 +16,13 @@ const openai = new OpenAIApi(configuration);
 const mongoUrl = process.env.MONGO_URI;
 const dbName = process.env.MONGO_DBNAME;
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false })); // Parse URL-encoded bodies
+app.use(bodyParser.json()); // Parse JSON bodies
+app.use(express.static('public')); // Serve static files from public folder
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
-});
+app.get('/', (req, res) => { 
+  res.sendFile(__dirname + '/public/index.html'); // Serve index.html file
+}); 
 
 app.post('/api/save-message', (req, res) => {
   const timestamp = new Date().toLocaleString('en-US', {
@@ -65,7 +65,7 @@ app.post('/api/save-message', (req, res) => {
   });
 });
 
-app.post('/api/response', async (req, res) => {
+app.post('/api/response', async (req, res) => { 
   console.log('OpenAI API call received: /api/response');
   const prompt = req.body.message;
   console.log('Calling OpenAI API with message:', prompt);
@@ -74,14 +74,14 @@ app.post('/api/response', async (req, res) => {
       model: 'text-davinci-003',
       prompt: prompt,
       max_tokens: 1000,
-      temperature: .7,
+      temperature: .5,
       top_p: 1,
       n: 1,
       stream: false,
       logprobs: null,
       stop: ""
     });
-    console.log('OpenAI API Response:', response);
+    //console.log('OpenAI API Response:', response);
     const result = response.data.choices[0].text.trim();
     res.send({ response: result });
   } catch (error) {
