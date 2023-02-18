@@ -103,13 +103,23 @@
             Clean up colors.
 
             Structure Changes:
-            Icon in the top left that is Mu.
+            <!-- Icon in the top left that is Mu. -->
             Top right - Pull down for persona selection
             Middle of page is a picture of persona, when you change the persona the picture changes and theme.
-            Input field is at the bottom center
+            <!-- Input field is at the bottom center -->
             Conversation history above
             Bar on left side for chat history and username (Put name somewhere to show it works)
                 If you provide matching discord name your conversation history pops up (nice name)
+
+            2/18/23 Idea list:
+            Personas (drop down)
+            Chat History (by username)
+            Rename Bot
+            Lifecycle of conversation (when does it start and stop)
+            "New Conversation" button? / Discord /reset? (group by day?)
+            When you change personas, change the background color and icon for Bot
+            
+            
 
 
 
