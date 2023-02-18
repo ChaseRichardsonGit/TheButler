@@ -28,8 +28,8 @@
 	background-color: #1d1d1d;
   }
   
-  #logo-container img {
-	width: 50px;
+  #logo-container {
+	width: 100px;
 	height: 50px;
   }
   
@@ -110,12 +110,13 @@
 	padding-right: 16px;
   }
   
-  #left-frame {
+  #history-frame {
+	width: 20%;
 	display: none;
   }
   
-  #right-frame {
-	display: none;
+  #history-frame {
+	display: flex;
   }
   
   #bottom-frame {
@@ -210,6 +211,7 @@
   }
   
   #chat-container {
+	width: 80%;
 	display: flex;
 	flex: 1;
 	align-items: center;
@@ -253,4 +255,42 @@
 	width: 80px;
 	margin-top: 0;
   }
+  #left-frame {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+}
+
+#left-frame button {
+    margin-bottom: 8px;
+    background-color: #1d1d1d;
+    color: #f2f2f2;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    width: 100%;
+}
+
+#left-frame button:hover {
+    background-color: #333;
+}
+
+#left-frame button:active {
+    background-color: #4d4d4d;
+}
+select {
+	width: 100%;
+	padding: 12px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	margin-top: 8px;
+	margin-bottom: 16px;
+	background-color: white;
+	color: black;
+  }
   
+  option {
+	font-size: 16px;
+  }

@@ -3,6 +3,7 @@ const userInput = document.querySelector('#user-input');
 const sendButton = document.querySelector('#send-button');
 const usernameInput = document.querySelector('#username-input');
 const usernameSubmitButton = document.querySelector('#username-submit-button');
+
 let username = '';
 
 usernameSubmitButton.addEventListener('click', () => {
@@ -29,35 +30,13 @@ userInput.addEventListener('keyup', (event) => {
   }
 });
 
-sendButton.addEventListener('click', async () => {
-  try {
-    console.log('Button clicked!');
-    const message = userInput.value;
-    console.log('Input value:', message);
-    userInput.value = '';
-    addMessage(username, message);
-    const response = await callopenai(message);
-    console.log('Bot Response:', response);
-    addMessage('bot', response);
-  } catch (error) {
-    console.error(error);
-    addMessage('bot', 'Sorry, an error occurred. Please try again.');
-  }
+sendButton.addEventListener('click', () => {
+  const message = userInput.value;
+  userInput.value = '';
+  addMessage(username, message);
 });
 
-async function callopenai(prompt) {
-  const response = await fetch('/api/response', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ prompt })
-  });
-  const result = await response.json();
-  return result.response;
-}
-
-function addMessage(sender, message) {
+async function addMessage(sender, message) {
   const timestamp = Date.now();
   const div = document.createElement('div');
   div.className = `message ${sender}`;
@@ -81,4 +60,77 @@ function addMessage(sender, message) {
   .fail((error) => {
     console.error('Error saving message to database:', error);
   });
+
+  if (sender === username) {
+    try {
+      const response = await $.ajax({
+        url: '/api/response',
+        type: 'POST',
+        data: { message }
+      });
+      addMessage('bot', response.response);
+    } catch (error) {
+      console.error(error);
+      addMessage('bot', 'Sorry, an error occurred. Please try again.');
+    }
+  }
 }
+
+//const logoImage = document.getElementById('logo-image');
+const dropdown = document.createElement('select');
+dropdown.id = 'persona-dropdown';
+
+$.ajax({
+  url: '/api/personas',
+  type: 'GET',
+  dataType: 'json',
+  success: function(data) {
+    const uniqueNames = new Set();
+    console.log('dropdown:', dropdown);
+    for (const persona of data[0].personas) {
+      const name = persona.name;
+      if (!uniqueNames.has(name)) {
+        uniqueNames.add(name);
+        const option = document.createElement('option');
+        option.value = name;
+        option.text = name;
+        dropdown.appendChild(option);
+        console.log(`Added option with value ${option.value} and text ${option.text} to dropdown`);
+        //console.log('Personas:', data[0].personas)
+        //console.log('Personas:', data[0].personas[0])
+        //console.log('Personas:', data[0].personas[0].name)
+        console.log(uniqueNames.entries());
+      }
+    }
+    console.log('Dropdown:', dropdown);
+  },
+  
+  error: function(error) {
+    console.error('Error getting personas:', error);
+  }
+});
+
+dropdown.addEventListener('change', (event) => {
+  const selectedPersona = event.target.value;
+  console.log(`Selected persona: ${selectedPersona}`);
+});
+
+// // New code for checking for new messages
+// let lastTimestamp = 0;
+// setInterval(() => {
+//   $.ajax({
+//     url: '/api/new-messages',
+//     type: 'POST',
+//     data: { lastTimestamp },
+//     dataType: 'json',
+//     success: function(data) {
+//       for (const message of data) {
+//         addMessage(message.username, message.message);
+//         lastTimestamp = message.timestamp;
+//       }
+//     },
+//     error: function(error) {
+//       console.error('Error checking for new messages:', error);
+//     }
+//   });
+// }, 1000);
