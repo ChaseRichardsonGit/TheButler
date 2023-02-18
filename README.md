@@ -118,6 +118,12 @@
             Lifecycle of conversation (when does it start and stop)
             "New Conversation" button? / Discord /reset? (group by day?)
             When you change personas, change the background color and icon for Bot
+            When you select the persona
+            Top Left Mu
+            To the right of that
+
+            Fix link validation, ignore blank usernames when logging links and messages.
+            Change username to sender in website schema
             
             
 
