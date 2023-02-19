@@ -80,13 +80,54 @@ async function addMessage(sender, message) {
 const dropdown = document.createElement('select');
 dropdown.id = 'persona-dropdown';
 
+//console.log('Dropdown:', dropdown);
+//console.log('Dropdown:', dropdown.id);  
+
+// $.ajax({
+//   url: '/api/personas',
+//   type: 'GET',
+//   dataType: 'json',
+//   success: function(data) {
+//     const uniqueNames = new Set();
+//     console.log('dropdown:', dropdown);
+//     for (const persona of data[0].personas) {
+//       const name = persona.name;
+//       if (!uniqueNames.has(name)) {
+//         uniqueNames.add(name);
+//         const option = document.createElement('option');
+//         option.value = name;
+//         option.text = name;
+//         dropdown.appendChild(option);
+//         //console.log(`Added option with value ${option.value} and text ${option.text} to dropdown`);
+//         //console.log('Personas:', data[0].personas)
+//         //console.log('Personas:', data[0].personas[0])
+//         //console.log('Personas:', data[0].personas[0].name)
+//         //console.log(uniqueNames.entries());
+//       }
+//     }
+//     //console.log('Dropdown:', dropdown);
+//     //console.log('Dropdown:', dropdown.id);
+//     console.log('Dropdown:', dropdown.value); 
+//     //console.log('Dropdown:', dropdown.name);
+//   },
+  
+//   error: function(error) {
+//     console.error('Error getting personas:', error);
+//   }
+// });
+
+dropdown.addEventListener('change', (event) => {
+  const selectedPersona = event.target.value;
+  console.log(`Selected persona: ${selectedPersona}`);
+});
+
 $.ajax({
   url: '/api/personas',
   type: 'GET',
   dataType: 'json',
   success: function(data) {
     const uniqueNames = new Set();
-    console.log('dropdown:', dropdown);
+    const dropdown = document.querySelector('#persona-dropdown');
     for (const persona of data[0].personas) {
       const name = persona.name;
       if (!uniqueNames.has(name)) {
@@ -95,42 +136,10 @@ $.ajax({
         option.value = name;
         option.text = name;
         dropdown.appendChild(option);
-        console.log(`Added option with value ${option.value} and text ${option.text} to dropdown`);
-        //console.log('Personas:', data[0].personas)
-        //console.log('Personas:', data[0].personas[0])
-        //console.log('Personas:', data[0].personas[0].name)
-        console.log(uniqueNames.entries());
       }
     }
-    console.log('Dropdown:', dropdown);
   },
-  
   error: function(error) {
     console.error('Error getting personas:', error);
   }
 });
-
-dropdown.addEventListener('change', (event) => {
-  const selectedPersona = event.target.value;
-  console.log(`Selected persona: ${selectedPersona}`);
-});
-
-// // New code for checking for new messages
-// let lastTimestamp = 0;
-// setInterval(() => {
-//   $.ajax({
-//     url: '/api/new-messages',
-//     type: 'POST',
-//     data: { lastTimestamp },
-//     dataType: 'json',
-//     success: function(data) {
-//       for (const message of data) {
-//         addMessage(message.username, message.message);
-//         lastTimestamp = message.timestamp;
-//       }
-//     },
-//     error: function(error) {
-//       console.error('Error checking for new messages:', error);
-//     }
-//   });
-// }, 1000);
