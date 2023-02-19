@@ -107,7 +107,7 @@ client.on('messageCreate', async function(message){
   if(message.author.bot) return; {
       if(message.content.includes(whoami)) {
         let response = await openai.callopenai(message);
-        openai.callopenai(message);
+        openai.callopenai(message, message.author.username);
         message.channel.send(response);
 }}
 }});

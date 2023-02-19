@@ -32,6 +32,7 @@ userInput.addEventListener('keyup', (event) => {
 });
 
 async function addMessage(sender, message) {
+  //console.log(`Adding message from app.js.addMessage#35 ${sender}: ${message}`);
   const timestamp = Date.now();
   const div = document.createElement('div');
   let senderName = sender;
@@ -58,7 +59,13 @@ async function addMessage(sender, message) {
   chatWindow.appendChild(div);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 
-  // Send message data to server
+  let messageType;
+  if (sender === username) {
+    messageType = 'sent';
+  } else {
+    messageType = 'received';
+  }
+
   $.ajax({
     url: '/api/save-message',
     type: 'POST',
@@ -66,6 +73,7 @@ async function addMessage(sender, message) {
       username,
       message,
       timestamp,
+      messageType,
       persona: selectedPersona || personaDropdown.options[0].value
     }
   })
@@ -81,7 +89,11 @@ async function addMessage(sender, message) {
       const response = await $.ajax({
         url: '/api/response',
         type: 'POST',
-        data: { message }
+        data: { 
+          message,
+          username,
+          persona: selectedPersona || personaDropdown.options[0].value
+        }
       });
       addMessage('bot', response.response);
     } catch (error) {
@@ -102,7 +114,7 @@ dropdown.addEventListener('change', (event) => {
 sendButton.addEventListener('click', () => {
   const message = userInput.value;
   userInput.value = '';
-  addMessage(username, message, selectedPersona); // Pass the selected persona to addMessage
+  addMessage(username, message, selectedPersona); 
 });
 
 $.ajax({
@@ -135,18 +147,18 @@ personaDropdown.addEventListener('change', (event) => {
   selectedPersona = event.target.value;
   const headerFrame = document.getElementById('header-frame');
 
-  $.ajax({
-    url: '/api/preprompt',
-    type: 'GET',
-    data: { persona: selectedPersona },
-    dataType: 'json',
-    success: function(data) {
-      preprompt = data.preprompt;
-    },
-    error: function(error) {
-      console.error('Error getting preprompt data:', error);
-    }
-  });
+  // $.ajax({
+  //   url: '/api/preprompt',
+  //   type: 'GET',
+  //   data: { persona: selectedPersona },
+  //   dataType: 'json',
+  //   success: function(data) {
+  //     preprompt = data.preprompt;
+  //   },
+  //   error: function(error) {
+  //     console.error('Error getting preprompt data:', error);
+  //   }
+  // });
 
   if (selectedPersona === 'puerus') {
     headerFrame.style.backgroundColor = 'yellow';

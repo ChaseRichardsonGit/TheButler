@@ -21,9 +21,9 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration); 
 
 module.exports = { 
-    callopenai: async function(message) {
-        let previousMessages = await getChatLog(message.author.username, whoami).then(chatLog => { 
-            let previousMessages = "";
+    callopenai: async function(message, sender, persona = whoami ) { 
+        let previousMessages = await getChatLog(sender, whoami).then(chatLog => { // 
+            let previousMessages = "";  
             for (let i = chatLog.length - 2; i >= chatLog.length - 10; i--) { 
                 if (i < 0) {
                     break;
@@ -57,31 +57,31 @@ module.exports = {
             let costTrimmed = parseFloat(cost.toFixed(4));
 
             // Find the UserInfo in the database and update it with the cost
-            const userInfo = await UserInfo.findOne({ userId: message.author.id });
-            if (userInfo) {
-                userInfo.cost_total += costTrimmed;
-                userInfo.save().then(() => {
-                }).catch(err => {
-                    console.error(err);
-                });
-            }
+            // const userInfo = await UserInfo.findOne({ userId: message.author.id });
+            // if (userInfo) {
+            //     userInfo.cost_total += costTrimmed;
+            //     userInfo.save().then(() => {
+            //     }).catch(err => {
+            //         console.error(err);
+            //     });
+            // }
             
             // Create a new Cost record and save it to the database
-            if(costTrimmed > 0.0001){
-                  const costRecord = new Cost({
-                    username: message.author.username,
-                    characters: response.length,
-                    tokens: total_tokens,
-                    cost: costTrimmed,
-                    time: new Date()
-                });
+            // if(costTrimmed > 0.0001){
+            //       const costRecord = new Cost({
+            //         username: message.author.username,
+            //         characters: response.length,
+            //         tokens: total_tokens,
+            //         cost: costTrimmed,
+            //         time: new Date()
+            //     });
     
-                costRecord.save((error) => {
-                    if (error) {
-                        console.error("Error saving cost record: ", error);
-                    } 
-                });
-            }
+            //     costRecord.save((error) => {
+            //         if (error) {
+            //             console.error("Error saving cost record: ", error);
+            //         } 
+            //     });
+            // }
 
             if(response.length > 1999){
                 response = response.substring(0, 1999);
