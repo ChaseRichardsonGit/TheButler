@@ -4,6 +4,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const MongoClient = require('mongodb').MongoClient;
 const { Configuration, OpenAIApi } = require("openai");
+// import { selectedPersona } from './public/app.js';
 
 // OpenAI API configuration
 const configuration = new Configuration({ 
@@ -28,11 +29,11 @@ app.post('/api/save-message', (req, res) => {
   const time = new Date().toString();
   const username = req.body.username;
   const message = req.body.message;
-  const createdBy = "butler"
-  const server = "web"
-  const channel = "chat"
-  const sender = req.body.username
-  const receiver = "butler"
+  const createdBy = req.body.persona;
+  const server = "web";
+  const channel = "chat";
+  const sender = req.body.username;
+  const receiver = req.body.persona;
 
 
   if (!username || !message) {
@@ -109,6 +110,38 @@ app.get('/api/personas', (req, res) => {
       }
 
       res.send(results);
+      client.close();
+    });
+  });
+});
+
+app.get('/api/preprompt', (req, res) => {
+  const selectedPersona = req.query.persona;
+
+  MongoClient.connect(mongoUrl, { useUnifiedTopology: true }, (err, client) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({ error: 'Error connecting to database' });
+      return;
+    }
+
+    const db = client.db(dbName);
+    const collection = db.collection('personas');
+
+    collection.findOne({ name: selectedPersona }, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Error getting preprompt data from database' });
+        return;
+      }
+
+      if (!result) {
+        res.status(404).send({ error: `Preprompt data for persona "${selectedPersona}" not found` });
+        return;
+      }
+
+      const preprompt = result.preprompt;
+      res.send({ preprompt });
       client.close();
     });
   });

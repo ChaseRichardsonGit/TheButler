@@ -6,6 +6,7 @@ const usernameSubmitButton = document.querySelector('#username-submit-button');
 
 let username = '';
 
+
 usernameSubmitButton.addEventListener('click', () => {
   username = usernameInput.value.trim();
   if (username) {
@@ -30,17 +31,30 @@ userInput.addEventListener('keyup', (event) => {
   }
 });
 
-sendButton.addEventListener('click', () => {
-  const message = userInput.value;
-  userInput.value = '';
-  addMessage(username, message);
-});
-
 async function addMessage(sender, message) {
   const timestamp = Date.now();
   const div = document.createElement('div');
-  div.className = `message ${sender}`;
-  div.innerHTML = `<span>${sender}: </span>${message}`;
+  let senderName = sender;
+  
+  if (sender === 'bot') {
+    const selectedOption = personaDropdown.options[personaDropdown.selectedIndex];
+    senderName = selectedOption.value;
+  }
+  if (senderName === 'jarvis') {
+    div.classList.add('Jarvis');
+  }
+  if (senderName === 'puerus') {
+    div.classList.add('Puerus');
+  }
+  
+  
+  div.className = `message ${senderName}`;
+  div.innerHTML = `<span>${senderName}: </span>${message}`;
+  if (senderName === 'jarvis') {
+    document.getElementById('header-frame').style.backgroundColor = 'green';
+  } else {
+    document.getElementById('header-frame').style.backgroundColor = '#1d1d1d';
+  }
   chatWindow.appendChild(div);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 
@@ -51,7 +65,8 @@ async function addMessage(sender, message) {
     data: {
       username,
       message,
-      timestamp
+      timestamp,
+      persona: selectedPersona || personaDropdown.options[0].value
     }
   })
   .done((response) => {
@@ -76,49 +91,18 @@ async function addMessage(sender, message) {
   }
 }
 
-//const logoImage = document.getElementById('logo-image');
 const dropdown = document.createElement('select');
 dropdown.id = 'persona-dropdown';
-
-//console.log('Dropdown:', dropdown);
-//console.log('Dropdown:', dropdown.id);  
-
-// $.ajax({
-//   url: '/api/personas',
-//   type: 'GET',
-//   dataType: 'json',
-//   success: function(data) {
-//     const uniqueNames = new Set();
-//     console.log('dropdown:', dropdown);
-//     for (const persona of data[0].personas) {
-//       const name = persona.name;
-//       if (!uniqueNames.has(name)) {
-//         uniqueNames.add(name);
-//         const option = document.createElement('option');
-//         option.value = name;
-//         option.text = name;
-//         dropdown.appendChild(option);
-//         //console.log(`Added option with value ${option.value} and text ${option.text} to dropdown`);
-//         //console.log('Personas:', data[0].personas)
-//         //console.log('Personas:', data[0].personas[0])
-//         //console.log('Personas:', data[0].personas[0].name)
-//         //console.log(uniqueNames.entries());
-//       }
-//     }
-//     //console.log('Dropdown:', dropdown);
-//     //console.log('Dropdown:', dropdown.id);
-//     console.log('Dropdown:', dropdown.value); 
-//     //console.log('Dropdown:', dropdown.name);
-//   },
-  
-//   error: function(error) {
-//     console.error('Error getting personas:', error);
-//   }
-// });
 
 dropdown.addEventListener('change', (event) => {
   const selectedPersona = event.target.value;
   console.log(`Selected persona: ${selectedPersona}`);
+});
+
+sendButton.addEventListener('click', () => {
+  const message = userInput.value;
+  userInput.value = '';
+  addMessage(username, message, selectedPersona); // Pass the selected persona to addMessage
 });
 
 $.ajax({
@@ -141,5 +125,34 @@ $.ajax({
   },
   error: function(error) {
     console.error('Error getting personas:', error);
+  }
+});
+
+const personaDropdown = document.querySelector('#persona-dropdown');
+let selectedPersona = '';
+
+personaDropdown.addEventListener('change', (event) => {
+  selectedPersona = event.target.value;
+  const headerFrame = document.getElementById('header-frame');
+
+  $.ajax({
+    url: '/api/preprompt',
+    type: 'GET',
+    data: { persona: selectedPersona },
+    dataType: 'json',
+    success: function(data) {
+      preprompt = data.preprompt;
+    },
+    error: function(error) {
+      console.error('Error getting preprompt data:', error);
+    }
+  });
+
+  if (selectedPersona === 'puerus') {
+    headerFrame.style.backgroundColor = 'yellow';
+  } else if (selectedPersona === 'jarvis') {
+    headerFrame.style.backgroundColor = 'green';
+  } else {
+    headerFrame.style.backgroundColor = '#1d1d1d';
   }
 });

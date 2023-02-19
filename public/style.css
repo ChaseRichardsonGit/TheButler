@@ -278,29 +278,12 @@
 #left-frame button:active {
     background-color: #4d4d4d;
 }
-/* select {
-	width: 100%;
-	padding: 12px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
-	margin-top: 8px;
-	margin-bottom: 16px;
-	background-color: white;
-	color: black;
-  }
-  
-  option {
-	font-size: 16px;
-  } */
-
-  .persona-dropdown {
+#persona-dropdown {
 	position: relative;
 	display: inline-block;
-  }
-  
-  .persona-dropdown-content {
+}
+
+#persona-dropdown-content {
 	display: none;
 	position: absolute;
 	background-color: #333;
@@ -310,20 +293,14 @@
 	border-radius: 5px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 	color: white;
-  }
-  
-  .persona-dropdown:hover .persona-dropdown-content {
-	display: block;
-  }
-  
-  .persona-dropdown-content a {
-	color: white;
-	display: block;
-	padding: 8px 16px;
-	text-decoration: none;
-  }
-  
-  .persona-dropdown-content a:hover {
-	background-color: #555;
+}
+.persona.Jarvis {
+	background-color: green;
+}
+.persona.Puerus {
+	background-color: yellow;
+}
+#header-frame {
+	transition: background-color 0.5s ease;
   }
   
