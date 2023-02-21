@@ -122,10 +122,12 @@
             Top Left Mu
             To the right of that
 
+
+            Known Bugs / Issues
             Fix link validation, ignore blank usernames when logging links and messages.
             Change username to sender in website schema
             Fix logging so memory works.  Currently not logging sender correctly.
-            Fix anonymous.
+            Fix anonymous when user doesn't submit a name.  Causing MongoDB error because sender is blank.
             
             
 
