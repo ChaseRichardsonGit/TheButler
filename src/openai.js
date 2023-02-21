@@ -1,10 +1,10 @@
 // Get your persona from your environment otheriwse assume the butler
 let whoami = process.argv[2];
 if (whoami) {   
-    const whoami = process.argv[2];
+    let whoami = process.argv[2];
 }
     else {  
-    const whoami = 'butler';  
+    let whoami = 'butler';  
 }
 
 const { Configuration , OpenAIApi } = require('openai');
@@ -34,7 +34,7 @@ module.exports = {
             return (previousMessages);
         });
        
-        let preprompttext = await getPersonaData(whoami).then(personaData => { 
+        let preprompttext = await getPersonaData(persona).then(personaData => { 
             return (personaData.data);   
         });
        
