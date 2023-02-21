@@ -22,7 +22,7 @@ const openai = new OpenAIApi(configuration);
 
 module.exports = { 
     callopenai: async function(message, sender, persona = whoami ) { 
-        let previousMessages = await getChatLog(sender, whoami).then(chatLog => { // 
+        let previousMessages = await getChatLog(sender, persona).then(chatLog => { // 2.20.23-1017PM-Changed to persona from whoami
             let previousMessages = "";  
             for (let i = chatLog.length - 2; i >= chatLog.length - 10; i--) { 
                 if (i < 0) {
