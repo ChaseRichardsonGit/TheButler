@@ -176,7 +176,7 @@ const getChatLog = async (sender, receiver) => {
       }
     ).sort({ _id: -1 }).limit(10).toArray();
   client.close();
-  console.log("sender: " + sender + " receiver: " + receiver);
+//  console.log("sender: " + sender + " receiver: " + receiver);
   return chatLog; 
 };
 

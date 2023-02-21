@@ -8,6 +8,11 @@ const { Log } = require('./src/mongo.js');
 
 const openaiAPI = require('./src/openai.js');
 const { Configuration, OpenAIApi } = require("openai");
+const { response } = require('express');
+
+// MongoDB configuration
+const mongoUrl = process.env.MONGO_URI;
+const dbName = process.env.MONGO_DBNAME;
 
 // OpenAI API configuration
 const configuration = new Configuration({ 
@@ -15,10 +20,6 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_KEY, 
 });
 const openai = new OpenAIApi(configuration);
-
-// MongoDB configuration
-const mongoUrl = process.env.MONGO_URI;
-const dbName = process.env.MONGO_DBNAME;
 
 app.use(bodyParser.urlencoded({ extended: false })); 
 app.use(bodyParser.json()); 
@@ -29,68 +30,93 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html'); 
 }); 
 
-// Save message to MongoDB
+// Favicon route
+app.get('/favicon.ico', (req, res) => {
+  res.sendStatus(204);
+});
+
+// Save Message to MongoDB
 app.post('/api/save-message', (req, res) => {
   const time = new Date().toString();
   const username = req.body.username;
-  const message = req.body.message;
-  const createdBy = req.body.persona;
+  let message = req.body.message;
+  let createdBy = req.body.persona;
+  let sender = req.body.username; 
+  let receiver = req.body.persona;
   const server = "web";
   const channel = "chat";
-  const sender = req.body.username; 
+ 
+  let messageType = req.body.messageType;
 
-// Log the message to MongoDB for user
-  
-const messageType = req.body.messageType;
-let receiver;
-if (messageType === "sent") {
-  receiver = req.body.recipient;
-} else if (messageType === "received") {
-  receiver = req.body.username;
-} else {
-  // handle invalid message types
-}
-
-// Log the message to MongoDB for user
-try {
-  const log = new Log({
-    createdBy: createdBy,
-    server: "web",
-    channel: "chat",
-    sender: sender,
-    receiver: receiver,
-    message: req.body.message,
-    time: new Date().toString(),
-  });
-    log.save().then(() => {
-        console.log(`Message logged to MongoDB: ${sender}: ${req.body.message}\n`);
-    }).catch(err => {
-      console.error(err);
-  });
-    
-  } catch (error) {
-    console.error(`An error occurred while calling MongoDB: ${error}`);
-    console.error(error.stack);
-    res.status(500).send({ error: `An error occurred while calling MongoDB: ${error}` });
+  // Log the message to MongoDB for user
+  if (username === username) {
+    console.log(`Line 60:  createdBy: ${req.body.persona}, sender: ${sender}, receiver: ${req.body.persona}, message: ${message}, time: ${time}`)
+    try {
+      const userLog = new Log({
+        createdBy: createdBy || "testcreatedBy",
+        server: "web",
+        channel: "chat",
+        sender: sender,
+        receiver: receiver || "testreceiver",
+        message: req.body.message,
+        time: new Date().toString(),
+      });
+      userLog.save().then(() => {
+      }).catch(err => {
+        console.error(err);
+      });
+    } catch (error) {
+      console.error(`An error occurred while calling MongoDB: ${error}`);
+      console.error(error.stack);
+      res.status(500).send({ error: `An error occurred while calling MongoDB: ${error}` });
+    }
   }
 });
-
+  
 // Call OpenAI API
 app.post('/api/response', async (req, res) => { 
   const prompt = req.body.message;
   const username = req.body.username;
   const persona = req.body.persona;
-//  console.log('Calling OpenAI API with message, username, and persona:', prompt, username, persona);
+  console.log(`Calling OpenAI API with persona, username, message: ${persona}, ${username}, ${prompt}`);
   try {
     const response = await openaiAPI.callopenai(prompt, username, persona);
     const result = response;
-    res.send({ response: result });
+    res.send({ response: result }); // Send the response back to the client.
+
+    // Log the response to MongoDB
+    const time = new Date().toString();
+    const createdBy = persona;
+    const sender = persona;
+    const receiver = username;
+    const server = "web";
+    const channel = "chat";
+
+    try {
+      const botLog = new Log({
+        createdBy: createdBy,
+        server: "web",
+        channel: "chat",
+        sender: sender,
+        receiver: receiver || "testreceiver",
+        message: result,
+        time: time,
+      });
+      botLog.save().then(() => {
+        }).catch(err => {
+        console.error(err);
+      });        
+    } catch (error) {
+      console.error(`An error occurred while calling MongoDB: ${error}`);
+      console.error(error.stack);
+    }
   } catch (error) {
     console.error(`An error occurred while calling OpenAI API: ${error}`);
     console.error(error.response.data);
     res.status(500).send({ error: `An error occurred while calling OpenAI API: ${error}` });
   }
 });
+
 
 // Get personas from MongoDB
 app.get('/api/personas', (req, res) => {

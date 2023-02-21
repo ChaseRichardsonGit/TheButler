@@ -31,58 +31,82 @@ userInput.addEventListener('keyup', (event) => {
   }
 });
 
-async function addMessage(sender, message) {
-  //console.log(`Adding message from app.js.addMessage#35 ${sender}: ${message}`);
+const dropdown = document.createElement('select');
+dropdown.id = 'persona-dropdown';
+
+dropdown.addEventListener('change', (event) => {
+  selectedPersona = event.target.value;
+  console.log(`Selected persona: ${selectedPersona}`);
+});
+
+const personaDropdown = document.querySelector('#persona-dropdown');
+let selectedPersona = '';
+
+
+personaDropdown.addEventListener('change', (event) => {
+  selectedPersona = event.target.value;
+  const headerFrame = document.getElementById('header-frame');
+
+  if (selectedPersona === 'puerus') {
+    headerFrame.style.backgroundColor = 'gray';
+  } else if (selectedPersona === 'jarvis') {
+    headerFrame.style.backgroundColor = 'green';
+  } else {
+    headerFrame.style.backgroundColor = '#1d1d1d';
+  }
+});
+
+async function addMessage(sender, message, selectedPersona, response) {
   const timestamp = Date.now();
   const div = document.createElement('div');
   let senderName = sender;
   
   if (sender === 'bot') {
-    const selectedOption = personaDropdown.options[personaDropdown.selectedIndex];
-    senderName = selectedOption.value;
+    senderName = selectedPersona;
   }
-  if (senderName === 'jarvis') {
-    div.classList.add('Jarvis');
-  }
-  if (senderName === 'puerus') {
-    div.classList.add('Puerus');
-  }
-  
-  
+    
   div.className = `message ${senderName}`;
   div.innerHTML = `<span>${senderName}: </span>${message}`;
-  if (senderName === 'jarvis') {
-    document.getElementById('header-frame').style.backgroundColor = 'green';
-  } else {
-    document.getElementById('header-frame').style.backgroundColor = '#1d1d1d';
-  }
-  chatWindow.appendChild(div);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
 
-  let messageType;
   if (sender === username) {
-    messageType = 'sent';
-  } else {
-    messageType = 'received';
-  }
+    chatWindow.appendChild(div);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 
-  $.ajax({
-    url: '/api/save-message',
-    type: 'POST',
-    data: {
-      username,
-      message,
-      timestamp,
-      messageType,
-      persona: selectedPersona || personaDropdown.options[0].value
+    let messageType;
+    let receiver;
+
+    if (sender === username) {
+      messageType = 'sent';
+      receiver = selectedPersona;
+    } else {
+      messageType = 'received';
+      receiver = username;
     }
-  })
-  .done((response) => {
-    console.log('Message saved to database:', response);
-  })
-  .fail((error) => {
-    console.error('Error saving message to database:', error);
-  });
+    $.ajax({
+      url: '/api/save-message',
+      type: 'POST',
+      data: {
+        username,
+        message,
+        timestamp,
+        messageType,
+        persona: selectedPersona,
+        sender,
+        response 
+      }
+    })
+
+    .done((response) => {
+      console.log('Message saved to database:', response);
+    })
+    .fail((error) => {
+      console.error('Error saving message to database:', error);
+    });
+  } else {
+    // Handle received messages here
+    chatWindow.appendChild(div);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
 
   if (sender === username) {
     try {
@@ -92,29 +116,21 @@ async function addMessage(sender, message) {
         data: { 
           message,
           username,
-          persona: selectedPersona || personaDropdown.options[0].value
+          persona: selectedPersona
         }
       });
-      addMessage('bot', response.response);
-    } catch (error) {
+      addMessage(selectedPersona, response.response);
+      } catch (error) {
       console.error(error);
-      addMessage('bot', 'Sorry, an error occurred. Please try again.');
+      addMessage('bot', 'Sorry, an error occurred. Please try again.', selectedPersona);
     }
   }
 }
 
-const dropdown = document.createElement('select');
-dropdown.id = 'persona-dropdown';
-
-dropdown.addEventListener('change', (event) => {
-  const selectedPersona = event.target.value;
-  console.log(`Selected persona: ${selectedPersona}`);
-});
-
 sendButton.addEventListener('click', () => {
   const message = userInput.value;
   userInput.value = '';
-  addMessage(username, message, selectedPersona); 
+  addMessage(username, message, selectedPersona); // pass selectedPersona as an argument
 });
 
 $.ajax({
@@ -134,37 +150,14 @@ $.ajax({
         dropdown.appendChild(option);
       }
     }
+    
+    // Set the default value for the dropdown
+    dropdown.options[0].selected = true;
+    
+    // Trigger the change event to update the selectedPersona variable
+    dropdown.dispatchEvent(new Event('change'));
   },
   error: function(error) {
     console.error('Error getting personas:', error);
-  }
-});
-
-const personaDropdown = document.querySelector('#persona-dropdown');
-let selectedPersona = '';
-
-personaDropdown.addEventListener('change', (event) => {
-  selectedPersona = event.target.value;
-  const headerFrame = document.getElementById('header-frame');
-
-  // $.ajax({
-  //   url: '/api/preprompt',
-  //   type: 'GET',
-  //   data: { persona: selectedPersona },
-  //   dataType: 'json',
-  //   success: function(data) {
-  //     preprompt = data.preprompt;
-  //   },
-  //   error: function(error) {
-  //     console.error('Error getting preprompt data:', error);
-  //   }
-  // });
-
-  if (selectedPersona === 'puerus') {
-    headerFrame.style.backgroundColor = 'yellow';
-  } else if (selectedPersona === 'jarvis') {
-    headerFrame.style.backgroundColor = 'green';
-  } else {
-    headerFrame.style.backgroundColor = '#1d1d1d';
   }
 });
