@@ -46,13 +46,20 @@ let selectedPersona = '';
 personaDropdown.addEventListener('change', (event) => {
   selectedPersona = event.target.value;
   const headerFrame = document.getElementById('header-frame');
+  const personaImage = document.getElementById('persona-image');
 
   if (selectedPersona === 'puerus') {
     headerFrame.style.backgroundColor = 'gray';
+    personaImage.src = '/img/Puerus.png';
   } else if (selectedPersona === 'jarvis') {
     headerFrame.style.backgroundColor = 'green';
+    personaImage.src = '/img/Jarvis.png';
+  } else if (selectedPersona === 'Butler') {
+    headerFrame.style.backgroundColor = '#1d1d1d';
+    personaImage.src = '/img/Butler.png';
   } else {
     headerFrame.style.backgroundColor = '#1d1d1d';
+    personaImage.src = '/img/Butler.png';
   }
 });
 
@@ -60,12 +67,25 @@ async function addMessage(sender, message, selectedPersona, response) {
   const timestamp = Date.now();
   const div = document.createElement('div');
   let senderName = sender;
-  
-  if (sender === 'bot') {
+
+
+  if (!sender) {
+    senderName = 'anonymous';
+  } else if (sender === 'bot') {
     senderName = selectedPersona;
+    div.classList.add('bot'); // add the bot class to the div
   }
-    
+  
+
   div.className = `message ${senderName}`;
+  
+  if (sender === username) {
+    div.classList.add('user');
+  } else if (sender === 'bot') {
+    div.classList.add('bot');
+    div.classList.add(selectedPersona.toLowerCase());
+  }
+  
   div.innerHTML = `<span>${senderName}: </span>${message}`;
 
   if (sender === username) {
@@ -82,6 +102,7 @@ async function addMessage(sender, message, selectedPersona, response) {
       messageType = 'received';
       receiver = username;
     }
+
     $.ajax({
       url: '/api/save-message',
       type: 'POST',
@@ -115,17 +136,18 @@ async function addMessage(sender, message, selectedPersona, response) {
         type: 'POST',
         data: { 
           message,
-          username,
+          username: username || 'anonymous',
           persona: selectedPersona
         }
       });
-      addMessage(selectedPersona, response.response);
-      } catch (error) {
+      addMessage(selectedPersona, response.response, selectedPersona);
+    } catch (error) {
       console.error(error);
       addMessage('bot', 'Sorry, an error occurred. Please try again.', selectedPersona);
     }
   }
 }
+
 
 sendButton.addEventListener('click', () => {
   const message = userInput.value;

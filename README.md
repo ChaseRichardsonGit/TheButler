@@ -126,26 +126,27 @@
             Known Bugs / Issues
             Fix link validation, ignore blank usernames when logging links and messages.
             Change username to sender in website schema
-            Fix anonymous when user doesn't submit a name.  Causing MongoDB error because sender is blank.
-            
-            
 
-
-
-            0.0.83 Punch List:
+            0.0.89 Punch List:
             Clean up code as much as possible.  Remove all whoami.  Update to ES modules.  Refactor.
             Clean up node_modules and package.json
             Capture DM's sent count to bots in userInfos for tracking.
             TheButler should be able to have conversations in Main Chat. 
                 Mention of "butler", respond in general.  Reference puerus code.
                     Test if it follows you from DM to channel to channel.
+            Get anonymous working right (when user doesn't enter name, provide "anonymous" for chat-window and logs) (Causing mongodb error)
 
-            0.09 Wishlist:
-            Website to ineract with personas
-                A way to update the prompts for the persona's easily.
-                Track user and server stats and show them on a dashboard.
-                    Simple table dump list view at first
+            0.0.90 Wish List:
+            All the styling!
+                Alternating grays for chat bubbles?
+            When persona is changed, change icon in center of page to match persona.
 
+
+
+            0.1.0 Wishlist:
+            A way to update the prompts for the persona's easily.
+            Track user and server stats and show them on a dashboard.
+              Simple table dump list view at first
             Build a bot.  Unleash it at the push of a button.
             Create a token count for how many OpenAI tokens are used by each user.
             Count total times a user has inteacted with OpenAI.
