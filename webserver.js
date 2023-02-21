@@ -46,11 +46,8 @@ app.post('/api/save-message', (req, res) => {
   const server = "web";
   const channel = "chat";
  
-  let messageType = req.body.messageType;
-
   // Log the message to MongoDB for user
   if (username === username) {
-    console.log(`Line 60:  createdBy: ${req.body.persona}, sender: ${sender}, receiver: ${req.body.persona}, message: ${message}, time: ${time}`)
     try {
       const userLog = new Log({
         createdBy: createdBy || "testcreatedBy",
@@ -73,12 +70,11 @@ app.post('/api/save-message', (req, res) => {
   }
 });
   
-// Call OpenAI API
+// Call OpenAI API and save response to MongoDB
 app.post('/api/response', async (req, res) => { 
   const prompt = req.body.message;
   const username = req.body.username;
   const persona = req.body.persona;
-  console.log(`Calling OpenAI API with persona, username, message: ${persona}, ${username}, ${prompt}`);
   try {
     const response = await openaiAPI.callopenai(prompt, username, persona);
     const result = response;
@@ -116,7 +112,6 @@ app.post('/api/response', async (req, res) => {
     res.status(500).send({ error: `An error occurred while calling OpenAI API: ${error}` });
   }
 });
-
 
 // Get personas from MongoDB
 app.get('/api/personas', (req, res) => {
