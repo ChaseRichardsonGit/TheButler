@@ -1,24 +1,18 @@
 // Get your persona from your environment otheriwse assume the butler
 let whoami = process.argv[2];
-if (whoami) {   
-    const whoami = process.argv[2];
-//    console.log("args from startup in puerus.js: " + whoami);
-}
-    else {  
-    const whoami = 'butler';  
-//    console.log("No persona passed... starting as" + whoami); 
-}
+if (whoami) { const whoami = process.argv[2];
+} else { const whoami = 'butler';  }
 
 // Load the environment variables
 require('dotenv').config(); 
 
 // Load the external functions if you're the butler
 const openai = require('./openai.js');
-    if (whoami == 'butler') {
-        const clearchat = require('./clearchat.js');
-        const weather = require('./weather.js');
-        const response = require('./openai.js');
-        }
+
+if (whoami == 'butler') {
+  const clearchat = require('./clearchat.js');
+  const weather = require('./weather.js');
+}
 
 // Load the Discord API and Mongo Database
 const Discord = require('discord.js');
@@ -106,8 +100,7 @@ client.on('messageCreate', async function(message){
   if(message.channel.type !== Discord.ChannelType.DM) {
   if(message.author.bot) return; {
       if(message.content.includes(whoami)) {
-        let response = await openai.callopenai(message);
-        openai.callopenai(message, message.author.username);
+        let response = await openai.callopenai(message, message.author.username, whoami);
         message.channel.send(response);
 }}
 }});
@@ -131,7 +124,8 @@ client.on('messageCreate', async function(message){
                     console.error(err);
                 });
                 
-    let response = await openai.callopenai(message);
+    let response = await openai.callopenai(message, message.author.username, whoami);
+//    console.log(`butler.js - Line 128 - ${message}, ${message.author.username}, ${whoami}`);
 //    console.log(whoami);
     const whoamiLower = whoami.toLowerCase();
 //    console.log(whoamiLower);
@@ -145,7 +139,7 @@ client.on('messageCreate', async function(message){
       message.author.send(parsedData);
     } else {
       message.author.send(response);
-      console.log("No match found");
+      console.log(`"Line 141 - Butler - Regex: No match found"`);
     }
 
 

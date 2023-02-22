@@ -1,11 +1,7 @@
 // Get your persona from your environment otheriwse assume the butler
 let whoami = process.argv[2];
-if (whoami) {   
-    let whoami = process.argv[2];
-}
-    else {  
-    let whoami = 'butler';  
-}
+if (whoami) { let whoami = process.argv[2];
+} else { let whoami = 'butler'; }
 
 const { Configuration , OpenAIApi } = require('openai');
 
@@ -23,6 +19,7 @@ const openai = new OpenAIApi(configuration);
 module.exports = { 
     callopenai: async function(message, sender, persona = whoami ) { 
         let previousMessages = await getChatLog(sender, persona).then(chatLog => { // 2.20.23-1017PM-Changed to persona from whoami
+            console.log(`openai.js - Line 22 - getChatLog: ${sender} ${persona}`)
             let previousMessages = "";  
             for (let i = chatLog.length - 2; i >= chatLog.length - 10; i--) { 
                 if (i < 0) {
@@ -30,7 +27,7 @@ module.exports = {
                 }
                 previousMessages += `${chatLog[i].sender}: ${chatLog[i].message}\n`;
             }
-            //console.log(`previousMessages: ${previousMessages}`)
+            console.log(`openai.js - Line29 - previousMessages: ${previousMessages}`)
             return (previousMessages);
         });
        
