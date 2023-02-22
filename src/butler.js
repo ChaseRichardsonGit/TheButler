@@ -28,11 +28,11 @@ const { UserInfo, Link, Cost, Log } = require('./mongo.js');
 // Define Intents and Partials for Discord
 const client = new Client({ 
 	intents: [ 
-	GatewayIntentBits.Guilds,
-	GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.DirectMessages,
-	GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessageReactions,
 	],
   partials: [

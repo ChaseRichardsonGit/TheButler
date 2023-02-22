@@ -30,7 +30,7 @@ module.exports = {
                 }
                 previousMessages += `${chatLog[i].sender}: ${chatLog[i].message}\n`;
             }
-            console.log(`previousMessages: ${previousMessages}`)
+            //console.log(`previousMessages: ${previousMessages}`)
             return (previousMessages);
         });
        

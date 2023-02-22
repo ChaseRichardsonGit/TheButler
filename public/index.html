@@ -12,8 +12,9 @@
         <div id="logo-container">
           <select id="persona-dropdown"></select>
         </div>
-        <img id="persona-image" src="" alt="" />
-        <h3>MuGPT</h3>
+        <div id="persona-container">
+          <img id="persona-image" src="" alt="" />
+        </div>
         <div id="username-frame">
           <div id="username-container">
             <input type="text" id="username-input" placeholder="Enter your username">
@@ -21,11 +22,11 @@
           </div>
         </div>
       </div>
-      <div id="content-container">
+            <div id="content-container">
         <div id="frame-container">
           <div id="left-frame">
             <button>New</button>
-            <button>Clear</button>
+            <button id="clear-btn" class="btn btn-secondary">Clear</button>
             <button>Today's Chats</button>
         </div>
           <div id="chat-container">

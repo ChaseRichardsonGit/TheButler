@@ -26,11 +26,23 @@
 	align-items: center;
 	padding: 16px;
 	background-color: #1d1d1d;
+	flex-wrap: wrap;
+	position: relative;
   }
+
+  #persona-container {
+	display: flex;
+	align-items: center;
+	margin-right: auto;
+	margin-left: 16px;
+  }
+
   
   #logo-container {
 	width: 100px;
 	height: 50px;
+	display: flex;
+	align-items: center;
   }
   
   h1 {
@@ -111,7 +123,7 @@
   }
   
   #history-frame {
-	width: 0%;
+	width: 7%;
 	display: none;
   }
   
@@ -142,6 +154,7 @@
   #bottom-frame #input-container input {
 	flex: 1;
 	margin-right: 16px;
+	margin-left: 128px;
   }
   
   #bottom-frame #input-container button {
@@ -250,16 +263,29 @@
 #left-frame button:active {
     background-color: #4d4d4d;
 }
+
+.menu-button {
+	display: none;
+	margin-bottom: 8px;
+	background-color: #1d1d1d;
+	color: #f2f2f2;
+	border: none;
+	cursor: pointer;
+	padding: 8px;
+	width: 100%;
+  }
+
 #persona-dropdown {
 	position: relative;
 	display: inline-block;
+	margin-left: 16px;
 }
 
 #persona-dropdown-content {
 	display: none;
 	position: absolute;
 	background-color: #333;
-	min-width: 200px;
+	min-width: 500px;
 	padding: 12px;
 	z-index: 1;
 	border-radius: 5px;
@@ -272,9 +298,6 @@
 .persona.Puerus {
 	background-color: yellow;
 }
-#header-frame {
-	transition: background-color 0.5s ease;
-  }
   .message {
 	text-align: left;
 	background-color: #157c34;
@@ -285,19 +308,23 @@
   }
   
   .user {
-	text-align: right;
+	text-align: left;
 	background-color: #313a9c;
   }
 
   #persona-image {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 	width: 75px;
 	height: 75px;
 	margin-right: 10px;
 	border-radius: 50%;
-  }
+}
 
   .message.puerus {
-	background-color: rgb(98, 100, 175);
+	background-color: rgb(123, 124, 168);
   }
   
   .message.jarvis {
@@ -306,4 +333,11 @@
   
   .message.butler {
 	background-color: gray;
+  }
+  #username-submit-button {
+	width: 80px;
+  }
+  
+  #persona-dropdown {
+	width: 80px;
   }

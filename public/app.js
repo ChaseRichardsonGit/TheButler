@@ -6,7 +6,7 @@ const usernameSubmitButton = document.querySelector('#username-submit-button');
 
 let username = '';
 
-
+// Username Submit 
 usernameSubmitButton.addEventListener('click', () => {
   username = usernameInput.value.trim();
   if (username) {
@@ -18,12 +18,14 @@ usernameSubmitButton.addEventListener('click', () => {
   }
 });
 
+// Username listener for enter key
 usernameInput.addEventListener('keyup', (event) => {
   if (event.key === 'Enter') {
     usernameSubmitButton.click();
   }
 });
 
+// User input listener for enter key
 userInput.addEventListener('keyup', (event) => {
   event.preventDefault();
   if (event.keyCode === 13) {
@@ -31,31 +33,25 @@ userInput.addEventListener('keyup', (event) => {
   }
 });
 
+// Dropdown personas
 const dropdown = document.createElement('select');
-dropdown.id = 'persona-dropdown';
-
-dropdown.addEventListener('change', (event) => {
+  dropdown.id = 'persona-dropdown';
+  dropdown.addEventListener('change', (event) => {
   selectedPersona = event.target.value;
-  console.log(`Selected persona: ${selectedPersona}`);
 });
 
 const personaDropdown = document.querySelector('#persona-dropdown');
 let selectedPersona = '';
-
-
 personaDropdown.addEventListener('change', (event) => {
   selectedPersona = event.target.value;
   const headerFrame = document.getElementById('header-frame');
   const personaImage = document.getElementById('persona-image');
 
   if (selectedPersona === 'puerus') {
-    headerFrame.style.backgroundColor = 'gray';
     personaImage.src = '/img/Puerus.png';
   } else if (selectedPersona === 'jarvis') {
-    headerFrame.style.backgroundColor = 'green';
     personaImage.src = '/img/Jarvis.png';
   } else if (selectedPersona === 'Butler') {
-    headerFrame.style.backgroundColor = '#1d1d1d';
     personaImage.src = '/img/Butler.png';
   } else {
     headerFrame.style.backgroundColor = '#1d1d1d';
@@ -63,6 +59,7 @@ personaDropdown.addEventListener('change', (event) => {
   }
 });
 
+// addMessage function
 async function addMessage(sender, message, selectedPersona, response) {
   const timestamp = Date.now();
   const div = document.createElement('div');
@@ -148,13 +145,14 @@ async function addMessage(sender, message, selectedPersona, response) {
   }
 }
 
-
+// Send button event listener
 sendButton.addEventListener('click', () => {
   const message = userInput.value;
   userInput.value = '';
-  addMessage(username, message, selectedPersona); // pass selectedPersona as an argument
+  addMessage(username, message, selectedPersona); 
 });
 
+// Get personas from the database
 $.ajax({
   url: '/api/personas',
   type: 'GET',
