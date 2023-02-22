@@ -162,6 +162,7 @@ const getPersonaData = async (persona) => {
 
 //getChatLog from Mongo for context
 const getChatLog = async (sender, receiver) => { 
+  console.log(`mongo.js - Line 165 - sender: ${sender} receiver: ${receiver}`)
   const url = process.env.MONGO_URI;
   const dbName = process.env.MONGO_DB_NAME;
   const collectionName = process.env.MONGO_COLLECTION_LOGS_NAME;
@@ -175,8 +176,8 @@ const getChatLog = async (sender, receiver) => {
         ]
       }
     ).sort({ _id: -1 }).limit(10).toArray();
+    console.log("mongo.js - Line 178 - sender: " + sender + " receiver: " + receiver);
   client.close();
-//  console.log("sender: " + sender + " receiver: " + receiver);
   return chatLog; 
 };
 
