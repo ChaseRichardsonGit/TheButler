@@ -1,7 +1,7 @@
 // Get your persona from your environment otheriwse assume the butler
-let whoami = process.argv[2];
-if (whoami) { let whoami = process.argv[2];
-} else { let whoami = 'butler'; }
+let persona = process.argv[2];
+if (persona) { persona = process.argv[2];
+} else { persona = 'butler'; }
 
 const { Configuration , OpenAIApi } = require('openai');
 
@@ -17,9 +17,9 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration); 
 
 module.exports = { 
-    callopenai: async function(message, sender, persona = whoami ) { 
+    callopenai: async function(message, sender, persona ) { 
         let previousMessages = await getChatLog(sender, persona).then(chatLog => { // 2.20.23-1017PM-Changed to persona from whoami
-            console.log(`openai.js - Line 22 - getChatLog: ${sender} ${persona}`)
+            console.log(`openai.js - Line 22 - getChatLog: sender: ${sender} persona: ${persona}`)
             let previousMessages = "";  
             for (let i = chatLog.length - 2; i >= chatLog.length - 10; i--) { 
                 if (i < 0) {
@@ -27,13 +27,15 @@ module.exports = {
                 }
                 previousMessages += `${chatLog[i].sender}: ${chatLog[i].message}\n`;
             }
-            console.log(`openai.js - Line29 - previousMessages: ${previousMessages}`)
+//            console.log(`openai.js - Line30 - previousMessages: ${previousMessages}`)
             return (previousMessages);
         });
        
         let preprompttext = await getPersonaData(persona).then(personaData => { 
             return (personaData.data);   
         });
+        console.log(`openai.js - Line 37 - persona: ${persona}`)
+        console.log(`openai.js - Line 38 - preprompttext: ${preprompttext}`)
        
          // OpenAI API call with try/catch
         try {

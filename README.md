@@ -96,60 +96,55 @@
             Listening for their name in all channels.
 
             Frontend:
-            Wire in openai.
-                Comment out the request side to stop the error and console log this is where the bot should respond.
-                See if we can use the openai discord function we built to get the response.
-            Style Changes:
-            Clean up colors.
-
+            
+            
             Structure Changes:
-            <!-- Icon in the top left that is Mu. -->
-            Top right - Pull down for persona selection
-            Middle of page is a picture of persona, when you change the persona the picture changes and theme.
-            <!-- Input field is at the bottom center -->
+       
+            
             Conversation history above
             Bar on left side for chat history and username (Put name somewhere to show it works)
                 If you provide matching discord name your conversation history pops up (nice name)
 
             2/18/23 Idea list:
-            Personas (drop down)
             Chat History (by username)
-            Rename Bot
             Lifecycle of conversation (when does it start and stop)
             "New Conversation" button? / Discord /reset? (group by day?)
-            When you change personas, change the background color and icon for Bot
-            When you select the persona
-            Top Left Mu
-            To the right of that
+            Add a Discord link to Mu?
 
 
             Known Bugs / Issues
-            Change username to sender in website schema
-
-            0.0.89 Punch List:
-            Clean up code as much as possible.  Remove all whoami.  Update to ES modules.  Refactor.
+            Fix username-input text color to Black - 2/22/23 - 11:45AM
+            userInfo not working - move out of openai.js
+            cost not working - move out of openai.js
+            
+            0.0.895 Punch List:
+            Refactor.
+            Clean up code as much as possible.  Remove all whoami where possible and replace with persona.  
             Capture DM's sent count to bots in userInfos for tracking.
-            TheButler should be able to have conversations in Main Chat. 
-                Mention of "butler", respond in general.  Reference puerus code.
-                    Test if it follows you from DM to channel to channel.
-           
+    
+            
 
-            0.0.90 Wish List:
+            0.0.9 Wish List:
             All the styling!
-                Alternating grays for chat bubbles?
-            When persona is changed, change icon in center of page to match persona.
-            Left side padding for search bar
-            When persona is changed, clear chat window, then load chat history with user.
+                Send button changed to little blue pointer telegram arrow thingy inside of input box - Done - 10AM
+                Submit button for username inside of username-input - Done - 1010AM
+                Left side padding for search bar - Added, need feedback - 1013AM
+                Chatbubbles only as large as the text? -- Worked on from 11:30AM-12:30AM, almost there but went back to full size.  Look in style.css .message 
+                Username fit in header on mobile.
+                Change username-input size for web and mobile.
 
+
+            When persona is changed, clear chat window, then load chat history with user.
+            Move regex into OpenAI.js | parse response out | while loop? | while the message contains "butler: " remove it and iterate through the loop until it's gone.
+            In webserver.js - Fix getPersona mongo client to use our client
+
+            Use ajax to get messages in realtime. - 1s polling
 
 
             0.1.0 Wishlist:
             A way to update the prompts for the persona's easily.
-            
-
             Track user and server stats and show them on a dashboard.
               Simple table dump list view at first
-            Build a bot.  Unleash it at the push of a button.
             Create a token count for how many OpenAI tokens are used by each user.
             Count total times a user has inteacted with OpenAI.
             Token limits?
@@ -160,7 +155,8 @@
             User, Post Count, last activity time
             Collect images and links/urls
                  Get list of users that haven't interacted in 7 days and give em a whaddup
-
+            Build a bot.  Unleash it at the push of a button.
+            
 
             Three Bots:
             TheButler - Simplified code + mongoose.

@@ -14,7 +14,7 @@ usernameSubmitButton.addEventListener('click', () => {
     usernameInput.disabled = true;
     usernameSubmitButton.disabled = true;
     const usernameContainer = document.getElementById('username-container');
-    usernameContainer.innerHTML = `Hello, ${username}!`;
+    usernameContainer.innerHTML = `${username}!`;
   }
 });
 
@@ -83,7 +83,8 @@ async function addMessage(sender, message, selectedPersona, response) {
     div.classList.add(selectedPersona.toLowerCase());
   }
   
-  div.innerHTML = `<span>${senderName}: </span>${message}`;
+  div.innerHTML = `<div style="display: inline">${senderName}: </div>${message}<br>`;
+
 
   if (sender === username) {
     chatWindow.appendChild(div);
@@ -147,9 +148,11 @@ async function addMessage(sender, message, selectedPersona, response) {
 
 // Send button event listener
 sendButton.addEventListener('click', () => {
-  const message = userInput.value;
-  userInput.value = '';
-  addMessage(username, message, selectedPersona); 
+  const message = userInput.value.trim();
+  if (message) { // check if message is not empty
+    userInput.value = '';
+    addMessage(username, message, selectedPersona); 
+  }
 });
 
 // Get personas from the database
@@ -181,3 +184,4 @@ $.ajax({
     console.error('Error getting personas:', error);
   }
 });
+
