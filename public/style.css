@@ -40,12 +40,6 @@ display: flex;
 align-items: center;
 }
 
-h1 {
-font-size: 32px;
-font-weight: bold;
-margin: 0;
-}
-
 #username-frame {
 display: flex;
 flex-direction: column;
@@ -186,15 +180,15 @@ color: white;
 }
 
 #persona-image {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 75px;
-	height: 75px;
-	margin-right: 10px;
-	border-radius: 50%;
-	}
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 75px;
+height: 75px;
+margin-right: 10px;
+border-radius: 50%;
+}
 
 .message {
 text-align: left;
@@ -205,7 +199,6 @@ border-radius: 4px;
 box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
 clear: both;
 }
-
 
 .user {
 text-align: left;
@@ -224,13 +217,10 @@ background-color: rgb(0, 81, 0);
 background-color: gray;
 }
 
-
-
 #persona-dropdown {
 width: 80px;
 display: none;
 }
-
 
 #persona-container {
 display: flex;
@@ -258,20 +248,20 @@ justify-content: flex-end;
 }
 
 #username-submit-button {
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 80px;
-	height: 100%;
-	background-color: transparent;
-	border: none;
-	cursor: pointer;
-	padding: 8px;
-	box-sizing: border-box;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-  }
+position: absolute;
+top: 0;
+right: 0;
+width: 80px;
+height: 100%;
+background-color: transparent;
+border: none;
+cursor: pointer;
+padding: 8px;
+box-sizing: border-box;
+display: flex;
+justify-content: center;
+align-items: center;
+}
 
 #username-submit-button img {
 width: 30px;

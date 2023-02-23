@@ -45,7 +45,7 @@ app.post('/api/save-message', (req, res) => {
   let receiver = req.body.persona;
   const server = "web";
   const channel = "chat";
- 
+
   // Log the message to MongoDB for user
   if (username === username) {
     try {
@@ -136,6 +136,33 @@ app.get('/api/personas', (req, res) => {
       client.close();
     });
   });
+});
+
+// Get chat history from MongoDB
+app.post('/api/chat-history', (req, res) => {
+  const username = req.body.username;
+  const selectedPersona = req.body.selectedPersona;
+//  console.log(`webserver.js - Line 145 - username: ${username}, selectedPersona: ${selectedPersona}`);
+
+  // Retrieve chat history from MongoDB
+  Log.find(
+    {
+      $or: [
+        { sender: username, receiver: selectedPersona },
+        { sender: selectedPersona, receiver: username },
+      ],
+    },
+    (err, messages) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Error retrieving chat history' });
+        return;
+      }
+
+//      console.log(`webserver.js - Line 162 - messages: ${JSON.stringify(messages)}`);
+      res.send(messages);
+    }
+  );
 });
 
 app.use(express.static('public', { 'extensions': ['html', 'js', 'css'] }));

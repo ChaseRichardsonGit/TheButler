@@ -178,7 +178,7 @@ client.on('messageCreate', async function(message){
   userInfo.time = new Date();
   }
   userInfo.save().then(() => {
-//  console.log(`UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
+  console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
   }).catch(err => {
   console.error(err);
   });
