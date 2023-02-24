@@ -1,7 +1,7 @@
 // Get your persona from your environment otheriwse assume the butler
 let whoami = process.argv[2];
 if (whoami) { const whoami = process.argv[2];
-} else { const whoami = 'butler'; }
+} else { const whoami = 'Butler'; }
 
 const mongoose = require("mongoose"); 
 const { MongoClient } = require("mongodb");
@@ -80,7 +80,7 @@ const linkSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  username: {
+  sender: {
     type: String,
     required: true
   },

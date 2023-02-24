@@ -1,7 +1,7 @@
 // Get your persona from your environment otheriwse assume the butler
 let whoami = process.argv[2];
 if (whoami) { const whoami = process.argv[2];
-} else { const whoami = 'butler';  }
+} else { const whoami = 'Butler';  }
 
 // Load the environment variables
 require('dotenv').config(); 
@@ -9,14 +9,13 @@ require('dotenv').config();
 // Load the external functions if you're the butler
 const openai = require('./openai.js');
 
-if (whoami == 'butler') {
+if (whoami == 'Butler') {
   const clearchat = require('./clearchat.js');
-  const weather = require('./weather.js');
 }
 
 // Load the Discord API and Mongo Database
 const Discord = require('discord.js');
-const { Client, GatewayIntentBits, Partials } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, Utils } = require('discord.js');
 const { UserInfo, Link, Cost, Log } = require('./mongo.js'); 
 
 // Define Intents and Partials for Discord
@@ -40,9 +39,10 @@ const client = new Client({
 
 // Listener for General (Butler Only)
 client.on('messageCreate', async function(message){
-    if(whoami == 'butler') {
+    if(whoami == 'Butler') {
     if(message.channel.type !== Discord.ChannelType.DM) {
     if(message.author.bot) return;
+    if(!message.content.trim()) return;
     let userInfo = await UserInfo.findOne({ server: message.guild.name, userId: message.author.id });
       if(!userInfo) {
       userInfo = new UserInfo({
@@ -61,7 +61,8 @@ client.on('messageCreate', async function(message){
     });
   
     // Check if the message contains a link
-    if(message.content.includes("http")) {
+    if(message.content.includes("http"))
+        {
       const link = new Link({
         server: message.guild.name,
         channel: message.channel.id,
@@ -88,7 +89,7 @@ client.on('messageCreate', async function(message){
         time: new Date().toString()
       });
       log.save().then(() => {
-//        console.log(`Message logged to MongoDB: ${message.author.username}: ${message.content}\n`);
+//       console.log(`Message logged to MongoDB: ${message.author.username}: ${message.content}\n`);
       }).catch(err => {
         console.error(err);
         });
@@ -125,23 +126,7 @@ client.on('messageCreate', async function(message){
                 });
                 
     let response = await openai.callopenai(message, message.author.username, whoami);
-//    console.log(`butler.js - Line 128 - ${message}, ${message.author.username}, ${whoami}`);
-//    console.log(whoami);
-    const whoamiLower = whoami.toLowerCase();
-//    console.log(whoamiLower);
-    const regex = new RegExp(`^${whoamiLower}: (.*)`);
-//    console.log(regex);
-    const match = response.match(regex);
-//    console.log(match);
-    if (match) {
-      const parsedData = match[1];
-//      console.log(parsedData);
-      message.author.send(parsedData);
-    } else {
-      message.author.send(response);
-      console.log(`"Line 141 - Butler - Regex: No match found"`);
-    }
-
+    console.log(`butler.js - Line 129 - ${message}, ${message.author.username}, ${whoami}`);
 
     const log2 = new Log({
       createdBy: whoami,
@@ -178,7 +163,7 @@ client.on('messageCreate', async function(message){
   userInfo.time = new Date();
   }
   userInfo.save().then(() => {
-  console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
+  //console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
   }).catch(err => {
   console.error(err);
   });
@@ -196,13 +181,15 @@ client.on("messageCreate", async function(message){
     if(message.content.startsWith("/BP")) {
         // console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
         // message.author.send(`Hello, I'm TheButler.  How can I help you?`);
-        console.log("Puerus starting here I hope!");
+        // console.log("Puerus starting here I hope!");
     } else
     if(message.content.startsWith("/BW")) {
         console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
+        const weather = require('./utils.js');
         const OWMapiKey = process.env.OWMapiKey;
         const zip = message.content.split(' ')[1];
-        if(!zip) return message.channel.send("Please provide a zip code after the command")
+        if(!zip) 
+        return message.channel.send("Please provide a zip code after the command")
             weather.getWeather(zip, message, OWMapiKey);
     }
 }});
@@ -217,7 +204,7 @@ client.on("messageCreate", async function(message){
 //       let lastMessage = new Date(user.time);
 //       let timeDiff = currTime - lastMessage;
 //       let minutesDiff = timeDiff / 60000;
-//       if(minutesDiff > 1080 ) {
+//       if(minutesDiff > 360 ) {
 //         let userDM = client.users.cache.get(user.userId);
 //         if (userDM && !userDM.bot) {
 //           userDM.send("It's been a while since you last sent a message, I hope everything is going well! Is there anything you would like to talk about?");

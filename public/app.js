@@ -15,7 +15,7 @@ usernameSubmitButton.addEventListener('click', async () => {
     usernameInput.disabled = true;
     usernameSubmitButton.disabled = true;
     const usernameContainer = document.getElementById('username-container');
-    usernameContainer.innerHTML = `${username}!`;
+    usernameContainer.innerHTML = `${username}`;
 
     try {
       const chatHistory = await $.ajax({
@@ -203,4 +203,3 @@ $.ajax({
     console.error('Error getting personas:', error);
   }
 });
-

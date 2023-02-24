@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const MongoClient = require('mongodb').MongoClient;
-const { Log } = require('./src/mongo.js');
+const { Log, getPersonaData } = require('./src/mongo.js');
 
 const openaiAPI = require('./src/openai.js');
 const { Configuration, OpenAIApi } = require("openai");
@@ -137,6 +137,7 @@ app.get('/api/personas', (req, res) => {
     });
   });
 });
+
 
 // Get chat history from MongoDB
 app.post('/api/chat-history', (req, res) => {

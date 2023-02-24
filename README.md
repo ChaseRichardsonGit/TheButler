@@ -113,14 +113,30 @@
 
 
             Known Bugs / Issues
+            PERSONAS ON WEB
             Fix username-input text color to Black - 2/22/23 - 11:45AM
             userInfo not working - move out of openai.js
             cost not working - move out of openai.js
+            It doesn't answer the first question right on Web.
+            /Commands out of the butler 
+            Weather is borked.
+            calc/cost/clear into utils.
+
+            Finish passing the weather through openai and return longform response.
+            Website to be live to the database with ajax polling 1s.
+            Expose weather on the web.
+            Slash commands on web?
+            Today's Chats.
+            Conversation History - Clear memory on timer?
+
+
             
             0.0.895 Punch List:
             Refactor.
             Clean up code as much as possible.  Remove all whoami where possible and replace with persona.  
             Capture DM's sent count to bots in userInfos for tracking.
+    
+            Get rid of puerus.js and jarvis.js by changing index.js - DONE - 2/23 - 8PM
     
             
 
@@ -133,13 +149,11 @@
                 Username fit in header on mobile.
                 Change username-input size for web and mobile.
 
-
             When persona is changed, clear chat window, then load chat history with user.
-            Move regex into OpenAI.js | parse response out | while loop? | while the message contains "butler: " remove it and iterate through the loop until it's gone.
             In webserver.js - Fix getPersona mongo client to use our client
-
             Use ajax to get messages in realtime. - 1s polling
 
+            Move regex into OpenAI.js | parse response out | DONE! - 2/23 - 7:31PM
 
             0.1.0 Wishlist:
             A way to update the prompts for the persona's easily.

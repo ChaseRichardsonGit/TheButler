@@ -1,11 +1,12 @@
 // Get your persona from your environment otheriwse assume the butler
 let persona = process.argv[2];
 if (persona) { persona = process.argv[2];
-} else { persona = 'butler'; }
+} else { persona = 'Butler'; }
 
 const { Configuration , OpenAIApi } = require('openai');
 
 const calculateCost = require('./calccost.js');
+const { updateUserInfo, saveCostRecord } = require('./utils.js');
 
 const { getPersonaData, getChatLog, Cost, UserInfo } = require("./mongo.js");
 
@@ -50,41 +51,27 @@ module.exports = {
                 logprobs: null,
                 stop: ""
             });          
-            let response = gptResponse.data.choices[0].text.trim(); 
-            let total_tokens = (gptResponse.data.usage.total_tokens);
-            let cost = calculateCost.calculateCost(total_tokens);
-            let costTrimmed = parseFloat(cost.toFixed(4));
-
-            // Find the UserInfo in the database and update it with the cost
-            // const userInfo = await UserInfo.findOne({ userId: message.author.id });
-            // if (userInfo) {
-            //     userInfo.cost_total += costTrimmed;
-            //     userInfo.save().then(() => {
-            //     }).catch(err => {
-            //         console.error(err);
-            //     });
-            // }
             
-            // Create a new Cost record and save it to the database
-            // if(costTrimmed > 0.0001){
-            //       const costRecord = new Cost({
-            //         username: message.author.username,
-            //         characters: response.length,
-            //         tokens: total_tokens,
-            //         cost: costTrimmed,
-            //         time: new Date()
-            //     });
-    
-            //     costRecord.save((error) => {
-            //         if (error) {
-            //             console.error("Error saving cost record: ", error);
-            //         } 
-            //     });
-            // }
+            let initResponse = gptResponse.data.choices[0].text.trim(); 
+            const regex = new RegExp(`^${persona}: (.*)`);
+            const match = initResponse.match(regex);
+            // console.log(`openai.js - Line 57 - initResponse: ${initResponse}`)
+            let response = initResponse;
 
+            if (match) {
+                const parsedData = match[1];
+                // console.log(`openai.js - Line 62 - parsedData: ${parsedData}`)
+                response = parsedData;
+                // console.log(`openai.js - Line 64 - response: ${response}`);
+            } else {
+                response = initResponse;
+                // console.log(`"Line 66 - openai.js - Regex: No match found"`);
+              }
+            
             if(response.length > 1999){
                 response = response.substring(0, 1999);
             }
+            // console.log(`openai.js - Line 72 - response: ${response}`);
             return response;
 
         } catch (error) {
@@ -92,3 +79,9 @@ module.exports = {
         }
     }
 }
+
+            // let total_tokens = (gptResponse.data.usage.total_tokens);
+            // let cost = calculateCost.calculateCost(total_tokens);
+            // let costTrimmed = parseFloat(cost.toFixed(4));
+            // updateUserInfo(message, costTrimmed);
+            // saveCostRecord(message, response, total_tokens, costTrimmed);   
