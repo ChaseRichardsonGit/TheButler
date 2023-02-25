@@ -141,6 +141,7 @@ client.on('messageCreate', async function(message){
     }).catch(err => {
       console.error(err);
     });
+    message.author.send(response);
   } catch (err) {
     console.error(err);
   }
@@ -163,7 +164,7 @@ client.on('messageCreate', async function(message){
   userInfo.time = new Date();
   }
   userInfo.save().then(() => {
-  //console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
+  console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
   }).catch(err => {
   console.error(err);
   });

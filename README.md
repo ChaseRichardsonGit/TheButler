@@ -1,10 +1,4 @@
 # The Butler
-
-           Fine Tuning Data: 
-           [2023-01-28 17:54:39] Created fine-tune: ft-KaqNnVsU8brR0B7MVWeC9MUB
-           openai api completions.create -m davinci:ft-personal-2023-01-28-22-59-23 -p "Who is Dr. Sleep?"
-           
-
             Scope & Approach:
             We want to create a Discord chatbot.  We want this bot to send a private message to new users with an introduction.
                 - On Demand messaging through a command, time based messaging through timers, trigger based off criteria (user hasn't interacted in a day), Gauge and engage to gain sentiment. 
@@ -102,8 +96,8 @@
        
             
             Conversation history above
-            Bar on left side for chat history and username (Put name somewhere to show it works)
-                If you provide matching discord name your conversation history pops up (nice name)
+            Bar on left side for chat history and username (Put name somewhere to show it works) 
+                If you provide matching discord name your conversation history pops up (nice name) | DONE 
 
             2/18/23 Idea list:
             Chat History (by username)
@@ -115,12 +109,12 @@
             Known Bugs / Issues
             PERSONAS ON WEB
             Fix username-input text color to Black - 2/22/23 - 11:45AM
-            userInfo not working - move out of openai.js
-            cost not working - move out of openai.js
+
             It doesn't answer the first question right on Web.
             /Commands out of the butler 
             Weather is borked.
-            calc/cost/clear into utils.
+            userInfo/calc/cost/clear into utils.
+            Discord replies with new lines but webchat doesn't.
 
             Finish passing the weather through openai and return longform response.
             Website to be live to the database with ajax polling 1s.

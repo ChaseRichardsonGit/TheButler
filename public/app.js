@@ -6,6 +6,7 @@ const usernameSubmitButton = document.querySelector('#username-submit-button');
 const clearButton = document.querySelector('#clear-btn');
 
 let username = '';
+let saveToDatabase = true; 
 
 // Username Submit listener to load chat history
 usernameSubmitButton.addEventListener('click', async () => {
@@ -24,9 +25,10 @@ usernameSubmitButton.addEventListener('click', async () => {
         data: {
           username,
           selectedPersona,
-          messageType: 'history',
+          messageType: "history",
         },
       });
+      saveToDatabase = false;
     
       // Add chat history to the chat window
       for (const message of chatHistory) {
@@ -38,6 +40,7 @@ usernameSubmitButton.addEventListener('click', async () => {
           message.time
         );
       }
+      console.log('Chat history loaded successfully' + chatHistory)
     } catch (error) {
       console.error('Error loading chat history:', error);
     }
@@ -107,7 +110,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
   }
 
   div.innerHTML = `<div style="display: inline">${senderName}: </div>${message}<br>`;
-
+  console.log('sender: ' + sender + ' message: ' + message + ' selectedPersona: ' + selectedPersona + ' response: ' + response + ' messageType: ' + messageType + ' timestamp: ' + timestamp)
   if (response) {
     const botMessage = document.createElement('div');
     botMessage.className = `message bot ${selectedPersona.toLowerCase()}`;
@@ -119,9 +122,9 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
   chatWindow.appendChild(div);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 
-  if (sender === username) {
-    let messageType = 'sent';
-    let receiver = selectedPersona;
+  if (sender === username && saveToDatabase) {
+    let sentMessageType = 'sent';
+    messageType = sentMessageType;
     $.ajax({
       url: '/api/save-message',
       type: 'POST',
@@ -131,8 +134,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
         timestamp,
         messageType,
         persona: selectedPersona,
-        sender,
-        response
+        sender
       }
     })
       .done((response) => {
@@ -144,13 +146,15 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
   }
 }
 
+
+
 // Send button event listener
 sendButton.addEventListener('click', async () => {
   const message = userInput.value.trim();
   if (message) { // check if message is not empty
     userInput.value = '';
     addMessage(username, message, selectedPersona);
-
+    saveToDatabase = true;
     try {
       const response = await $.ajax({
         url: '/api/response',

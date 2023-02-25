@@ -47,20 +47,22 @@ app.post('/api/save-message', (req, res) => {
   const channel = "chat";
 
   // Log the message to MongoDB for user
-  if (username === username) {
+  if (username) {
     try {
       const userLog = new Log({
-        createdBy: createdBy || "testcreatedBy",
+        createdBy: createdBy || "testCreatedBy",
         server: "web",
         channel: "chat",
         sender: sender,
-        receiver: receiver || "testreceiver",
+        receiver: receiver || "testReceiver",
         message: req.body.message,
         time: new Date().toString(),
       });
       userLog.save().then(() => {
+      console.log(`webserver.js - Line 62 - Message saved to MongoDB: ${message}, ${time}, ${createdBy}, ${sender}, ${receiver}, ${server}, ${channel}`)
       }).catch(err => {
         console.error(err);
+        res.status(500).send({ error: `An error occurred while saving the message: ${err}` }); 
       });
     } catch (error) {
       console.error(`An error occurred while calling MongoDB: ${error}`);
