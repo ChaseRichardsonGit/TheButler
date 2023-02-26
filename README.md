@@ -1,4 +1,13 @@
 # The Butler
+            To Install:
+            git clone repo
+
+            To run:
+            node index.js Persona (where Persona = Butler, Jarvis, or Puerus)
+                Only person that spawns a webserver is Butler, J and P are Discord bots only.
+
+
+
             Scope & Approach:
             We want to create a Discord chatbot.  We want this bot to send a private message to new users with an introduction.
                 - On Demand messaging through a command, time based messaging through timers, trigger based off criteria (user hasn't interacted in a day), Gauge and engage to gain sentiment. 
@@ -81,8 +90,8 @@
 
             2.12.23 Work List:
             Backend:
-            Starting it with a parameter.
-            Get regex parsing working.  Even if triplicated.  Parse it going into the DB and not on the way out.
+            Starting it with a parameter.  -- DONE -- Seneca -- 2/23/23
+            Get regex parsing working.  Even if triplicated.  Parse it going into the DB and not on the way out.  -- DONE -- 2/24/23 - 8PM
             Clean up node-modules and package.json    
             Add feature for timer to be smarter.  It should not fire if the last message was from any bot.  
                 Extend the timer to private channel.
@@ -90,7 +99,7 @@
             Listening for their name in all channels.
 
             Frontend:
-            
+            Username input on mobile.
             
             Structure Changes:
        
@@ -100,7 +109,7 @@
                 If you provide matching discord name your conversation history pops up (nice name) | DONE 
 
             2/18/23 Idea list:
-            Chat History (by username)
+            Chat History (by username)  --  DONE
             Lifecycle of conversation (when does it start and stop)
             "New Conversation" button? / Discord /reset? (group by day?)
             Add a Discord link to Mu?
@@ -109,8 +118,8 @@
             Known Bugs / Issues
             PERSONAS ON WEB
             Fix username-input text color to Black - 2/22/23 - 11:45AM
+            It doesn't answer the first question right on Web. - Solved/not fixed - First message not saving to DB
 
-            It doesn't answer the first question right on Web.
             /Commands out of the butler 
             Weather is borked.
             userInfo/calc/cost/clear into utils.

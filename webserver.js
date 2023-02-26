@@ -49,6 +49,7 @@ app.post('/api/save-message', async (req, res) => {
   // Log the message to MongoDB for user
   if (username) {
     try {
+      await saveMessageToDB(createdBy, sender, receiver, message);
       const userLog = new Log({
         createdBy: createdBy || "testCreatedBy",
         server: "web",
@@ -81,40 +82,41 @@ app.post('/api/response', async (req, res) => {
   try {
     const response = await openaiAPI.callopenai(prompt, username, persona);
     const result = response;
-    res.send({ response: result }); // Send the response back to the client.
 
-    // Log the response to MongoDB
-    const time = new Date().toString();
-    const createdBy = persona;
-    const sender = persona;
-    const receiver = username;
-    const server = "web";
-    const channel = "chat";
+    // Save the message to MongoDB
+    await saveMessageToDB(persona, persona, username, result);
 
-    try {
-      const botLog = new Log({
-        createdBy: createdBy,
-        server: "web",
-        channel: "chat",
-        sender: sender,
-        receiver: receiver || "testreceiver",
-        message: result,
-        time: time,
-      });
-      botLog.save().then(() => {
-        }).catch(err => {
-        console.error(err);
-      });        
-    } catch (error) {
-      console.error(`An error occurred while calling MongoDB: ${error}`);
-      console.error(error.stack);
-    }
+    res.send({ response: result }); 
   } catch (error) {
     console.error(`An error occurred while calling OpenAI API: ${error}`);
     console.error(error.response.data);
     res.status(500).send({ error: `An error occurred while calling OpenAI API: ${error}` });
   }
 });
+
+// Save message to MongoDB
+async function saveMessageToDB(createdBy, sender, receiver, message) {
+  const time = new Date().toString();
+  const server = "web";
+  const channel = "chat";
+
+  try {
+    const userLog = new Log({
+      createdBy: createdBy || "testCreatedBy",
+      server: "web",
+      channel: "chat",
+      sender: sender,
+      receiver: receiver || "testReceiver",
+      message: message,
+      time: new Date().toString(),
+    });
+    await userLog.save();
+    console.log(`webserver.js - Line 62 - Message saved to MongoDB: ${message}, ${time}, ${createdBy}, ${sender}, ${receiver}, ${server}, ${channel}`);
+  } catch (error) {
+    console.error(err);
+    throw new Error(`An error occurred while saving the message: ${error}`);
+  }
+}
 
 // Get personas from MongoDB
 app.get('/api/personas', (req, res) => {

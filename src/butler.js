@@ -156,6 +156,7 @@ client.on('messageCreate', async function(message){
   userInfo = new UserInfo({
   server: "-",
   userId: message.author.id,
+  username: message.author.username,
   sender: message.author.username,
   messagesSent: 1,
   time: new Date()
@@ -164,7 +165,7 @@ client.on('messageCreate', async function(message){
   userInfo.time = new Date();
   }
   userInfo.save().then(() => {
-  console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
+  console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with messagesSent: ${userInfo.messagesSent}\n`);
   }).catch(err => {
   console.error(err);
   });

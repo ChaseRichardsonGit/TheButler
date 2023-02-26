@@ -55,14 +55,15 @@ module.exports = {
             let initResponse = gptResponse.data.choices[0].text.trim(); 
             const regex = new RegExp(`^${persona}: (.*)`);
             const match = initResponse.match(regex);
-            console.log(`openai.js - Line 58 - initResponse: ${initResponse}`)
+            // console.log(`openai.js - Line 58 - initResponse: ${initResponse}`)
             let response = initResponse;
 
             if (match) {
+                console.log(`openai.js - Line 62 - Regex: Match found`);
                 const parsedData = match[1];
-                console.log(`openai.js - Line 63 - parsedData: ${parsedData}`)
+                // console.log(`openai.js - Line 63 - parsedData: ${parsedData}`)
                 response = parsedData;
-                console.log(`openai.js - Line 65 - response: ${response}`);
+                // console.log(`openai.js - Line 65 - response: ${response}`);
             } else {
                 response = initResponse;
                 console.log(`"Line 68 - openai.js - Regex: No match found"`);

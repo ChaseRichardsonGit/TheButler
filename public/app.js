@@ -109,12 +109,15 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
     div.classList.add(selectedPersona.toLowerCase());
   }
 
-  div.innerHTML = `<div style="display: inline">${senderName}: </div>${message}<br>`;
+//  div.innerHTML = `<div style="display: inline">${senderName}: </div>${message}<br>`;
+  div.innerHTML = `<div style="display: inline">${senderName}: </div>${message.replace(/\n/g, "<br>")}<br>`;
   console.log('sender: ' + sender + ' message: ' + message + ' selectedPersona: ' + selectedPersona + ' response: ' + response + ' messageType: ' + messageType + ' timestamp: ' + timestamp)
+  saveToDatabase = true;
   if (response) {
     const botMessage = document.createElement('div');
     botMessage.className = `message bot ${selectedPersona.toLowerCase()}`;
-    botMessage.innerHTML = `${selectedPersona}: ${response}<br>`;
+    // botMessage.innerHTML = `${selectedPersona}: ${response}<br>`;
+    botMessage.innerHTML = `${selectedPersona}: ${response.replace(/\n/g, "<br>")}<br>`;
     chatWindow.appendChild(botMessage);
     chatWindow.scrollTop = chatWindow.scrollHeight;
   }
