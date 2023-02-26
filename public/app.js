@@ -6,7 +6,6 @@ const usernameSubmitButton = document.querySelector('#username-submit-button');
 const clearButton = document.querySelector('#clear-btn');
 
 let username = '';
-let saveToDatabase = true; 
 
 // Username Submit listener to load chat history
 usernameSubmitButton.addEventListener('click', async () => {
@@ -28,8 +27,7 @@ usernameSubmitButton.addEventListener('click', async () => {
           messageType: "history",
         },
       });
-      saveToDatabase = false;
-    
+  
       // Add chat history to the chat window
       for (const message of chatHistory) {
         addMessage(
@@ -37,10 +35,12 @@ usernameSubmitButton.addEventListener('click', async () => {
           message.message,
           message.selectedPersona,
           message.response,
-          message.time
+          message.time,
+          "history"
         );
       }
-      console.log('Chat history loaded successfully' + chatHistory)
+   
+      // console.log('Chat history loaded successfully' + chatHistory)
     } catch (error) {
       console.error('Error loading chat history:', error);
     }
@@ -88,7 +88,8 @@ personaDropdown.addEventListener('change', (event) => {
 });
 
 // addMessage function
-async function addMessage(sender, message, selectedPersona, response, messageType) {
+async function addMessage(sender, message, selectedPersona, response, messageType = '') {
+  console.log(`app.js - Line 92 - sender: ${sender} username: ${username} messageType: ${messageType}`);
   const timestamp = Date.now();
   const div = document.createElement('div');
   let senderName = sender;
@@ -97,7 +98,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
     senderName = 'anonymous';
   } else if (sender === 'bot') {
     senderName = selectedPersona;
-    div.classList.add('bot'); // add the bot class to the div
+    div.classList.add('bot'); 
   }
 
   div.className = `message ${senderName}`;
@@ -109,10 +110,9 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
     div.classList.add(selectedPersona.toLowerCase());
   }
 
-//  div.innerHTML = `<div style="display: inline">${senderName}: </div>${message}<br>`;
   div.innerHTML = `<div style="display: inline">${senderName}: </div>${message.replace(/\n/g, "<br>")}<br>`;
   console.log('sender: ' + sender + ' message: ' + message + ' selectedPersona: ' + selectedPersona + ' response: ' + response + ' messageType: ' + messageType + ' timestamp: ' + timestamp)
-  saveToDatabase = true;
+
   if (response) {
     const botMessage = document.createElement('div');
     botMessage.className = `message bot ${selectedPersona.toLowerCase()}`;
@@ -124,10 +124,8 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
 
   chatWindow.appendChild(div);
   chatWindow.scrollTop = chatWindow.scrollHeight;
-
-  if (sender === username && saveToDatabase) {
-    // let sentMessageType = 'sent';
-    // messageType = sentMessageType;
+  console.log(`app.js - Line 125 - sender: ${sender} username: ${username} messageType: ${messageType}`)
+  if (sender === username && (messageType === 'sent' || messageType === 'received')) {
     $.ajax({
       url: '/api/save-message',
       type: 'POST',
@@ -135,7 +133,6 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
         username,
         message,
         timestamp,
-        // messageType,
         persona: selectedPersona,
         sender
       }
@@ -174,6 +171,9 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
 //   }
 // });
 
+
+
+
 // Send button event listener
 sendButton.addEventListener('click', async () => {
   const message = userInput.value.trim();
@@ -182,7 +182,7 @@ sendButton.addEventListener('click', async () => {
 
     try {
       const addMessagePromise = new Promise((resolve, reject) => {
-        addMessage(username, message, selectedPersona);
+        addMessage(username, message, selectedPersona, null, 'sent');
         resolve();
       });
       await addMessagePromise;
