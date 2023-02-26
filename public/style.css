@@ -314,6 +314,7 @@ background-position: center;
 flex-direction: column;
 align-items: flex-start;
 }
+
 #left-frame {
 width: 10%;
 }
@@ -335,16 +336,24 @@ border-radius: 50%;
 }
 
 #username-container {
-width: 100%;
-box-sizing: border-box;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-flex-wrap: wrap;
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 
-#username-frame #username-container {width: 50%;display: flex;flex-direction: row;align-items: center;flex-wrap: wrap;margin: auto;/* justify-content: center; */}
+#username-frame #username-container {
+	width: 50%;
+	height: 10%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: 88%;
+	margin-right: 40%;
+}
 
 #username-input-container {
 position: relative;
@@ -370,33 +379,27 @@ width: 100%;
 box-sizing: border-box;
 }
 
-	#frame-container {
-		display: flex;
-		flex-direction: column;
-	  }
+#frame-container {
+display: flex;
+flex-direction: column;
+}
 
-	  #header-frame {
-		flex-direction: column;
-		align-items: flex-start;
-		background-color: #4a4748;
-		}
-		
-		#left-frame {
-		width: 100%;
-		order: 1; 
-		margin-bottom: 16px; 
-		display: flex;
-		flex-direction: row; 
-		justify-content: space-between; 
-		}
-		
-		#chat-container {
-		width: 100%;
-		order: 3; 
-		}
-						
-		#left-frame button {
-		margin-bottom: 0; 
-		}
+#left-frame {
+width: 100%;
+order: 1; 
+margin-bottom: 16px; 
+display: flex;
+flex-direction: row; 
+justify-content: space-between; 
+}
+
+#chat-container {
+width: 100%;
+order: 3; 
+}
+				
+#left-frame button {
+margin-bottom: 0; 
+}
 
 		}

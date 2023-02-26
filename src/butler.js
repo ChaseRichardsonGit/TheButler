@@ -1,7 +1,7 @@
 // Get your persona from your environment otheriwse assume the butler
-let whoami = process.argv[2];
-if (whoami) { const whoami = process.argv[2];
-} else { const whoami = 'Butler';  }
+let persona = process.argv[2];
+if (persona) { let persona = process.argv[2];
+} else { let persona = 'Butler';  }
 
 // Load the environment variables
 require('dotenv').config(); 
@@ -9,7 +9,7 @@ require('dotenv').config();
 // Load the external functions if you're the butler
 const openai = require('./openai.js');
 
-if (whoami == 'Butler') {
+if (persona == 'Butler') {
   const clearchat = require('./clearchat.js');
 }
 
@@ -39,7 +39,7 @@ const client = new Client({
 
 // Listener for General (Butler Only)
 client.on('messageCreate', async function(message){
-    if(whoami == 'Butler') {
+    if(persona == 'Butler') {
     if(message.channel.type !== Discord.ChannelType.DM) {
     if(message.author.bot) return;
     if(!message.content.trim()) return;
@@ -80,7 +80,7 @@ client.on('messageCreate', async function(message){
 
 // Log the message to MongoDB    
     const log = new Log({ 
-        createdBy: whoami,
+        createdBy: persona,
         server: message.guild.name,
         channel: message.channel.name,
         sender: message.author.username,
@@ -100,8 +100,8 @@ client.on('messageCreate', async function(message){
 client.on('messageCreate', async function(message){
   if(message.channel.type !== Discord.ChannelType.DM) {
   if(message.author.bot) return; {
-      if(message.content.includes(whoami)) {
-        let response = await openai.callopenai(message, message.author.username, whoami);
+      if(message.content.includes(persona)) {
+        let response = await openai.callopenai(message, message.author.username, persona);
         message.channel.send(response);
 }}
 }});
@@ -112,11 +112,11 @@ client.on('messageCreate', async function(message){
         if(message.author.bot) return; 
             try {
                 const log = new Log({
-                    createdBy: whoami,
+                    createdBy: persona,
                     server: "-",
                     channel: "directMessage",
                     sender: message.author.username,
-                    receiver: whoami,
+                    receiver: persona,
                     message: message.content,
                     time: new Date().toString()
                 });
@@ -125,14 +125,14 @@ client.on('messageCreate', async function(message){
                     console.error(err);
                 });
                 
-    let response = await openai.callopenai(message, message.author.username, whoami);
-    console.log(`butler.js - Line 129 - ${message}, ${message.author.username}, ${whoami}`);
+    let response = await openai.callopenai(message, message.author.username, persona);
+    console.log(`butler.js - Line 129 - ${message}, ${message.author.username}, ${persona}`);
 
     const log2 = new Log({
-      createdBy: whoami,
+      createdBy: persona,
       server: "-",
       channel: "directMessage",
-      sender: whoami,
+      sender: persona,
       receiver: message.author.username,
       message: response,
       time: new Date().toString()
@@ -156,6 +156,7 @@ client.on('messageCreate', async function(message){
   userInfo = new UserInfo({
   server: "-",
   userId: message.author.id,
+  username: message.author.username,
   sender: message.author.username,
   messagesSent: 1,
   time: new Date()
@@ -164,7 +165,7 @@ client.on('messageCreate', async function(message){
   userInfo.time = new Date();
   }
   userInfo.save().then(() => {
-  console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with time: ${userInfo.time}\n`);
+  console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with messagesSent: ${userInfo.messagesSent}\n`);
   }).catch(err => {
   console.error(err);
   });
@@ -191,7 +192,7 @@ client.on("messageCreate", async function(message){
         const zip = message.content.split(' ')[1];
         if(!zip) 
         return message.channel.send("Please provide a zip code after the command")
-            weather.getWeather(zip, message, OWMapiKey);
+            weather.getWeather(zip, message, OWMapiKey, persona, message.author.username);
     }
 }});
 
@@ -239,6 +240,6 @@ client.on("messageCreate", async function(message){
 //   }
 //   }, 30000);
 
-console.log(`${whoami} is online as of ${Date()}!\n`);
+console.log(`${persona} is online as of ${Date()}!\n`);
 
 module.exports = client;

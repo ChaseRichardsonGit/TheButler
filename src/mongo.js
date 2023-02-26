@@ -136,6 +136,7 @@ connect();
 
 //getPersonaData from MongoDB
 const getPersonaData = async (persona) => {
+    console.log(`mongo.js - Line 139 - persona: ${persona}`)
     const url = process.env.MONGO_URI;
     const dbName = process.env.MONGO_DB_NAME;
     const collectionName = 'personas';
@@ -143,13 +144,13 @@ const getPersonaData = async (persona) => {
     const client = await MongoClient.connect(url, { useNewUrlParser: true });
     const db = client.db(dbName);
 
-    const result = await db.collection(collectionName).find({ "personas.name": `${whoami}` }).toArray();
+    const result = await db.collection(collectionName).find({ "personas.name": `${persona}` }).toArray();
     if (!result || !result[0] || !result[0].personas) {
         console.error("No persona data found");
         return;
     }
     
-    const personaData = result[0].personas.find(p => p.name ===  `${whoami}` );
+    const personaData = result[0].personas.find(p => p.name ===  `${persona}` );
     if (!personaData) {
       console.error(`No persona data found for ${persona}`);
       return;

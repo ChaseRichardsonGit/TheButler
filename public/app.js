@@ -6,7 +6,6 @@ const usernameSubmitButton = document.querySelector('#username-submit-button');
 const clearButton = document.querySelector('#clear-btn');
 
 let username = '';
-let saveToDatabase = true; 
 
 // Username Submit listener to load chat history
 usernameSubmitButton.addEventListener('click', async () => {
@@ -28,8 +27,7 @@ usernameSubmitButton.addEventListener('click', async () => {
           messageType: "history",
         },
       });
-      saveToDatabase = false;
-    
+  
       // Add chat history to the chat window
       for (const message of chatHistory) {
         addMessage(
@@ -37,10 +35,12 @@ usernameSubmitButton.addEventListener('click', async () => {
           message.message,
           message.selectedPersona,
           message.response,
-          message.time
+          message.time,
+          "history"
         );
       }
-      console.log('Chat history loaded successfully' + chatHistory)
+   
+      // console.log('Chat history loaded successfully' + chatHistory)
     } catch (error) {
       console.error('Error loading chat history:', error);
     }
@@ -70,7 +70,7 @@ const dropdown = document.createElement('select');
 
 const personaDropdown = document.querySelector('#persona-dropdown');
 let selectedPersona = '';
-personaDropdown.addEventListener('change', (event) => {
+personaDropdown.addEventListener('change', async (event) => {
   selectedPersona = event.target.value;
   const headerFrame = document.getElementById('header-frame');
   const personaImage = document.getElementById('persona-image');
@@ -85,10 +85,40 @@ personaDropdown.addEventListener('change', (event) => {
     headerFrame.style.backgroundColor = '#1d1d1d';
     personaImage.src = '/img/Butler.png';
   }
+
+  try {
+    const chatHistory = await $.ajax({
+      url: '/api/chat-history',
+      type: 'POST',
+      data: {
+        username,
+        selectedPersona,
+        messageType: "history",
+      },
+    });
+    
+    // Clear the chat window
+    chatWindow.innerHTML = '';
+
+    // Add chat history to the chat window
+    for (const message of chatHistory) {
+      addMessage(
+        message.sender,
+        message.message,
+        message.selectedPersona,
+        message.response,
+        message.time,
+        "history",
+      );
+    }
+  } catch (error) {
+    console.error('Error loading chat history:', error);
+  }
 });
 
 // addMessage function
-async function addMessage(sender, message, selectedPersona, response, messageType) {
+async function addMessage(sender, message, selectedPersona, response, messageType = '') {
+  // console.log(`app.js - Line 92 - sender: ${sender} username: ${username} messageType: ${messageType}`);
   const timestamp = Date.now();
   const div = document.createElement('div');
   let senderName = sender;
@@ -97,7 +127,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
     senderName = 'anonymous';
   } else if (sender === 'bot') {
     senderName = selectedPersona;
-    div.classList.add('bot'); // add the bot class to the div
+    div.classList.add('bot'); 
   }
 
   div.className = `message ${senderName}`;
@@ -109,22 +139,22 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
     div.classList.add(selectedPersona.toLowerCase());
   }
 
-  div.innerHTML = `<div style="display: inline">${senderName}: </div>${message}<br>`;
-  console.log('sender: ' + sender + ' message: ' + message + ' selectedPersona: ' + selectedPersona + ' response: ' + response + ' messageType: ' + messageType + ' timestamp: ' + timestamp)
+  div.innerHTML = `<div style="display: inline">${senderName}: </div>${message.replace(/\n/g, "<br>")}<br>`;
+  // console.log('sender: ' + sender + ' message: ' + message + ' selectedPersona: ' + selectedPersona + ' response: ' + response + ' messageType: ' + messageType + ' timestamp: ' + timestamp)
+
   if (response) {
     const botMessage = document.createElement('div');
     botMessage.className = `message bot ${selectedPersona.toLowerCase()}`;
-    botMessage.innerHTML = `${selectedPersona}: ${response}<br>`;
+    // botMessage.innerHTML = `${selectedPersona}: ${response}<br>`;
+    botMessage.innerHTML = `${selectedPersona}: ${response.replace(/\n/g, "<br>")}<br>`;
     chatWindow.appendChild(botMessage);
     chatWindow.scrollTop = chatWindow.scrollHeight;
   }
 
   chatWindow.appendChild(div);
   chatWindow.scrollTop = chatWindow.scrollHeight;
-
-  if (sender === username && saveToDatabase) {
-    let sentMessageType = 'sent';
-    messageType = sentMessageType;
+  // console.log(`app.js - Line 125 - sender: ${sender} username: ${username} messageType: ${messageType}`)
+  if (sender === username && (messageType === 'sent' || messageType === 'received')) {
     $.ajax({
       url: '/api/save-message',
       type: 'POST',
@@ -132,19 +162,44 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
         username,
         message,
         timestamp,
-        messageType,
         persona: selectedPersona,
         sender
       }
     })
       .done((response) => {
-        console.log('Message saved to database:', response);
+        // console.log('Message saved to database:', response);
       })
       .fail((error) => {
         console.error('Error saving message to database:', error);
       });
   }
 }
+
+// Send button event listener
+// sendButton.addEventListener('click', async () => {
+//   const message = userInput.value.trim();
+//   if (message) { // check if message is not empty
+//     userInput.value = '';
+//     addMessage(username, message, selectedPersona);
+//     saveToDatabase = true;
+//     try {
+//       const response = await $.ajax({
+//         url: '/api/response',
+//         type: 'POST',
+//         data: {
+//           message,
+//           username: username || 'anonymous',
+//           persona: selectedPersona
+//         }
+//       });
+//       addMessage(selectedPersona, response.response, selectedPersona, null, 'received');
+//     } catch (error) {
+//       console.error(error);
+//       addMessage('bot', 'Sorry, an error occurred. Please try again.', selectedPersona, null, 'received');
+//     }
+//   }
+// });
+
 
 
 
@@ -153,9 +208,14 @@ sendButton.addEventListener('click', async () => {
   const message = userInput.value.trim();
   if (message) { // check if message is not empty
     userInput.value = '';
-    addMessage(username, message, selectedPersona);
-    saveToDatabase = true;
+
     try {
+      const addMessagePromise = new Promise((resolve, reject) => {
+        addMessage(username, message, selectedPersona, null, 'sent');
+        resolve();
+      });
+      await addMessagePromise;
+
       const response = await $.ajax({
         url: '/api/response',
         type: 'POST',

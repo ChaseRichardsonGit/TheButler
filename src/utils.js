@@ -1,5 +1,6 @@
 const { Cost, UserInfo } = require("./mongo.js");
 const calculateCost = require('./calccost.js');
+const openaiAPI = require("./openai.js");
 
 
 async function updateUserInfo(message, costTrimmed) {
@@ -41,7 +42,8 @@ module.exports = {
 const http = require('http');
 
 
-module.exports = {getWeather: async function(zip, message, OWMapiKey) {
+module.exports = {getWeather: async function(zip, message, OWMapiKey, persona, username) {
+    console.log(`utils.js - Line 46 - ${zip}, ${message}, ${OWMapiKey}, ${persona}, ${username}`);
         const options = {
             hostname: 'api.openweathermap.org',
             path: `/data/2.5/weather?zip=${zip}&appid=${OWMapiKey}&units=imperial`,
@@ -58,12 +60,12 @@ module.exports = {getWeather: async function(zip, message, OWMapiKey) {
                 const weatherData = JSON.parse(data);
                 if(res.statusCode === 200) {
                     // The request was successful
-                    // You can access the weather data here
-                    message.author.send(`The weather in ${weatherData.name} is currently ${weatherData.weather[0].description} with a temperature of ${weatherData.main.temp} F which feels like ${weatherData.main.feels_like} F and a humidity of ${weatherData.main.humidity}%. The wind speed is ${weatherData.wind.speed} mph.  The forecast for the day is a high of ${weatherData.main.temp_max} F and a low of ${weatherData.main.temp_min} F.`);
-              //      const openai = require("./openai.js");
-                //    let response = await openai.callopenai(`The weather in ${weatherData.name} is currently ${weatherData.weather[0].description} with a temperature of ${weatherData.main.temp} F which feels like ${weatherData.main.feels_like} F and a humidity of ${weatherData.main.humidity}%. The wind speed is ${weatherData.wind.speed} mph.  The forecast for the day is a high of ${weatherData.main.temp_max} F and a low of ${weatherData.main.temp_min} F.`, message.author.username, whoami);
-                   //openai.callopenai(message, message.author.username, whoami);
-                    
+                // let weather = `The weather in ${weatherData.name} is currently ${weatherData.weather[0].description} with a temperature of ${weatherData.main.temp} F which feels like ${weatherData.main.feels_like} F and a humidity of ${weatherData.main.humidity}%. The wind speed is ${weatherData.wind.speed} mph.  The forecast for the day is a high of ${weatherData.main.temp_max} F and a low of ${weatherData.main.temp_min} F.`;
+                // // let weatherOut = openaiAPI.callopenai(`${weather}`, username, persona);
+                // let weatherOut = openaiAPI.callopenai(`${weather}`, username, persona);
+                // message.author.send(weatherOut);    
+                message.author.send(`The weather in ${weatherData.name} is currently ${weatherData.weather[0].description} with a temperature of ${weatherData.main.temp} F which feels like ${weatherData.main.feels_like} F and a humidity of ${weatherData.main.humidity}%. The wind speed is ${weatherData.wind.speed} mph.  The forecast for the day is a high of ${weatherData.main.temp_max} F and a low of ${weatherData.main.temp_min} F.`);
+                    // console.log(`utils.js - Line 66 - ${weather}, ${username}, ${persona}, ${weatherOut}`); 
                   } else if(res.statusCode === 400) {
                     // Handle Bad Request error
                     message.channel.send(`Error: Bad request, please check your input`);

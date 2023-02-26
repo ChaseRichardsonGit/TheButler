@@ -1,4 +1,13 @@
 # The Butler
+            To Install:
+            git clone repo
+
+            To run:
+            node index.js Persona (where Persona = Butler, Jarvis, or Puerus)
+                Only person that spawns a webserver is Butler, J and P are Discord bots only.
+
+
+
             Scope & Approach:
             We want to create a Discord chatbot.  We want this bot to send a private message to new users with an introduction.
                 - On Demand messaging through a command, time based messaging through timers, trigger based off criteria (user hasn't interacted in a day), Gauge and engage to gain sentiment. 
@@ -81,41 +90,51 @@
 
             2.12.23 Work List:
             Backend:
-            Starting it with a parameter.
-            Get regex parsing working.  Even if triplicated.  Parse it going into the DB and not on the way out.
-            Clean up node-modules and package.json    
+            Starting it with a parameter.  -- DONE -- Seneca -- 2/23/23
+            Get regex parsing working.  Even if triplicated.  Parse it going into the DB and not on the way out.  -- DONE -- 2/24/23 - 8PM
+            Clean up node-modules and package.json    -- DONE -- REDO
             Add feature for timer to be smarter.  It should not fire if the last message was from any bot.  
                 Extend the timer to private channel.
                 Botpacalypse - Start for 5 minutes.
-            Listening for their name in all channels.
+            Listening for their name in all channels.  -- DONE
 
             Frontend:
-            
+            Username input on mobile.  - Mostly done
             
             Structure Changes:
-       
-            
-            Conversation history above
-            Bar on left side for chat history and username (Put name somewhere to show it works) 
-                If you provide matching discord name your conversation history pops up (nice name) | DONE 
+            If you provide matching discord name your conversation history pops up (nice name) | DONE 
 
             2/18/23 Idea list:
-            Chat History (by username)
+            Chat History (by username)  --  DONE
             Lifecycle of conversation (when does it start and stop)
             "New Conversation" button? / Discord /reset? (group by day?)
             Add a Discord link to Mu?
 
 
             Known Bugs / Issues
-            PERSONAS ON WEB
-            Fix username-input text color to Black - 2/22/23 - 11:45AM
+            PERSONAS ON WEB  -- DONE -- 2/26/23 - 3:09PM
+            Double logging the users messages. 2/26/23 - 1010AM  -- FIXED - 2:15PM
+            Load chathistory logs. 2/26/23 - 1013AM  -- FIXED - 2:15PM
+            Fix username-input text color to Black - DONE - 2/22/23 - 11:45AM
+            It doesn't answer the first question right on Web. - Solved/not fixed - First message not saving to DB  - DONE - 2/26/23 - 3PM
+              Discord replies with new lines but webchat doesn't.  -- FIXED -- 2/26/23
 
-            It doesn't answer the first question right on Web.
             /Commands out of the butler 
-            Weather is borked.
             userInfo/calc/cost/clear into utils.
-            Discord replies with new lines but webchat doesn't.
+          
+         
+            0.0.897 Punch List:
+            Remove all whoami where possible and replace with persona -- DONE -- ?  
+            Capture DM's sent count to bots in userInfos for tracking. -- DONE -- 
+            Get rid of puerus.js and jarvis.js by changing index.js - DONE - 2/23 - 8PM
+            Rename butler.js to discordbot.js
+            Add total cost back in and make it work for web, just log it not show it on screen.
+            Frontend Item - Username-input box floating down
+            Post every link we write to the database goes to the links for later channel.
+    
 
+
+            BIG WANT for 0.0.9 - Weather through OpenAI and Jawnbot
             Finish passing the weather through openai and return longform response.
             Website to be live to the database with ajax polling 1s.
             Expose weather on the web.
@@ -123,16 +142,6 @@
             Today's Chats.
             Conversation History - Clear memory on timer?
 
-
-            
-            0.0.895 Punch List:
-            Refactor.
-            Clean up code as much as possible.  Remove all whoami where possible and replace with persona.  
-            Capture DM's sent count to bots in userInfos for tracking.
-    
-            Get rid of puerus.js and jarvis.js by changing index.js - DONE - 2/23 - 8PM
-    
-            
 
             0.0.9 Wish List:
             All the styling!
@@ -164,6 +173,13 @@
             Collect images and links/urls
                  Get list of users that haven't interacted in 7 days and give em a whaddup
             Build a bot.  Unleash it at the push of a button.
+
+            Temperatures - Give each persona different personalities based on their temp.
+                BlogBot - Creates blog articles for you based on a given subject?
+                Melfi? - Weekly check in, scheduled appointment, Sundays at 10AM.
+                GOD Bot - Kill all butlers, kill yourself, then start the butler.  Also where you summon the butler to your computer.
+            Token Size
+            
             
 
             Three Bots:
