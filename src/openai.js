@@ -19,8 +19,9 @@ const openai = new OpenAIApi(configuration);
 
 module.exports = { 
     callopenai: async function(message, sender, persona ) { 
+        console.log(`openai.js - Line 22 - message: ${message} sender: ${sender} persona: ${persona}`)
         let previousMessages = await getChatLog(sender, persona).then(chatLog => { // 2.20.23-1017PM-Changed to persona from whoami
-            console.log(`openai.js - Line 22 - getChatLog: sender: ${sender} persona: ${persona}`)
+            console.log(`openai.js - Line 24 - getChatLog: sender: ${sender} persona: ${persona}`)
             let previousMessages = "";  
             for (let i = chatLog.length - 2; i >= chatLog.length - 10; i--) { 
                 if (i < 0) {
@@ -38,11 +39,11 @@ module.exports = {
          console.log(`openai.js - Line 37 - persona: ${persona}`)
          console.log(`openai.js - Line 38 - preprompttext: ${preprompttext}`)
        
-         // OpenAI API call with try/catch
+         // OpenAI API call
         try {
             const gptResponse = await openai.createCompletion({
                 model: "text-davinci-003",
-                prompt:  preprompttext + `${previousMessages} ${message.content}\n`,
+                prompt:  preprompttext + `${previousMessages} ${message}\n`,
                 max_tokens: 2000,
                 temperature: .5,
                 top_p: 1,
