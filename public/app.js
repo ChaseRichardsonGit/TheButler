@@ -126,8 +126,8 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
   chatWindow.scrollTop = chatWindow.scrollHeight;
 
   if (sender === username && saveToDatabase) {
-    let sentMessageType = 'sent';
-    messageType = sentMessageType;
+    // let sentMessageType = 'sent';
+    // messageType = sentMessageType;
     $.ajax({
       url: '/api/save-message',
       type: 'POST',
@@ -135,7 +135,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
         username,
         message,
         timestamp,
-        messageType,
+        // messageType,
         persona: selectedPersona,
         sender
       }
