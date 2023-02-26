@@ -36,7 +36,7 @@ app.get('/favicon.ico', (req, res) => {
 });
 
 // Save Message to MongoDB
-app.post('/api/save-message', (req, res) => {
+app.post('/api/save-message', async (req, res) => {
   const time = new Date().toString();
   const username = req.body.username;
   let message = req.body.message;
@@ -58,8 +58,9 @@ app.post('/api/save-message', (req, res) => {
         message: req.body.message,
         time: new Date().toString(),
       });
-      userLog.save().then(() => {
+      await userLog.save().then(() => {
       console.log(`webserver.js - Line 62 - Message saved to MongoDB: ${message}, ${time}, ${createdBy}, ${sender}, ${receiver}, ${server}, ${channel}`)
+      res.send({ success: true });
       }).catch(err => {
         console.error(err);
         res.status(500).send({ error: `An error occurred while saving the message: ${err}` }); 

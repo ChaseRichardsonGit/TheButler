@@ -28,15 +28,15 @@ module.exports = {
                 }
                 previousMessages += `${chatLog[i].sender}: ${chatLog[i].message}\n`;
             }
-            console.log(`openai.js - Line30 - previousMessages: ${previousMessages}`)
+            console.log(`openai.js - Line 30 - previousMessages: ${previousMessages}`)
             return (previousMessages);
         });
        
         let preprompttext = await getPersonaData(persona).then(personaData => { 
             return (personaData.data);   
         });
-        // console.log(`openai.js - Line 37 - persona: ${persona}`)
-        // console.log(`openai.js - Line 38 - preprompttext: ${preprompttext}`)
+         console.log(`openai.js - Line 37 - persona: ${persona}`)
+         console.log(`openai.js - Line 38 - preprompttext: ${preprompttext}`)
        
          // OpenAI API call with try/catch
         try {
@@ -55,17 +55,17 @@ module.exports = {
             let initResponse = gptResponse.data.choices[0].text.trim(); 
             const regex = new RegExp(`^${persona}: (.*)`);
             const match = initResponse.match(regex);
-            // console.log(`openai.js - Line 57 - initResponse: ${initResponse}`)
+            console.log(`openai.js - Line 58 - initResponse: ${initResponse}`)
             let response = initResponse;
 
             if (match) {
                 const parsedData = match[1];
-                // console.log(`openai.js - Line 62 - parsedData: ${parsedData}`)
+                console.log(`openai.js - Line 63 - parsedData: ${parsedData}`)
                 response = parsedData;
-                // console.log(`openai.js - Line 64 - response: ${response}`);
+                console.log(`openai.js - Line 65 - response: ${response}`);
             } else {
                 response = initResponse;
-                // console.log(`"Line 66 - openai.js - Regex: No match found"`);
+                console.log(`"Line 68 - openai.js - Regex: No match found"`);
               }
             
             if(response.length > 1999){
