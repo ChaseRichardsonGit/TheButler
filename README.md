@@ -117,12 +117,24 @@
             Load chathistory logs. 2/26/23 - 1013AM  -- FIXED - 2:15PM
             Fix username-input text color to Black - DONE - 2/22/23 - 11:45AM
             It doesn't answer the first question right on Web. - Solved/not fixed - First message not saving to DB  - DONE - 2/26/23 - 3PM
+              Discord replies with new lines but webchat doesn't.  -- FIXED -- 2/26/23
 
             /Commands out of the butler 
-            Weather is borked.
             userInfo/calc/cost/clear into utils.
-            Discord replies with new lines but webchat doesn't.  -- FIXED -- 2/26/23
+          
+         
+            0.0.897 Punch List:
+            Remove all whoami where possible and replace with persona -- DONE -- ?  
+            Capture DM's sent count to bots in userInfos for tracking. -- DONE -- 
+            Get rid of puerus.js and jarvis.js by changing index.js - DONE - 2/23 - 8PM
+            Rename butler.js to discordbot.js
+            Add total cost back in and make it work for web, just log it not show it on screen.
+            Frontend Item - Username-input box floating down
+            Post every link we write to the database goes to the links for later channel.
+    
 
+
+            BIG WANT for 0.0.9 - Weather through OpenAI and Jawnbot
             Finish passing the weather through openai and return longform response.
             Website to be live to the database with ajax polling 1s.
             Expose weather on the web.
@@ -130,16 +142,6 @@
             Today's Chats.
             Conversation History - Clear memory on timer?
 
-
-            
-            0.0.895 Punch List:
-            Refactor.
-            Clean up code as much as possible.  Remove all whoami where possible and replace with persona.  
-            Capture DM's sent count to bots in userInfos for tracking.
-    
-            Get rid of puerus.js and jarvis.js by changing index.js - DONE - 2/23 - 8PM
-    
-            
 
             0.0.9 Wish List:
             All the styling!
