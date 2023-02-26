@@ -117,7 +117,9 @@
 
             Known Bugs / Issues
             PERSONAS ON WEB
-            Fix username-input text color to Black - 2/22/23 - 11:45AM
+            Double logging the users messages. 2/26/23 - 1010AM
+            Load chathistory logs. 2/26/23 - 1013AM
+            Fix username-input text color to Black - DONE - 2/22/23 - 11:45AM
             It doesn't answer the first question right on Web. - Solved/not fixed - First message not saving to DB
 
             /Commands out of the butler 
@@ -173,6 +175,13 @@
             Collect images and links/urls
                  Get list of users that haven't interacted in 7 days and give em a whaddup
             Build a bot.  Unleash it at the push of a button.
+
+            Temperatures - Give each persona different personalities based on their temp.
+                BlogBot - Creates blog articles for you based on a given subject?
+                Melfi? - Weekly check in, scheduled appointment, Sundays at 10AM.
+                GOD Bot - Kill all butlers, kill yourself, then start the butler.  Also where you summon the butler to your computer.
+            Token Size
+            
             
 
             Three Bots:
