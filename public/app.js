@@ -70,7 +70,7 @@ const dropdown = document.createElement('select');
 
 const personaDropdown = document.querySelector('#persona-dropdown');
 let selectedPersona = '';
-personaDropdown.addEventListener('change', (event) => {
+personaDropdown.addEventListener('change', async (event) => {
   selectedPersona = event.target.value;
   const headerFrame = document.getElementById('header-frame');
   const personaImage = document.getElementById('persona-image');
@@ -85,11 +85,40 @@ personaDropdown.addEventListener('change', (event) => {
     headerFrame.style.backgroundColor = '#1d1d1d';
     personaImage.src = '/img/Butler.png';
   }
+
+  try {
+    const chatHistory = await $.ajax({
+      url: '/api/chat-history',
+      type: 'POST',
+      data: {
+        username,
+        selectedPersona,
+        messageType: "history",
+      },
+    });
+    
+    // Clear the chat window
+    chatWindow.innerHTML = '';
+
+    // Add chat history to the chat window
+    for (const message of chatHistory) {
+      addMessage(
+        message.sender,
+        message.message,
+        message.selectedPersona,
+        message.response,
+        message.time,
+        "history",
+      );
+    }
+  } catch (error) {
+    console.error('Error loading chat history:', error);
+  }
 });
 
 // addMessage function
 async function addMessage(sender, message, selectedPersona, response, messageType = '') {
-  console.log(`app.js - Line 92 - sender: ${sender} username: ${username} messageType: ${messageType}`);
+  // console.log(`app.js - Line 92 - sender: ${sender} username: ${username} messageType: ${messageType}`);
   const timestamp = Date.now();
   const div = document.createElement('div');
   let senderName = sender;
@@ -111,7 +140,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
   }
 
   div.innerHTML = `<div style="display: inline">${senderName}: </div>${message.replace(/\n/g, "<br>")}<br>`;
-  console.log('sender: ' + sender + ' message: ' + message + ' selectedPersona: ' + selectedPersona + ' response: ' + response + ' messageType: ' + messageType + ' timestamp: ' + timestamp)
+  // console.log('sender: ' + sender + ' message: ' + message + ' selectedPersona: ' + selectedPersona + ' response: ' + response + ' messageType: ' + messageType + ' timestamp: ' + timestamp)
 
   if (response) {
     const botMessage = document.createElement('div');
@@ -124,7 +153,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
 
   chatWindow.appendChild(div);
   chatWindow.scrollTop = chatWindow.scrollHeight;
-  console.log(`app.js - Line 125 - sender: ${sender} username: ${username} messageType: ${messageType}`)
+  // console.log(`app.js - Line 125 - sender: ${sender} username: ${username} messageType: ${messageType}`)
   if (sender === username && (messageType === 'sent' || messageType === 'received')) {
     $.ajax({
       url: '/api/save-message',
@@ -138,7 +167,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
       }
     })
       .done((response) => {
-        console.log('Message saved to database:', response);
+        // console.log('Message saved to database:', response);
       })
       .fail((error) => {
         console.error('Error saving message to database:', error);

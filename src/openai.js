@@ -29,15 +29,15 @@ module.exports = {
                 }
                 previousMessages += `${chatLog[i].sender}: ${chatLog[i].message}\n`;
             }
-            console.log(`openai.js - Line 30 - previousMessages: ${previousMessages}`)
+            // console.log(`openai.js - Line 30 - previousMessages: ${previousMessages}`)
             return (previousMessages);
         });
        
         let preprompttext = await getPersonaData(persona).then(personaData => { 
             return (personaData.data);   
         });
-         console.log(`openai.js - Line 37 - persona: ${persona}`)
-         console.log(`openai.js - Line 38 - preprompttext: ${preprompttext}`)
+        // console.log(`openai.js - Line 37 - persona: ${persona}`);
+        // console.log(`openai.js - Line 38 - preprompttext: ${preprompttext}`);
        
          // OpenAI API call
         try {

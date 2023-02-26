@@ -92,21 +92,17 @@
             Backend:
             Starting it with a parameter.  -- DONE -- Seneca -- 2/23/23
             Get regex parsing working.  Even if triplicated.  Parse it going into the DB and not on the way out.  -- DONE -- 2/24/23 - 8PM
-            Clean up node-modules and package.json    
+            Clean up node-modules and package.json    -- DONE -- REDO
             Add feature for timer to be smarter.  It should not fire if the last message was from any bot.  
                 Extend the timer to private channel.
                 Botpacalypse - Start for 5 minutes.
-            Listening for their name in all channels.
+            Listening for their name in all channels.  -- DONE
 
             Frontend:
-            Username input on mobile.
+            Username input on mobile.  - Mostly done
             
             Structure Changes:
-       
-            
-            Conversation history above
-            Bar on left side for chat history and username (Put name somewhere to show it works) 
-                If you provide matching discord name your conversation history pops up (nice name) | DONE 
+            If you provide matching discord name your conversation history pops up (nice name) | DONE 
 
             2/18/23 Idea list:
             Chat History (by username)  --  DONE
@@ -116,16 +112,16 @@
 
 
             Known Bugs / Issues
-            PERSONAS ON WEB
-            Double logging the users messages. 2/26/23 - 1010AM
-            Load chathistory logs. 2/26/23 - 1013AM
+            PERSONAS ON WEB  -- DONE -- 2/26/23 - 3:09PM
+            Double logging the users messages. 2/26/23 - 1010AM  -- FIXED - 2:15PM
+            Load chathistory logs. 2/26/23 - 1013AM  -- FIXED - 2:15PM
             Fix username-input text color to Black - DONE - 2/22/23 - 11:45AM
-            It doesn't answer the first question right on Web. - Solved/not fixed - First message not saving to DB
+            It doesn't answer the first question right on Web. - Solved/not fixed - First message not saving to DB  - DONE - 2/26/23 - 3PM
 
             /Commands out of the butler 
             Weather is borked.
             userInfo/calc/cost/clear into utils.
-            Discord replies with new lines but webchat doesn't.
+            Discord replies with new lines but webchat doesn't.  -- FIXED -- 2/26/23
 
             Finish passing the weather through openai and return longform response.
             Website to be live to the database with ajax polling 1s.
