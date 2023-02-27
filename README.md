@@ -123,7 +123,7 @@
             userInfo/calc/cost/clear into utils.
           
          
-            0.0.897 Punch List:
+            0.0.897 Punch List: 
             Remove all whoami where possible and replace with persona -- DONE -- ?  
             Capture DM's sent count to bots in userInfos for tracking. -- DONE -- 
             Get rid of puerus.js and jarvis.js by changing index.js - DONE - 2/23 - 8PM
