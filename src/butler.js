@@ -3,6 +3,8 @@ let persona = process.argv[2];
 if (persona) { let persona = process.argv[2];
 } else { let persona = 'Butler';  }
 
+let slashPrefix = persona.substring(0, 1);
+
 // Load the environment variables
 require('dotenv').config(); 
 
@@ -185,15 +187,28 @@ client.on("messageCreate", async function(message){
         // message.author.send(`Hello, I'm TheButler.  How can I help you?`);
         // console.log("Puerus starting here I hope!");
     } else
-    if(message.content.startsWith("/BW")) {
+    if(message.content.startsWith(`/${slashPrefix}W`)) {
         console.log(`User: ${message.author.username} | Message: ${message.content}\n`);
         const weather = require('./utils.js');
         const OWMapiKey = process.env.OWMapiKey;
         const zip = message.content.split(' ')[1];
-        if(!zip) 
+        if(!zip) {
         return message.channel.send("Please provide a zip code after the command")
-            weather.getWeather(zip, message, OWMapiKey, persona, message.author.username);
+            //let weatherData = await weather.getWeather(zip, message, OWMapiKey, persona, message.author.username);
+            console.log(`butler.js - Line 196 - ${weatherData}`);
+        } else {
+            let forecast = await weather.getWeather(zip, message, OWMapiKey, persona, message.author.username);
+            console.log(`butler.js - Line 199 - ${forecast}`);
+            let openForecast = await openai.callopenai(forecast, message.author.username, persona);
+            console.log(`butler.js - Line 201 - ${openForecast}`);
+            message.channel.send(openForecast);
+            // let weatherdata = await openai.callopenai(weatherOut, message.author.username, persona);
+            console.log(`butler.js - Line 129 - ${message}, ${message.author.username}, ${persona}`);
+            // message.channel.send(`WeatherOut: ${weatherOut}`);
+            // message.author.send(`The weather in ${weatherData.city} is ${weatherData.weather} with a temperature of ${weatherData.temp}°F`);
+
     }
+  }
 }});
 
 // // Checks every user on the server for their last message and DM's them if it's been > 360 minutes since their last Butler DM
