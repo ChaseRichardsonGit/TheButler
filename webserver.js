@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const MongoClient = require('mongodb').MongoClient;
-const { Log, getPersonaData, updatePersonaData } = require('./src/mongo.js');
+const { Log, getChatLog, getPersonaData, updatePersonaData, getChatToday } = require('./src/mongo.js');
 const { ObjectId } = require('mongodb');
 
 const openaiAPI = require('./src/openai.js');

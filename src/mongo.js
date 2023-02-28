@@ -209,5 +209,6 @@ async function updatePersonaData(name, data) {
   return result;
 }
 
+
 // Export the Log, UserInfo, PersonData, getChatLog, and Link models
 module.exports = { Log, UserInfo, Link, Cost, getPersonaData, getChatLog };

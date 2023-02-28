@@ -238,3 +238,48 @@ $.ajax({
     console.error('Error getting personas:', error);
   }
 });
+
+// todayChatsButton event listener
+const todaysChatsButton = document.querySelector('#todays-chats-btn');
+todaysChatsButton.addEventListener('click', loadTodayChatHistory);
+
+// Today's chat history function
+async function loadTodayChatHistory() {
+  try {
+    const chatHistory = await $.ajax({
+      url: '/api/chat-history',
+      type: 'POST',
+      data: {
+        username,
+        selectedPersona,
+        messageType: "history",
+      },
+    });
+
+    // Clear the chat window
+    chatWindow.innerHTML = '';
+
+    // Get the chat history for today's date
+    const today = new Date();
+    const chatHistoryToday = chatHistory.filter(message => {
+      const messageDate = new Date(message.time);
+      return messageDate.getDate() === today.getDate() &&
+             messageDate.getMonth() === today.getMonth() &&
+             messageDate.getFullYear() === today.getFullYear();
+    });
+
+    // Add chat history to the chat window
+    for (const message of chatHistoryToday) {
+      addMessage(
+        message.sender,
+        message.message,
+        message.selectedPersona,
+        message.response,
+        message.time,
+        "history",
+      );
+    }
+  } catch (error) {
+    console.error('Error loading chat history:', error);
+  }
+}
