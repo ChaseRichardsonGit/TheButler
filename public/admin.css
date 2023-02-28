@@ -1,0 +1,19 @@
+#persona-data {
+    height: 20dvh;
+  }
+
+/* Define the styles for the dark mode */
+body.dark-mode {
+    background-color: #222;
+    color: #fff;
+  }
+  body.dark-mode #save-persona-data-btn {
+    background-color: #444;
+    color: #fff;
+  }
+  body.dark-mode select, 
+  body.dark-mode input[type="text"], 
+  body.dark-mode textarea {
+    background-color: #333;
+    color: #fff;
+  } 

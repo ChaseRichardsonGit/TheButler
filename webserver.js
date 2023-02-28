@@ -4,7 +4,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const MongoClient = require('mongodb').MongoClient;
-const { Log, getPersonaData } = require('./src/mongo.js');
+const { Log, getPersonaData, updatePersonaData } = require('./src/mongo.js');
+const { ObjectId } = require('mongodb');
 
 const openaiAPI = require('./src/openai.js');
 const { Configuration, OpenAIApi } = require("openai");
@@ -145,6 +146,71 @@ app.post('/api/response', async (req, res) => {
     console.error(error.response.data);
     res.status(500).send({ error: `An error occurred while calling OpenAI API: ${error}` });
   }
+  }
+});
+
+
+// Get persona data from MongoDB for web
+app.get('/api/personas/:personaName', (req, res) => {
+  const personaName = req.params.personaName;
+  MongoClient.connect(mongoUrl, { useUnifiedTopology: true }, (err, client) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({ error: 'Error connecting to database' });
+      return;
+    }
+
+    const db = client.db(dbName);
+    const collection = db.collection('personas');
+
+    collection.findOne({ 'personas.name': personaName }, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Error getting persona from database' });
+        return;
+      }
+
+      if (!result) {
+        res.status(404).send({ error: `Persona '${personaName}' not found` });
+        return;
+      }
+
+      const persona = result.personas.find(p => p.name === personaName);
+      res.send({ personas: [persona] });
+
+      client.close();
+    });
+  });
+});
+
+// Update persona data in MongoDB
+app.put('/api/personas/:personaName', async (req, res) => {
+  const personaName = req.params.personaName;
+  const data = req.body.data;
+
+  try {
+    const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
+    const db = client.db(dbName);
+    const collection = db.collection('personas');
+
+    const persona = await collection.findOne({ 'personas.name': personaName });
+
+    if (!persona) {
+      throw new Error(`Failed to find persona with name ${personaName}`);
+    }
+
+    const personaIndex = persona.personas.findIndex(p => p.name === personaName);
+    persona.personas[personaIndex].data[0] = data;
+    const result = await collection.updateOne(
+      { 'personas.name': personaName },
+      { $set: { personas: persona.personas } }
+    );
+
+    client.close();
+    res.send({ success: true });
+  } catch (error) {
+    console.error(`Failed to update persona data for ${personaName}: ${error}`);
+    res.status(500).send({ error: `Failed to update persona data for ${personaName}: ${error}` });
   }
 });
 

@@ -194,18 +194,13 @@ client.on("messageCreate", async function(message){
         const zip = message.content.split(' ')[1];
         if(!zip) {
         return message.channel.send("Please provide a zip code after the command")
-            //let weatherData = await weather.getWeather(zip, message, OWMapiKey, persona, message.author.username);
-            console.log(`butler.js - Line 196 - ${weatherData}`);
         } else {
             let forecast = await weather.getWeather(zip, message, OWMapiKey, persona, message.author.username);
             console.log(`butler.js - Line 199 - ${forecast}`);
             let openForecast = await openai.callopenai(forecast, message.author.username, persona);
             console.log(`butler.js - Line 201 - ${openForecast}`);
             message.channel.send(openForecast);
-            // let weatherdata = await openai.callopenai(weatherOut, message.author.username, persona);
             console.log(`butler.js - Line 129 - ${message}, ${message.author.username}, ${persona}`);
-            // message.channel.send(`WeatherOut: ${weatherOut}`);
-            // message.author.send(`The weather in ${weatherData.city} is ${weatherData.weather} with a temperature of ${weatherData.temp}°F`);
 
     }
   }

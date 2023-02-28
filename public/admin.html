@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="admin.css"> <!-- Add this line to link the admin.css file -->
+  </head>
+  <body>
+    <div class="container mt-3">
+      <div class="form-group">
+        <label for="persona-dropdown">Select Persona:</label>
+        <select class="form-control" id="persona-dropdown"></select>
+      </div>
+      <div class="form-group">
+        <label for="persona-name">Persona Name:</label>
+        <input type="text" class="form-control" id="persona-name" readonly>
+      </div>
+      <div class="form-group">
+        <label for="persona-data">Persona Data:</label>
+        <textarea class="form-control" id="persona-data"></textarea>
+      </div>
+      <button id="save-persona-data-btn">Save</button>
+      <button id="dark-mode-btn">Dark Mode</button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

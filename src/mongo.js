@@ -1,10 +1,13 @@
 // Get your persona from your environment otheriwse assume the butler
-let whoami = process.argv[2];
-if (whoami) { const whoami = process.argv[2];
-} else { const whoami = 'Butler'; }
+let persona = process.argv[2];
+if (persona) { const persona = process.argv[2];
+} else { const persona = 'Butler'; }
 
 const mongoose = require("mongoose"); 
 const { MongoClient } = require("mongodb");
+const mongoUrl = process.env.MONGO_URI;
+const dbName = process.env.MONGO_DBNAME;
+const { ObjectId } = require('mongodb');
 
 const userInfoSchema = new mongoose.Schema({ 
     userId: {
@@ -181,6 +184,30 @@ const getChatLog = async (sender, receiver) => {
   client.close();
   return chatLog; 
 };
+
+//updatePersonaData in MongoDB
+async function updatePersonaData(name, data) {
+  const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
+  const db = client.db(dbName);
+  const collection = db.collection('personas');
+  const persona = await collection.findOne({ 'personas.name': name });
+
+  if (!persona) {
+    throw new Error(`Failed to find persona with name ${name}`);
+  }
+
+  const updatedPersonas = persona.personas.map(p => {
+    if (p.name === name) {
+      return { ...p, ...data };
+    }
+    return p;
+  });
+
+  const result = await collection.updateOne({ 'personas.name': name }, { $set: { personas: updatedPersonas } });
+
+  client.close();
+  return result;
+}
 
 // Export the Log, UserInfo, PersonData, getChatLog, and Link models
 module.exports = { Log, UserInfo, Link, Cost, getPersonaData, getChatLog };

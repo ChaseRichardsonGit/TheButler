@@ -75,9 +75,9 @@ personaDropdown.addEventListener('change', async (event) => {
   const headerFrame = document.getElementById('header-frame');
   const personaImage = document.getElementById('persona-image');
 
-  if (selectedPersona === 'puerus') {
+  if (selectedPersona === 'Puerus') {
     personaImage.src = '/img/Puerus.png';
-  } else if (selectedPersona === 'jarvis') {
+  } else if (selectedPersona === 'Jarvis') {
     personaImage.src = '/img/Jarvis.png';
   } else if (selectedPersona === 'Butler') {
     personaImage.src = '/img/Butler.png';
@@ -176,39 +176,10 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
 }
 
 // Send button event listener
-// sendButton.addEventListener('click', async () => {
-//   const message = userInput.value.trim();
-//   if (message) { // check if message is not empty
-//     userInput.value = '';
-//     addMessage(username, message, selectedPersona);
-//     saveToDatabase = true;
-//     try {
-//       const response = await $.ajax({
-//         url: '/api/response',
-//         type: 'POST',
-//         data: {
-//           message,
-//           username: username || 'anonymous',
-//           persona: selectedPersona
-//         }
-//       });
-//       addMessage(selectedPersona, response.response, selectedPersona, null, 'received');
-//     } catch (error) {
-//       console.error(error);
-//       addMessage('bot', 'Sorry, an error occurred. Please try again.', selectedPersona, null, 'received');
-//     }
-//   }
-// });
-
-
-
-
-// Send button event listener
 sendButton.addEventListener('click', async () => {
   const message = userInput.value.trim();
-  if (message) { // check if message is not empty
+  if (message) { 
     userInput.value = '';
-
     try {
       const addMessagePromise = new Promise((resolve, reject) => {
         addMessage(username, message, selectedPersona, null, 'sent');
