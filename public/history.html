@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat History</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="admin.css"> <!-- Add this line to link the admin.css file -->
+</head>
+<body>
+  <div class="container">
+    <h1>Chat History</h1>
+    <div id="chat-container">
+      <div id="chat-window"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="admin.js"></script>
+
+  <script>
+    // Extract chat history data from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const chatHistory = urlParams.get('chatHistory');
+    if (chatHistory) {
+      try {
+        const messages = JSON.parse(chatHistory);
+        const chatWindow = document.querySelector('#chat-window');
+
+        // Append chat history to chat window
+        for (const message of messages) {
+          const div = document.createElement('div');
+          div.innerHTML = `${message.sender}: ${message.message}`;
+          chatWindow.appendChild(div);
+        }
+      } catch (error) {
+        console.error('Error parsing chat history:', error);
+      }
+    }
+  </script>
+</body>
+</html>

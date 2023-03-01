@@ -4,7 +4,7 @@
 
             To run:
             node index.js Persona (where Persona = Butler, Jarvis, or Puerus)
-                Only person that spawns a webserver is Butler, J and P are Discord bots only.
+                Only persona that spawns a webserver is Butler, J and P are Discord bots only.
 
 
 
@@ -52,16 +52,6 @@
                         - User initiated?
                         - Just wipe its memory (lobotomy) let messageData=()
 
-            Dashboard / Explorer (Sounds like a Telemetry and Jarvis but it's core)
-                - Concept of a cost dashbaord + pulse of the hive
-                - Could include logs and errors
-
-
-            Karma System:
-                - Stampy as an example gives lots of paths to explore 
-                - more here later
-            
-
 
             Foundational Approach:
             TheButler is the neocortex.  Everything is else a sub function or persona.
@@ -75,72 +65,17 @@
                 If they have our free token, they receive a DM from the bot daily gauging sentiment on something.
 
             
-            0.084 Backlog:
-            Javascript code with a timer that looks up last bot that said something and say something back. doesn't use on message command.
-                After 5 minutes have elapsed, do a for loop.  Look up the last message in a channel from a bot or human, message bot after timer has elapsed.
-            TheButler should orient you.  It will welcome you in the channel but also send you a DM.  Or start a thread in the server.
-            Set a ratelimit.  You get 10 questions per hour.  Think of a genie with 3 wishes.  Create scarcity.
-
-            Summarization - Summarize the weather.  Feed our owm response to openai and have it feed back as a flamboyantly gay chicago weatherman.
-            Metaprompting - Have TheButler scanback 20 messages or 5 minutes and interject accordingly.  To see if it can be conversational in context.
 
             When someone posts a link with more than two reactions move/repost it to links for later channel. 
             User has been inactive for 24 hours, check in on them.
 
-            2.12.23 Work List:
-            Backend:
-            
-            Add feature for timer to be smarter.  It should not fire if the last message was from any bot.  
-                Extend the timer to private channel.
-                Botpacalypse - Start for 5 minutes.
-
-
-            Frontend:
-            Username input on mobile.  - Mostly done
-            
-            Structure Changes:
-
-
-            2/18/23 Idea list:
-
-            Lifecycle of conversation (when does it start and stop)
-            "New Conversation" button? / Discord /reset? (group by day?)
-            Add a Discord link to Mu?
-
-
-            Known Bugs / Issues
-            anonymous user does not save to db / not getting a response / freezing - 2/27/23 - 7AM
-          
-         
-            0.0.91 Punch List: 
-            Remove all whoami where possible and replace with persona -- DONE -- ?  
             Rename butler.js to discordbot.js
             Add total cost back in and make it work for web, just log it not show it on screen.
             Frontend Item - Username-input box floating down
             Post every link we write to the database goes to the links for later channel.
     
-            BIG WANTS for 0.0.9 - 
-            Website to be live to the database with ajax polling 1s.
-            Expose weather on the web.
-            Slash commands on web.
-            Slash command to start other bots.
-            Today's Chats.
+
             Conversation History - Clear memory on timer?
-            userInfo/calc/cost/clear into utils.
-
-            0.0.9 Wish List:
-            All the styling!
-                Chatbubbles only as large as the text? -- Worked on from 11:30AM-12:30AM, almost there but went back to full size.  Look in style.css .message 
-                Username fit in header on mobile.
-                Change username-input size for web and mobile.
-
-            In webserver.js - Fix getPersona mongo client to use our client 
-            Use ajax to get messages in realtime. - 1s polling
-
-
-
-            0.1.0 Wishlist:
-            A way to update the prompts for the persona's easily.
             Track user and server stats and show them on a dashboard.
               Simple table dump list view at first
             Create a token count for how many OpenAI tokens are used by each user.
@@ -160,41 +95,9 @@
                 Melfi? - Weekly check in, scheduled appointment, Sundays at 10AM.
                 GOD Bot - Kill all butlers, kill yourself, then start the butler.  Also where you summon the butler to your computer.
             Token Size
-            
-            Finished Items / Change log:
-            If you provide matching discord name your conversation history pops up (nice name) | DONE 
-            Chat History (by username)  --  DONE
-            When persona is changed, clear chat window, then load chat history with user.  -- DONE -- 2/26/23 - 5PM
-            Move regex into OpenAI.js | parse response out | DONE! - 2/23 - 7:31PM
-            Send button changed to little blue pointer telegram arrow thingy inside of input box - Done - 10AM
-            Submit button for username inside of username-input - Done - 1010AM
-            Left side padding for search bar - Added, need feedback - 1013AM
-            Finish passing the weather through openai and return longform response.  -- DONE -- 2/26/23 - 7PM
-            Capture DM's sent count to bots in userInfos for tracking. -- DONE -- 
-            Get rid of puerus.js and jarvis.js by changing index.js - DONE - 2/23 - 8PM
-            PERSONAS ON WEB  -- DONE -- 2/26/23 - 3:09PM
-            Double logging the users messages. 2/26/23 - 1010AM  -- FIXED - 2:15PM
-            Load chathistory logs. 2/26/23 - 1013AM  -- FIXED - 2:15PM
-            Fix username-input text color to Black - DONE - 2/22/23 - 11:45AM
-            It doesn't answer the first question right on Web. - Solved/not fixed - First message not saving to DB  - DONE - 2/26/23 - 3PM
-            Discord replies with new lines but webchat doesn't.  -- FIXED -- 2/26/23
-            Starting it with a parameter.  -- DONE -- Seneca -- 2/23/23
-            Get regex parsing working.  Even if triplicated.  Parse it going into the DB and not on the way out.  -- DONE -- 2/24/23 - 8PM
-            Clean up node-modules and package.json    -- DONE -- REDO
-            Listening for their name in all channels.  -- DONE
-
-
-
-            Three Bots:
-            TheButler - Simplified code + mongoose.
-            Puerus - A side bot.
-            Jarvis - B side bot.
-
-            
+    
             Decision:  RIDAC
             TheButler will have certain core capabilities.  The personas will have sub-capabilities, but also the same features as TheButler.
-            
-            
             
             Topic of Discussion:
             DAO - 

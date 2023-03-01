@@ -283,3 +283,6 @@ async function loadTodayChatHistory() {
     console.error('Error loading chat history:', error);
   }
 }
+
+
+

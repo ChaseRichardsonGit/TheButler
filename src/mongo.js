@@ -179,7 +179,7 @@ const getChatLog = async (sender, receiver) => {
           { $and: [{sender: sender},{receiver: receiver}]},
         ]
       }
-    ).sort({ _id: -1 }).limit(10).toArray();
+    ).sort({ _id: -1 }).limit(20).toArray();
 //    console.log("mongo.js - Line 179 - sender: " + sender + " receiver: " + receiver);
   client.close();
   return chatLog; 

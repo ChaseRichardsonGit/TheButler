@@ -214,6 +214,64 @@ app.put('/api/personas/:personaName', async (req, res) => {
   }
 });
 
+// Add a new persona to the database
+app.post('/api/personas', async (req, res) => {
+  const personaName = req.body.name;
+  const personaData = req.body.data;
+
+  try {
+    const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
+    const db = client.db(dbName);
+    const collection = db.collection('personas');
+
+    // Check if the persona already exists
+    const existingPersona = await collection.findOne({ 'personas.name': personaName });
+
+    if (existingPersona) {
+      throw new Error(`Persona with name ${personaName} already exists`);
+    }
+
+    // Add the new persona to the collection
+    const result = await collection.updateOne(
+      {},
+      { $push: { personas: { name: personaName, data: [personaData] } } },
+      { upsert: true }
+    );
+
+    client.close();
+    res.send({ success: true });
+  } catch (error) {
+    console.error(`Failed to add new persona ${personaName}: ${error}`);
+    res.status(500).send({ error: `Failed to add new persona ${personaName}: ${error}` });
+  }
+});
+
+// Route to load chat history for a specific user and persona
+app.get('/history/:username/:persona', (req, res) => {
+  const username = req.params.username;
+  const persona = req.params.persona;
+  
+  // Retrieve chat history from MongoDB
+  Log.find(
+    {
+      $or: [
+        { sender: username, receiver: persona },
+        { sender: persona, receiver: username },
+      ],
+    },
+    (err, messages) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Error retrieving chat history' });
+        return;
+      }
+
+      // Render the chat history page with the chat history data
+      res.render('history', { messages: messages });
+    }
+  );
+});
+
 // Serve the index.html file
 app.get('/', (req, res) => { 
   res.sendFile(__dirname + '/public/index.html'); 

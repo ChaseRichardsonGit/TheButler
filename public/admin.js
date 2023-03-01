@@ -86,3 +86,79 @@ $(document).ready(() => {
     $('#persona-data').val(JSON.stringify(json, null, 2));
   });
 });
+
+// When the "New Persona" button is clicked, create a new persona in MongoDB
+$('#new-persona-btn').on('click', async (event) => {
+  const personaName = prompt('Enter the new persona name:');
+  if (!personaName) return;
+
+  const personaData = prompt('Enter the new persona data:');
+  if (!personaData) return;
+
+  try {
+    // Attempt to parse the persona data as JSON
+    const parsedData = JSON.parse(personaData);
+
+    // Send the parsed data to the server
+    const response = await $.post('/api/personas', {
+      name: personaName,
+      data: parsedData,
+    });
+
+    console.log(`Created new persona ${personaName}:`, response);
+
+    // Add the new persona to the dropdown
+    const option = $('<option>').val(personaName).text(personaName);
+    $('#persona-dropdown').append(option);
+
+    // Set the new persona as the selected persona
+    $('#persona-dropdown').val(personaName).trigger('change');
+  } catch (error) {
+    // Handle the syntax error if the data is not valid JSON
+    console.error(`Failed to create new persona ${personaName}:`, error);
+  }
+});
+
+// When the search button is clicked, redirect to the chat history page
+$('#search-history-btn').on('click', async () => {
+  const username = $('#username-input').val().trim();
+  const selectedPersona = $('#persona-input').val().trim();
+  
+  try {
+    // Retrieve chat history from server
+    const response = await $.post('/api/chat-history', {
+      username: username,
+      selectedPersona: selectedPersona,
+    });
+
+    // Redirect to history page with chat history data
+    const chatHistory = encodeURIComponent(JSON.stringify(response));
+    const url = `/history.html?chatHistory=${chatHistory}`;
+    window.location.href = url;
+  } catch (error) {
+    console.error('Error retrieving chat history:', error);
+  }
+});
+
+// When the page loads, append chat history to chat window if chatHistory is present in URL params
+$(document).ready(() => {
+  // Extract chat history data from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const chatHistory = urlParams.get('chatHistory');
+
+  if (chatHistory) {
+    try {
+      const parsedChatHistory = JSON.parse(decodeURIComponent(chatHistory));
+      console.log(parsedChatHistory);
+      // Append chat history to chat window
+      const chatWindow = document.querySelector('#chat-window');
+      for (const message of parsedChatHistory) {
+        const div = document.createElement('div');
+        div.innerHTML = `${message.sender}: ${message.message}`;
+        chatWindow.appendChild(div);
+      }
+    } catch (error) {
+      console.error('Error parsing chat history:', error);
+    }
+  }
+});

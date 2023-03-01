@@ -29,7 +29,7 @@ module.exports = {
                 }
                 previousMessages += `${chatLog[i].sender}: ${chatLog[i].message}\n`;
             }
-            // console.log(`openai.js - Line 30 - previousMessages: ${previousMessages}`)
+            console.log(`openai.js - Line 30 - previousMessages: ${previousMessages}`)
             return (previousMessages);
         });
        
