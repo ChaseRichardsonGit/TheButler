@@ -1,6 +1,6 @@
 {
   "name": "Butler",
-  "version": "0.0.85",
+  "version": "",
   "main": "index.js",
   "scripts": {
     "prod": "nodemon index.js"
@@ -12,8 +12,10 @@
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "mime": "^3.0.0",
     "mongoose": "^6.9.1",
-    "openai": "^3.2.1"
+    "openai": "^3.2.1",
+    "send": "^0.18.0"
   },
   "keywords": [],
   "description": ""

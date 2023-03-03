@@ -138,6 +138,8 @@ $('#new-persona-btn').on('click', async (event) => {
   }
 });
 
+const converter = new showdown.Converter();
+
 // Search History button click handler
 $(document).ready(() => {
   $('#search-history-btn').on('click', async () => {
@@ -156,7 +158,10 @@ $(document).ready(() => {
       chatWindow.innerHTML = ''; // clear the chat window
       for (const message of response.data) {
         const div = document.createElement('div');
-        div.innerHTML = `${message.sender}: ${message.message}`;
+        const sender = message.sender;
+        const messageText = message.message;
+        const htmlMessage = converter.makeHtml(messageText); // convert message to HTML
+        div.innerHTML = `<strong>${sender}</strong>: ${htmlMessage}`;
         chatWindow.appendChild(div);
       }
     } catch (error) {

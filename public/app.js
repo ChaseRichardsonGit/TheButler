@@ -4,6 +4,7 @@ const sendButton = document.querySelector('#send-button');
 const usernameInput = document.querySelector('#username-input');
 const usernameSubmitButton = document.querySelector('#username-submit-button');
 const clearButton = document.querySelector('#clear-btn');
+const converter = new showdown.Converter();
 
 let username = '';
 
@@ -122,7 +123,6 @@ personaDropdown.addEventListener('change', async (event) => {
 
 // addMessage function
 async function addMessage(sender, message, selectedPersona, response, messageType = '') {
-  // console.log(`app.js - Line 92 - sender: ${sender} username: ${username} messageType: ${messageType}`);
   const timestamp = Date.now();
   const div = document.createElement('div');
   let senderName = sender;
@@ -131,7 +131,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
     senderName = 'anonymous';
   } else if (sender === 'bot') {
     senderName = selectedPersona;
-    div.classList.add('bot'); 
+    div.classList.add('bot');
   }
 
   div.className = `message ${senderName}`;
@@ -143,21 +143,23 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
     div.classList.add(selectedPersona.toLowerCase());
   }
 
-  div.innerHTML = `<div style="display: inline">${senderName}: </div>${message.replace(/\n/g, "<br>")}<br>`;
-  // console.log('sender: ' + sender + ' message: ' + message + ' selectedPersona: ' + selectedPersona + ' response: ' + response + ' messageType: ' + messageType + ' timestamp: ' + timestamp)
+  // Convert message from Markdown to HTML using Showdown
+  const html = converter.makeHtml(message);
+  div.innerHTML = `<div style="display: inline">${senderName}: </div>${html}<br>`;
 
   if (response) {
     const botMessage = document.createElement('div');
     botMessage.className = `message bot ${selectedPersona.toLowerCase()}`;
-    // botMessage.innerHTML = `${selectedPersona}: ${response}<br>`;
-    botMessage.innerHTML = `${selectedPersona}: ${response.replace(/\n/g, "<br>")}<br>`;
+    // Convert response from Markdown to HTML using Showdown
+    const responseHtml = converter.makeHtml(response);
+    botMessage.innerHTML = `${selectedPersona}: ${responseHtml}<br>`;
     chatWindow.appendChild(botMessage);
     chatWindow.scrollTop = chatWindow.scrollHeight;
   }
 
   chatWindow.appendChild(div);
   chatWindow.scrollTop = chatWindow.scrollHeight;
-  // console.log(`app.js - Line 125 - sender: ${sender} username: ${username} messageType: ${messageType}`)
+
   if (sender === username && (messageType === 'sent' || messageType === 'received')) {
     $.ajax({
       url: '/api/save-message',
