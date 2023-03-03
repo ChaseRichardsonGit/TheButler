@@ -69,6 +69,7 @@
                 If they have our free token, they receive a DM from the bot daily gauging sentiment on something.
 
             
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 
             When someone posts a link with more than two reactions move/repost it to links for later channel. 
             User has been inactive for 24 hours, check in on them.
@@ -99,7 +100,11 @@
                 Melfi? - Weekly check in, scheduled appointment, Sundays at 10AM.
                 GOD Bot - Kill all butlers, kill yourself, then start the butler.  Also where you summon the butler to your computer.
             Token Size
-    
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
             Decision:  RIDAC
             TheButler will have certain core capabilities.  The personas will have sub-capabilities, but also the same features as TheButler.
             
