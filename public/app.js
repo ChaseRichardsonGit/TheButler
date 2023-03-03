@@ -81,6 +81,10 @@ personaDropdown.addEventListener('change', async (event) => {
     personaImage.src = '/img/Jarvis.png';
   } else if (selectedPersona === 'Butler') {
     personaImage.src = '/img/Butler.png';
+  } else if (selectedPersona === 'Melfi') {
+    personaImage.src = '/img/Melfi.png';
+  } else if (selectedPersona === 'Deadass') {
+    personaImage.src = '/img/Deadass.png';    
   } else {
     headerFrame.style.backgroundColor = '#1d1d1d';
     personaImage.src = '/img/Butler.png';

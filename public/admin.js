@@ -1,91 +1,110 @@
-// When the dark mode button is clicked, toggle the dark mode class on the body
-$('#dark-mode-btn').on('click', () => {
-    $('body').toggleClass('dark-mode');
-  });
-
 // Define the endpoint for the personas API
 const PERSONAS_API_URL = '/api/personas';
 
+// Get persona data from the server
+async function getPersonaData(personaName) {
+  try {
+    const response = await $.get(`/api/personas/${personaName}`);
+    return response.personas[0];
+  } catch (error) {
+    console.error(`Failed to get persona data for ${personaName}:`, error);
+    return null;
+  }
+}
+
 // When the DOM is ready, load the personas and populate the dropdown
-$(document).ready(() => {
-  // Load the personas from the server
-  $.get(PERSONAS_API_URL)
-    .done((response) => {
-      // Get the dropdown element
-      const dropdown = $('#persona-dropdown');
+$(document).ready(async () => {
+  try {
+    // Load the personas from the server
+    const response = await $.get(PERSONAS_API_URL);
 
-      // Add each persona to the dropdown
-      response[0].personas.forEach((persona) => {
-        const option = $('<option>').val(persona.name).text(persona.name);
-        dropdown.append(option);
-      });
+    // Get the dropdown element
+    const dropdown = $('#persona-dropdown');
 
-      // Trigger the change event to populate the persona name and data
-      dropdown.trigger('change');
-    })
-    .fail((error) => {
-      console.error('Failed to load personas:', error);
+    // Add each persona to the dropdown
+    response[0].personas.forEach((persona) => {
+      const option = $('<option>').val(persona.name).text(persona.name);
+      dropdown.append(option);
     });
 
-  // When the persona is changed, update the persona name and data
-  $('#persona-dropdown').on('change', async (event) => {
-    const personaName = event.target.value;
+    // Populate the persona data fields
+    const personaName = dropdown.val();
     const personaData = await getPersonaData(personaName);
-    $('#persona-name').val(personaName);
-    $('#persona-data').val(JSON.stringify(personaData, null, 2));
-  });
+    populatePersonaData(personaData);
 
-  // When the save button is clicked, update the persona data in MongoDB
-  $('#save-persona-data-btn').on('click', async (event) => {
-    const personaName = $('#persona-name').val();
-    const personaData = $('#persona-data').val();
-  
-    try {
-      // Attempt to parse the persona data as JSON
-      const parsedData = JSON.parse(personaData);
-  
-      // Send the parsed data to the server
-      const response = await $.ajax({
-        type: 'PUT',
-        url: `/api/personas/${personaName}`,
-        data: { data: parsedData }, // send an object with a "data" key
-        dataType: 'json',
-      });
-  
-      console.log(`Updated persona data for ${personaName}:`, response);
-    } catch (error) {
-      // Handle the syntax error if the data is not valid JSON
-      console.error(`Failed to update persona data for ${personaName}:`, error);
-    }
-  });
+    // Trigger the change event to populate the persona name and data
+    dropdown.on('change', async (event) => {
+      const personaName = event.target.value;
+      const personaData = await getPersonaData(personaName);
+      populatePersonaData(personaData);
+    });
+  } catch (error) {
+    console.error('Failed to load personas:', error);
+  }
+});
 
-  // Get persona data from the server
-  async function getPersonaData(personaName) {
-    try {
-      const response = await $.get(`/api/personas/${personaName}`);
-      return response.personas[0].data[0];
-    } catch (error) {
-      console.error(`Failed to get persona data for ${personaName}:`, error);
-      return null;
-    }
+function populatePersonaData(personaData) {
+  $('#persona-name').val(personaData.name);
+
+  // Display the first data field, if it exists
+  if (personaData.data) {
+    $('#persona-data').val(personaData.data);
+  } else {
+    $('#persona-data').val('');
   }
 
-  // When the "Convert to JSON" button is clicked, convert plain text to JSON
-  $('#convert-to-json-btn').on('click', () => {
-    const plainText = $('#persona-data').val().trim();
-
-    if (plainText === '') {
-      alert('Please enter some plain text to convert to JSON.');
-      return;
+  // Display the remaining data fields, even if they are empty
+  for (let i = 1; i < 5; i++) {
+    const personaDataField = $(`#persona-data-${i+1}`);
+    if (personaData[`data${i+1}`]) {
+      personaDataField.val(personaData[`data${i+1}`]);
+    } else {
+      personaDataField.val('');
     }
+  }
+  
+  // Display any additional data fields (data3, data4, etc.), if they exist
+  const personaDataContainer2 = $('#persona-data-container2');
+  personaDataContainer2.empty();
+  for (let i = 2; i < personaData.data.length; i++) {
+    const personaDataField = $(`<textarea class="form-control" id="persona-data-${i+1}" name="data${i+1}">`)
+      .val(personaData[`data${i+1}`] || ''); // Use the second or third field from persona data array, or empty string if field does not exist
+    const personaDataLabel = $(`<label for="persona-data-${i+1}">`)
+      .text(`Persona Data${i+1}:`);
+    personaDataContainer2.append(personaDataLabel, personaDataField);
+  }
+}
 
-    const json = {
-      message: plainText,
-    };
+// When the save button is clicked, update the persona data in MongoDB
+$('#save-persona-data-btn').on('click', async (event) => {
+  const personaName = $('#persona-name').val();
+  const personaData = {
+    name: $('#persona-name').val(),
+    data: $('#persona-data').val(),
+    data2: $('#persona-data-2').val(),
+    data3: $('#persona-data-3').val(),
+    data4: $('#persona-data-4').val(),
+    data5: $('#persona-data-5').val(),
+  };
+  //console.log(personaName, personaData);
+  try {
+    // Send the data to the server
+    const response = await $.ajax({
+      type: 'PUT',
+      url: `/api/personas/${personaName}`,
+      data: personaData, // send the JSON object directly
+      dataType: 'json',
+    });
 
-    $('#persona-data').val(JSON.stringify(json, null, 2));
-  });
+   // console.log(response);
+
+    console.log(`Updated persona data for ${personaName}: ${personaData}`, response);
+    alert(`Your changes have been saved for ${personaName}`);
+  } catch (error) {
+    console.error(`Failed to update persona data for ${personaName}:`, error);
+  }
 });
+
 
 // When the "New Persona" button is clicked, create a new persona in MongoDB
 $('#new-persona-btn').on('click', async (event) => {
@@ -119,46 +138,29 @@ $('#new-persona-btn').on('click', async (event) => {
   }
 });
 
-// When the search button is clicked, redirect to the chat history page
-$('#search-history-btn').on('click', async () => {
-  const username = $('#username-input').val().trim();
-  const selectedPersona = $('#persona-input').val().trim();
-  
-  try {
-    // Retrieve chat history from server
-    const response = await $.post('/api/chat-history', {
-      username: username,
-      selectedPersona: selectedPersona,
-    });
-
-    // Redirect to history page with chat history data
-    const chatHistory = encodeURIComponent(JSON.stringify(response));
-    const url = `/history.html?chatHistory=${chatHistory}`;
-    window.location.href = url;
-  } catch (error) {
-    console.error('Error retrieving chat history:', error);
-  }
-});
-
-// When the page loads, append chat history to chat window if chatHistory is present in URL params
+// Search History button click handler
 $(document).ready(() => {
-  // Extract chat history data from URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const chatHistory = urlParams.get('chatHistory');
-
-  if (chatHistory) {
+  $('#search-history-btn').on('click', async () => {
+    const username = $('#username-input').val().trim();
+    const selectedPersona = $('#persona-input').val().trim();
+  
     try {
-      const parsedChatHistory = JSON.parse(decodeURIComponent(chatHistory));
-      console.log(parsedChatHistory);
+      // Retrieve chat history from server
+      const response = await axios.post('/api/chat-history', {
+        username: username,
+        selectedPersona: selectedPersona,
+      });
+
       // Append chat history to chat window
       const chatWindow = document.querySelector('#chat-window');
-      for (const message of parsedChatHistory) {
+      chatWindow.innerHTML = ''; // clear the chat window
+      for (const message of response.data) {
         const div = document.createElement('div');
         div.innerHTML = `${message.sender}: ${message.message}`;
         chatWindow.appendChild(div);
       }
     } catch (error) {
-      console.error('Error parsing chat history:', error);
+      console.error('Error retrieving chat history:', error);
     }
-  }
+  });
 });

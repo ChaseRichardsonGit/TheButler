@@ -183,27 +183,18 @@ app.get('/api/personas/:personaName', (req, res) => {
   });
 });
 
-// Update persona data in MongoDB
 app.put('/api/personas/:personaName', async (req, res) => {
   const personaName = req.params.personaName;
-  const data = req.body.data;
+  const data = req.body;
 
   try {
     const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
     const db = client.db(dbName);
     const collection = db.collection('personas');
 
-    const persona = await collection.findOne({ 'personas.name': personaName });
-
-    if (!persona) {
-      throw new Error(`Failed to find persona with name ${personaName}`);
-    }
-
-    const personaIndex = persona.personas.findIndex(p => p.name === personaName);
-    persona.personas[personaIndex].data[0] = data;
     const result = await collection.updateOne(
       { 'personas.name': personaName },
-      { $set: { personas: persona.personas } }
+      { $set: { 'personas.$': data } }
     );
 
     client.close();
@@ -247,9 +238,9 @@ app.post('/api/personas', async (req, res) => {
 });
 
 // Route to load chat history for a specific user and persona
-app.get('/history/:username/:persona', (req, res) => {
-  const username = req.params.username;
-  const persona = req.params.persona;
+app.post('/api/chat-history', (req, res) => {
+  const username = req.body.username;
+  const persona = req.body.selectedPersona;
   
   // Retrieve chat history from MongoDB
   Log.find(
@@ -266,8 +257,8 @@ app.get('/history/:username/:persona', (req, res) => {
         return;
       }
 
-      // Render the chat history page with the chat history data
-      res.render('history', { messages: messages });
+      // Return the chat history data in JSON format
+      res.json(messages);
     }
   );
 });

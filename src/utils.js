@@ -59,7 +59,7 @@ module.exports = {
         res.on('end', () => {
           const weatherData = JSON.parse(data);
           if (res.statusCode === 200) {
-            const forecast = `If you are given a weather forecast, pretend that you're a weatherman and make sure you deliver the weather using your normal slang and vocabulary but also in long weatherman form using specifics from the data you were provided. The weather in ${weatherData.name} is currently ${weatherData.weather[0].description} with a temperature of ${weatherData.main.temp} F which feels like ${weatherData.main.feels_like} F and a humidity of ${weatherData.main.humidity}%. The wind speed is ${weatherData.wind.speed} mph.  The forecast for the day is a high of ${weatherData.main.temp_max} F and a low of ${weatherData.main.temp_min} F.`; 
+            const forecast = `If you are given a weather forecast, pretend that you're a weatherman and make sure you deliver the weather using your normal slang and vocabulary but also in long weatherman form using specifics from the data you were provided.  You should reply in two paragraphs. The weather in ${weatherData.name} is currently ${weatherData.weather[0].description} with a temperature of ${weatherData.main.temp} F which feels like ${weatherData.main.feels_like} F and a humidity of ${weatherData.main.humidity}%. The wind speed is ${weatherData.wind.speed} mph.  The forecast for the day is a high of ${weatherData.main.temp_max} F and a low of ${weatherData.main.temp_min} F.`; 
             resolve(forecast);
           } else {
             reject(new Error(`Request failed with status code ${res.statusCode}`));

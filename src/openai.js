@@ -29,7 +29,7 @@ module.exports = {
                 }
                 previousMessages += `${chatLog[i].sender}: ${chatLog[i].message}\n`;
             }
-            console.log(`openai.js - Line 30 - previousMessages: ${previousMessages}`)
+            // console.log(`openai.js - Line 30 - previousMessages: ${previousMessages}`)
             return (previousMessages);
         });
        
@@ -41,19 +41,45 @@ module.exports = {
        
          // OpenAI API call
         try {
-            const gptResponse = await openai.createCompletion({
-                model: "text-davinci-003",
-                prompt:  preprompttext + `${previousMessages} ${message}\n`,
+            console.log(`openai.js - Line 45 - previousMessages: ${previousMessages}, preprompttext: ${preprompttext}, message: ${message}`);
+            const gptResponse = await openai.createChatCompletion({
+                model: "gpt-3.5-turbo-0301",
+                messages:[
+                    {"role": "system", "content": `${preprompttext}`},
+                    {"role": "user", "content": `${previousMessages}`},
+                    {"role": "assistant", "content": ``},
+                    {"role": "user", "content": `${message}`},
+                ],
                 max_tokens: 2000,
-                temperature: .5,
+                temperature: 0.5,
                 top_p: 1,
                 n: 1,
                 stream: false,
-                logprobs: null,
+                // logprobs: null,
                 stop: ""
             });          
-            
-            let initResponse = gptResponse.data.choices[0].text.trim(); 
+            console.log(`openai.js - Line 62 - gptResponse: ${gptResponse.data.choices[0].message.content}`)
+            let initResponse = gptResponse.data.choices[0].message.content;
+///////////
+
+            //     console.log(`openai.js - Line 69 - previousMessages: ${previousMessages}, preprompttext: ${preprompttext}, message: ${message}`);
+            //     const gptResponse = await openai.createCompletion({
+            //     model: "text-davinci-003",
+            //     prompt:  preprompttext + `${previousMessages} ${message}\n`,
+            //     max_tokens: 2000,
+            //     temperature: 0.5,
+            //     top_p: 1,
+            //     n: 1,
+            //     stream: false,
+            //     logprobs: null,
+            //     stop: ""
+            // });          
+            // // console.log(`openai.js - Line 81 - gptResponse: ${gptResponse.data.choices[0].message.content}`)
+            // let initResponse = gptResponse.data.choices[0].text.trim(); 
+
+/////////////
+
+
             const regex = new RegExp(`^${persona}: (.*)`);
             const match = initResponse.match(regex);
             // console.log(`openai.js - Line 58 - initResponse: ${initResponse}`)
@@ -68,7 +94,7 @@ module.exports = {
             } else {
                 response = initResponse;
                 console.log(`"Line 68 - openai.js - Regex: No match found"`);
-              }
+            }
             
             if(response.length > 1999){
                 response = response.substring(0, 1999);
@@ -78,9 +104,12 @@ module.exports = {
 
         } catch (error) {
             console.error(`An error occurred while calling OpenAI API: ${error}`);
-        }
+            return "I'm sorry it seems an error occured, please try again.";
+          }
     }
 }
+
+
 
             // let total_tokens = (gptResponse.data.usage.total_tokens);
             // let cost = calculateCost.calculateCost(total_tokens);

@@ -139,7 +139,7 @@ connect();
 
 //getPersonaData from MongoDB
 const getPersonaData = async (persona) => {
-    console.log(`mongo.js - Line 139 - persona: ${persona}`)
+    console.log(`mongo.js - Line 139 - persona: ${persona}\n`)
     const url = process.env.MONGO_URI;
     const dbName = process.env.MONGO_DB_NAME;
     const collectionName = 'personas';
@@ -204,7 +204,6 @@ async function updatePersonaData(name, data) {
   });
 
   const result = await collection.updateOne({ 'personas.name': name }, { $set: { personas: updatedPersonas } });
-
   client.close();
   return result;
 }

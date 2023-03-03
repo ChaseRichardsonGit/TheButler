@@ -101,12 +101,18 @@ client.on('messageCreate', async function(message){
 // Listener for your name in channel messages and start an OpenAI Dialogue
 client.on('messageCreate', async function(message){
   if(message.channel.type !== Discord.ChannelType.DM) {
-  if(message.author.bot) return; {
-      if(message.content.includes(persona)) {
+    if(message.author.bot) return;
+    if(message.content.includes(persona)) {
+      try {
         let response = await openai.callopenai(message, message.author.username, persona);
         message.channel.send(response);
-}}
-}});
+      } catch (error) {
+        console.error(error);
+        message.channel.send("Sorry your request could not be processed at this time, please try again.");
+      }
+    }
+  }
+});
 
 // Listens for DM's, Log the message and starts an OpenAI Dialogue
 client.on('messageCreate', async function(message){
