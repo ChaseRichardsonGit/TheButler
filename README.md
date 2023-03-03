@@ -6,8 +6,6 @@
             node index.js Persona (where Persona = Butler, Jarvis, or Puerus)
                 Only persona that spawns a webserver is Butler, J and P are Discord bots only.
 
-
-
             Scope & Approach:
             We want to create a Discord chatbot.  We want this bot to send a private message to new users with an introduction.
                 - On Demand messaging through a command, time based messaging through timers, trigger based off criteria (user hasn't interacted in a day), Gauge and engage to gain sentiment. 
@@ -102,6 +100,10 @@
             Topic of Discussion:
             DAO - 
 
-
-            
-        
+            curl https://api.openai.com/v1/chat/completions
+  -H "Authorization: Bearer $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"
+  -H "Content-Type: application/json"
+  -d '{
+  "model": "gpt-3.5-turbo",
+  "messages": [{"role": "user", "content": "What is the OpenAI mission?"}]
+}'
