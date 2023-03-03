@@ -1,10 +1,11 @@
 # The Butler
-            To Install:
-            git clone repo
+            To Install and run Webserver:
+            git clone https://github.com/ChaseRichardsonGit/TheButler.git
+            cd TheButler
+            npm init -y
+            npm install
+            node webserver.js
 
-            To run:
-            node index.js Persona (where Persona = Butler, Jarvis, or Puerus)
-                Only persona that spawns a webserver is Butler, J and P are Discord bots only.
 
             Scope & Approach:
             We want to create a Discord chatbot.  We want this bot to send a private message to new users with an introduction.
