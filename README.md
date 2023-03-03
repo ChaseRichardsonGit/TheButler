@@ -99,11 +99,3 @@
             
             Topic of Discussion:
             DAO - 
-
-            curl https://api.openai.com/v1/chat/completions
-  -H "Authorization: Bearer $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"
-  -H "Content-Type: application/json"
-  -d '{
-  "model": "gpt-3.5-turbo",
-  "messages": [{"role": "user", "content": "What is the OpenAI mission?"}]
-}'
