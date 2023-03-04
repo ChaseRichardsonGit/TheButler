@@ -102,10 +102,13 @@ client.on('messageCreate', async function(message){
 client.on('messageCreate', async function(message){
   if(message.channel.type !== Discord.ChannelType.DM) {
     if(message.author.bot) return;
+    if(message.author.name == persona) return;
     if(message.content.includes(persona)) {
       try {
         let response = await openai.callopenai(message, message.author.username, persona);
-        message.channel.send(response);
+        // setTimeout(() => {
+          message.channel.send(response);
+        // }, 5000); // wait for 5 seconds before sending the response
       } catch (error) {
         console.error(error);
         message.channel.send("Sorry your request could not be processed at this time, please try again.");

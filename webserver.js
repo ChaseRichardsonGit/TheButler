@@ -43,7 +43,7 @@ async function saveMessageToDB(createdBy, sender, receiver, message) {
       time: new Date().toString(),
     });
     await userLog.save();
-    console.log(`webserver.js - Line 62 - Message saved to MongoDB: ${message}, ${time}, ${createdBy}, ${sender}, ${receiver}, ${server}, ${channel}`);
+    // console.log(`webserver.js - Line 62 - Message saved to MongoDB: ${message}, ${time}, ${createdBy}, ${sender}, ${receiver}, ${server}, ${channel}`);
   } catch (error) {
     console.error(err);
     throw new Error(`An error occurred while saving the message: ${error}`);

@@ -1,54 +1,66 @@
 // Get your persona from your environment otheriwse assume the butler
 let persona = process.argv[2];
-if (persona) { persona = process.argv[2];
-} else { persona = 'Butler'; }
+if (persona) {
+  persona = process.argv[2];
+} else {
+  persona = 'Butler';
+}
 
-const { Configuration , OpenAIApi } = require('openai');
+const { Configuration, OpenAIApi } = require('openai');
 
-//const calculateCost = require('./calccost.js');
-//const { updateUserInfo, saveCostRecord } = require('./utils.js');
+const { getPersonaData, getChatLog, Cost, UserInfo } = require('./mongo.js');
 
-const { getPersonaData, getChatLog, Cost, UserInfo } = require("./mongo.js");
-
-const configuration = new Configuration({ 
-    organization: process.env.OPENAI_ORG, 
-    apiKey: process.env.OPENAI_KEY, 
+const configuration = new Configuration({
+  organization: process.env.OPENAI_ORG,
+  apiKey: process.env.OPENAI_KEY,
 });
 
-const openai = new OpenAIApi(configuration); 
+const openai = new OpenAIApi(configuration);
 
 module.exports = { 
-    callopenai: async function(message, sender, persona ) { 
-        console.log(`openai.js - Line 22 - message: ${message} sender: ${sender} persona: ${persona}\n`)
-        let previousMessages = await getChatLog(sender, persona).then(chatLog => { 
-            console.log(`openai.js - Line 24 - getChatLog: sender: ${sender} persona: ${persona}`)
-            let previousMessages = "";  
-            for (let i = chatLog.length - 2; i >= chatLog.length - 10; i--) { 
-                if (i < 0) {
-                    break;
-                }
-                previousMessages += `${chatLog[i].sender}: ${chatLog[i].message}\n`;
-            }
-            console.log(`openai.js - Line 32 - previousMessages: ${previousMessages}\n\n\n`)
-            return (previousMessages);
-        });
-       
+    callopenai: async function(message, sender, persona) { 
+      console.log(`openai.js - Line 22 - message: ${message} sender: ${sender} persona: ${persona}\n`);
+  
+      let chatLog = await getChatLog(sender, persona);
+  
+      // Reorder chat log in ascending order
+      chatLog.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  
+      // Get the last 10 messages
+      const lastMessages = chatLog.slice(-20);
+  
+      // Initialize userMessages and assistantMessages variables as empty strings
+      let userMessages = "";
+      let assistantMessages = "";
+  
+      console.log(`openai.js - Line 32 - getChatLog: sender: ${sender} persona: ${persona} lastMessages: ${lastMessages}`);
+  
+      for (let i = 0; i < lastMessages.length; i++) { 
+        const message = `${lastMessages[i].sender}: ${lastMessages[i].message}`;
+  
+        if (message.startsWith(`${sender}:`)) {
+            userMessages = message.replace(`${sender}: `, '') + '\n' + userMessages;
+          } else if (message.startsWith(`${persona}:`)) {
+            assistantMessages = message.replace(`${persona}: `, '') + '\n' + assistantMessages;
+          }
+        }
+  
+        console.log(`openai.js - Line 85 - User Messages:\n${userMessages}`);
+        console.log(`openai.js - Line 86 - Assistant Messages:\n${assistantMessages}`);
+
         let preprompttext = await getPersonaData(persona).then(personaData => { 
             return (personaData);   
         });
-
-        // console.log(`openai.js - Line 40 - persona: ${persona}`);
-        // console.log(`openai.js - Line 41 - preprompttext: ${preprompttext}`);
-       
+   
          // OpenAI API call
         try {
-            console.log(`openai.js - Line 45 - previousMessages: ${previousMessages}, preprompttext: ${preprompttext}, message: ${message}\n\n`);
+            // console.log(`openai.js - Line 100 - previousMessages: ${previousMessages}, preprompttext: ${preprompttext}, message: ${message}\n\n`);
             const gptResponse = await openai.createChatCompletion({
                 model: "gpt-3.5-turbo-0301",
                 messages:[
                     {"role": "system", "content": `${preprompttext}`},
-                    {"role": "user", "content": `${previousMessages}`},
-                    {"role": "assistant", "content": ``},
+                    {"role": "user", "content": `${userMessages}`},
+                    {"role": "assistant", "content": `${assistantMessages}`},
                     {"role": "user", "content": `${message}`},
                 ],
                 max_tokens: 2000,
@@ -59,39 +71,16 @@ module.exports = {
                 // logprobs: null,
                 stop: ""
             });          
-            console.log(`openai.js - Line 62 - gptResponse: ${gptResponse.data.choices[0].message.content}\n\n`)
+            //  console.log(`openai.js - Line 112 - gptResponse: ${gptResponse.data.choices[0].message.content}\n\n`)
             let initResponse = gptResponse.data.choices[0].message.content;
-///////////
-
-            //     console.log(`openai.js - Line 69 - previousMessages: ${previousMessages}, preprompttext: ${preprompttext}, message: ${message}`);
-            //     const gptResponse = await openai.createCompletion({
-            //     model: "text-davinci-003",
-            //     prompt:  preprompttext + `${previousMessages} ${message}\n`,
-            //     max_tokens: 2000,
-            //     temperature: 0.5,
-            //     top_p: 1,
-            //     n: 1,
-            //     stream: false,
-            //     logprobs: null,
-            //     stop: ""
-            // });          
-            // // console.log(`openai.js - Line 81 - gptResponse: ${gptResponse.data.choices[0].message.content}`)
-            // let initResponse = gptResponse.data.choices[0].text.trim(); 
-
-/////////////
-
-
             const regex = new RegExp(`^${persona}: (.*)`);
             const match = initResponse.match(regex);
-            // console.log(`openai.js - Line 58 - initResponse: ${initResponse}`)
             let response = initResponse;
 
             if (match) {
                 // console.log(`openai.js - Line 62 - Regex: Match found`);
                 const parsedData = match[1];
-                // console.log(`openai.js - Line 63 - parsedData: ${parsedData}`)
                 response = parsedData;
-                // console.log(`openai.js - Line 65 - response: ${response}`);
             } else {
                 response = initResponse;
                 // console.log(`"Line 68 - openai.js - Regex: No match found"`);
@@ -109,11 +98,3 @@ module.exports = {
           }
     }
 }
-
-
-
-            // let total_tokens = (gptResponse.data.usage.total_tokens);
-            // let cost = calculateCost.calculateCost(total_tokens);
-            // let costTrimmed = parseFloat(cost.toFixed(4));
-            // updateUserInfo(message, costTrimmed);
-            // saveCostRecord(message, response, total_tokens, costTrimmed);   

@@ -13,10 +13,10 @@ let DiscordToken = process.env[personaToken];
 // Load persona specific modules
 let client;
 if (whoami && whoami !== "Butler") {
-  client = require(`./src/butler.js`);
+  client = require(`./src/discordBot.js`);
   console.log("Starting " + whoami);
 } else {
-  client = require(`./src/butler.js`);
+  client = require(`./src/discordBot.js`);
   console.log("Starting the Butler");
   const webserver = require('./webserver');
 }
