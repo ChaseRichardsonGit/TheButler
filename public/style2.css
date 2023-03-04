@@ -161,9 +161,10 @@ body {
   display: flex;
 }
 
-#persona-dropdown {
-  display: none;
+#persona-dropdown.form-control-plaintext.form-select {
+  width: auto;
 }
+
 #persona-dropdown-content {
   display: none;
   position: absolute;
@@ -213,6 +214,14 @@ body {
 .message.Butler {
   background-color: gray;
 }
+.message.Deadass {
+  background-color: rgb(138, 57, 57);
+}
+.message.Melfi {
+  background-color: rgb(59, 115, 135);
+}
+
+
 
 #persona-dropdown {
   width: 80px;

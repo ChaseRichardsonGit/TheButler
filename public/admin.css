@@ -17,3 +17,16 @@ body.dark-mode {
     background-color: #333;
     color: #fff;
   } 
+  .navbar-nav .nav-link,
+  .navbar-nav .btn {
+    color: #fff; /* Replace with the color you want */
+    font-size: 16px; /* Replace with the font size you want */
+  }
+
+  .navbar-nav li {
+    padding-top: 10px;
+    padding-right: 10px;
+  }
+  #save-persona-data-btn {
+    margin-top: 10px;
+  }

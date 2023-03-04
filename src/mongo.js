@@ -137,31 +137,37 @@ const connect = () => {
 // Connect to MongoDB
 connect(); 
 
-//getPersonaData from MongoDB
 const getPersonaData = async (persona) => {
-    console.log(`mongo.js - Line 139 - persona: ${persona}\n`)
-    const url = process.env.MONGO_URI;
-    const dbName = process.env.MONGO_DB_NAME;
-    const collectionName = 'personas';
-  
-    const client = await MongoClient.connect(url, { useNewUrlParser: true });
-    const db = client.db(dbName);
+  // console.log(`mongo.js - Line 170 - persona: ${persona}\n`)
+  const url = process.env.MONGO_URI;
+  const dbName = process.env.MONGO_DB_NAME;
+  const collectionName = 'personas';
 
-    const result = await db.collection(collectionName).find({ "personas.name": `${persona}` }).toArray();
-    if (!result || !result[0] || !result[0].personas) {
-        console.error("No persona data found");
-        return;
-    }
-    
-    const personaData = result[0].personas.find(p => p.name ===  `${persona}` );
-    if (!personaData) {
+  const client = await MongoClient.connect(url, { useNewUrlParser: true });
+  const db = client.db(dbName);
+
+  const result = await db.collection(collectionName).find({ "personas.name": `${persona}` }).toArray();
+  if (!result || !result[0] || !result[0].personas) {
+      console.error("No persona data found");
+      return;
+  }
+  
+  const personaDatas = result[0].personas.find(p => p.name === `${persona}`);
+  if (!personaDatas) {
       console.error(`No persona data found for ${persona}`);
       return;
-    }
-    
-    client.close();
-    
-    return personaData;
+  }
+
+  let personaData = "";
+  for (const key in personaDatas) {
+      if (key.startsWith("data")) {
+          personaData += personaDatas[key] + " ";
+      }
+  }
+
+  client.close();
+  // console.log(`mongo.js - Line 198 - persona: ${personaData.toString()}\n`)
+  return personaData.toString();
 };
 
 //getChatLog from Mongo for context
@@ -207,7 +213,6 @@ async function updatePersonaData(name, data) {
   client.close();
   return result;
 }
-
 
 // Export the Log, UserInfo, PersonData, getChatLog, and Link models
 module.exports = { Log, UserInfo, Link, Cost, getPersonaData, getChatLog };

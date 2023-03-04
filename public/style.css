@@ -214,6 +214,13 @@ background-color: rgb(0, 81, 0);
 background-color: gray;
 }
 
+.message.Deadass {
+background-color: rgb(138, 57, 57);
+}
+.message.Melfi {
+background-color: rgb(59, 115, 135);
+}
+
 #persona-dropdown {
 width: 80px;
 display: none;
@@ -336,23 +343,23 @@ border-radius: 50%;
 }
 
 #username-container {
-	width: 100%;
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	flex-wrap: wrap;
+width: 100%;
+box-sizing: border-box;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+flex-wrap: wrap;
 }
 
 #username-frame #username-container {
-	width: 50%;
-	height: 10%;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	margin-top: 70%;
-	margin-right: 40%;
+width: 50%;
+height: 10%;
+display: flex;
+flex-direction: row;
+align-items: center;
+margin-top: 70%;
+margin-right: 40%;
 }
 
 #username-input-container {
@@ -397,9 +404,9 @@ justify-content: space-between;
 width: 100%;
 order: 3; 
 }
-				
+		
 #left-frame button {
 margin-bottom: 0; 
 }
 
-		}
+}

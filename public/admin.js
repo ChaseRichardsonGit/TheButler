@@ -138,14 +138,15 @@ $('#new-persona-btn').on('click', async (event) => {
   }
 });
 
-const converter = new showdown.Converter();
+
 
 // Search History button click handler
 $(document).ready(() => {
   $('#search-history-btn').on('click', async () => {
     const username = $('#username-input').val().trim();
     const selectedPersona = $('#persona-input').val().trim();
-  
+    const converter = new showdown.Converter();
+    
     try {
       // Retrieve chat history from server
       const response = await axios.post('/api/chat-history', {
