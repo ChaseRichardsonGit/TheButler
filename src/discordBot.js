@@ -57,7 +57,7 @@ client.on('messageCreate', async function(message){
       userInfo.messagesSent += 1;
     }
       userInfo.save().then(() => {
-//      console.log(`UserInfo updated for user ${message.author.username} with messagesSent: ${userInfo.messagesSent}\n`);
+    console.log(`UserInfo updated for user ${message.author.username} with messagesSent: ${userInfo.messagesSent}\n`);
     }).catch(err => {
       console.error(err);
     });
@@ -101,14 +101,29 @@ client.on('messageCreate', async function(message){
 // Listener for your name in channel messages and start an OpenAI Dialogue
 client.on('messageCreate', async function(message){
   if(message.channel.type !== Discord.ChannelType.DM) {
-    if(message.author.bot) return;
+    // if(message.author.bot) return;
     if(message.author.name == persona) return;
     if(message.content.includes(persona)) {
       try {
         let response = await openai.callopenai(message, message.author.username, persona);
-        // setTimeout(() => {
-          message.channel.send(response);
-        // }, 5000); // wait for 5 seconds before sending the response
+        // Log the bot's response to MongoDB
+        const log = new Log({
+          createdBy: persona,
+          server: message.guild.name,
+          channel: message.channel.name,
+          sender: persona,
+          receiver: message.author.username,
+          message: response,
+          time: new Date().toString()
+        });
+        log.save().then(() => {
+          // console.log(`Message logged to MongoDB: ${persona}: ${response}\n`);
+        }).catch(err => {
+          console.error(err);
+        });
+        setTimeout(() => {
+        message.channel.send(response);
+        }, 5000); // wait for 5 seconds before sending the response
       } catch (error) {
         console.error(error);
         message.channel.send("Sorry your request could not be processed at this time, please try again.");
@@ -116,6 +131,7 @@ client.on('messageCreate', async function(message){
     }
   }
 });
+
 
 // Listens for DM's, Log the message and starts an OpenAI Dialogue
 client.on('messageCreate', async function(message){

@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Load the Environment Variables from .env
+require('dotenv').config(); 
+
 const MongoClient = require('mongodb').MongoClient;
 const { Log, getChatLog, getPersonaData, updatePersonaData, getChatToday } = require('./src/mongo.js');
 const { ObjectId } = require('mongodb');

@@ -27,13 +27,13 @@ module.exports = {
       chatLog.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   
       // Get the last 10 messages
-      const lastMessages = chatLog.slice(-20);
+      const lastMessages = chatLog.slice(-12);
   
       // Initialize userMessages and assistantMessages variables as empty strings
       let userMessages = "";
       let assistantMessages = "";
   
-      console.log(`openai.js - Line 32 - getChatLog: sender: ${sender} persona: ${persona} lastMessages: ${lastMessages}`);
+    //   console.log(`openai.js - Line 36 - getChatLog: sender: ${sender} persona: ${persona} lastMessages: ${lastMessages}`);
   
       for (let i = 0; i < lastMessages.length; i++) { 
         const message = `${lastMessages[i].sender}: ${lastMessages[i].message}`;
@@ -45,8 +45,8 @@ module.exports = {
           }
         }
   
-        console.log(`openai.js - Line 85 - User Messages:\n${userMessages}`);
-        console.log(`openai.js - Line 86 - Assistant Messages:\n${assistantMessages}`);
+        console.log(`openai.js - Line 48 - User Messages:\n${userMessages}`);
+        console.log(`openai.js - Line 49 - Assistant Messages:\n${assistantMessages}`);
 
         let preprompttext = await getPersonaData(persona).then(personaData => { 
             return (personaData);   
