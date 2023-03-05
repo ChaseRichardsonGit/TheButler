@@ -19,8 +19,7 @@ if (persona == 'Butler') {
 // Load the Discord API and Mongo Database
 const Discord = require('discord.js');
 const { Client, GatewayIntentBits, Partials, Utils } = require('discord.js');
-const { UserInfo, Link, Cost, Log } = require('./mongo.js'); 
-
+const { UserInfo, Link, Cost, Log, updateUserInfo } = require('./mongo.js'); 
 
 // Define Intents and Partials for Discord
 const client = new Client({ 
@@ -47,22 +46,7 @@ client.on('messageCreate', async function(message){
     if(message.channel.type !== Discord.ChannelType.DM) {
     if(message.author.bot) return;
     if(!message.content.trim()) return;
-    let userInfo = await UserInfo.findOne({ server: message.guild.name, userId: message.author.id });
-      if(!userInfo) {
-      userInfo = new UserInfo({
-          server: message.guild.name,
-          userName: message.author.username,
-          sender: message.author.username,
-          messagesSent: 1
-      });
-    } else {
-      userInfo.messagesSent += 1;
-    }
-      userInfo.save().then(() => {
-    console.log(`UserInfo updated for user ${message.author.username} with messagesSent: ${userInfo.messagesSent}\n`);
-    }).catch(err => {
-      console.error(err);
-    });
+    await updateUserInfo(message);
   
     // Check if the message contains a link
     if(message.content.includes("http"))
