@@ -1,6 +1,5 @@
 const { Cost, UserInfo } = require("./mongo.js");
 
-
 async function updateUserInfo(sender, message, costTrimmed) {
   // Find the UserInfo in the database and update it with the cost
   const userInfo = await UserInfo.findOne({ userId: sender });
@@ -12,10 +11,9 @@ async function updateUserInfo(sender, message, costTrimmed) {
     });
   }
 }
-
+// Create a new Cost record and save it to the database
 function saveCostRecord(message, response, total_tokens, prompt_tokens, completion_tokens, max_tokens, temperature, costTrimmed, sender, persona, preprompttext, lastMessagesString) {
-  // Create a new Cost record and save it to the database
-  if (costTrimmed > 0.0001) {
+  if (costTrimmed > 0.000001) {
     const costRecord = new Cost({
       sender: sender,
       persona: persona,
@@ -40,6 +38,7 @@ function saveCostRecord(message, response, total_tokens, prompt_tokens, completi
   }
 }
 
+// Get the weather forecast from OpenWeatherMap
 function getWeather(zip, message, OWMapiKey, persona, username) {
   return new Promise((resolve, reject) => {
     const options = {

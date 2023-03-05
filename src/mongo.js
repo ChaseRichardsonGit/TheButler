@@ -10,34 +10,33 @@ const dbName = process.env.MONGO_DBNAME;
 const { ObjectId } = require('mongodb');
 
 const userInfoSchema = new mongoose.Schema({ 
-    userId: {
+    sessionId: {
         type: String,
-        required: true,
+        required: false,
         unique: true
     },
     username: {
         type: String,
         required: true
     },
-    server: {
+    latestSource: {
         type: String,
-        required: true
+        required: false
     },
     messagesSent: {
         type: Number,
         default: 0,
-        required: true
+        required: false
     },
-    cost_total: {
+    total_cost: {
         type: Number,
         default: 0,
-        required: true
+        required: false
     },
-    time: {
+    lastUpdated: {
       type: Date,
-      required: true
-  }
-    
+      required: false
+  }   
 });
 mongoose.set('strictQuery', true);
 const UserInfo = mongoose.model("UserInfo", userInfoSchema);

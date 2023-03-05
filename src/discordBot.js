@@ -13,12 +13,14 @@ const openai = require('./openai.js');
 
 if (persona == 'Butler') {
   const clearchat = require('./clearchat.js');
+  const { updateUserInfo } = require('./utils.js'); 
 }
 
 // Load the Discord API and Mongo Database
 const Discord = require('discord.js');
 const { Client, GatewayIntentBits, Partials, Utils } = require('discord.js');
 const { UserInfo, Link, Cost, Log } = require('./mongo.js'); 
+
 
 // Define Intents and Partials for Discord
 const client = new Client({ 
@@ -49,7 +51,7 @@ client.on('messageCreate', async function(message){
       if(!userInfo) {
       userInfo = new UserInfo({
           server: message.guild.name,
-          userId: message.author.id,
+          userName: message.author.username,
           sender: message.author.username,
           messagesSent: 1
       });
