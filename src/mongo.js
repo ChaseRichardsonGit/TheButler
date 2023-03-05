@@ -99,7 +99,15 @@ const linkSchema = new mongoose.Schema({
 const Link = mongoose.model("Link", linkSchema);
 
 const costSchema = new mongoose.Schema({
-    username: {
+    sender: {
+      type: String,
+      required: true
+    },
+    persona: {
+      type: String,
+      required: true
+    },
+    cost: {
       type: String,
       required: true
     },
@@ -107,11 +115,31 @@ const costSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    tokens: {
+    total_tokens: {
       type: String,
       required: true
     },
-    cost: {
+    prompt_tokens: {
+      type: String,
+      required: true
+    },
+    completion_tokens: {
+      type: String,
+      required: true
+    },
+    max_tokens: {
+      type: String,
+      required: true
+    },
+    message: {
+      type: String,
+      required: true
+    },
+    preprompttext: {
+      type: String,
+      required: true
+    },
+    lastmessages: {
       type: String,
       required: true
     },

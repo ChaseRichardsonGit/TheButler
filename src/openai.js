@@ -9,6 +9,8 @@ if (persona) {
 const { Configuration, OpenAIApi } = require('openai');
 
 const { getPersonaData, getChatLog, Cost, UserInfo } = require('./mongo.js');
+const { updateUserInfo, saveCostRecord } = require('./utils.js');
+
 
 const configuration = new Configuration({
   organization: process.env.OPENAI_ORG,
@@ -45,16 +47,19 @@ module.exports = {
           }
         }
   
-        console.log(`openai.js - Line 48 - User Messages:\n${userMessages}`);
-        console.log(`openai.js - Line 49 - Assistant Messages:\n${assistantMessages}`);
+        console.log(` \x1b[33mopenai.js - Line 48 - User Messages:\x1b[0m \n${userMessages}`);
+        console.log(` \x1b[33mopenai.js - Line 49 - Assistant Messages:\x1b[0m \n${assistantMessages}`);
 
         let preprompttext = await getPersonaData(persona).then(personaData => { 
             return (personaData);   
         });
-   
+            
+        let max_tokens = 2000;
+        let temperature = 0.5;
+
          // OpenAI API call
         try {
-            // console.log(`openai.js - Line 100 - previousMessages: ${previousMessages}, preprompttext: ${preprompttext}, message: ${message}\n\n`);
+            // console.log(`openai.js - Line 57 - previousMessages: ${previousMessages}, preprompttext: ${preprompttext}, message: ${message}\n\n`);
             const gptResponse = await openai.createChatCompletion({
                 model: "gpt-3.5-turbo-0301",
                 messages:[
@@ -63,8 +68,8 @@ module.exports = {
                     {"role": "assistant", "content": `${assistantMessages}`},
                     {"role": "user", "content": `${message}`},
                 ],
-                max_tokens: 2000,
-                temperature: 0.5,
+                max_tokens: max_tokens,
+                temperature: temperature,
                 top_p: 1,
                 n: 1,
                 stream: false,
@@ -85,11 +90,28 @@ module.exports = {
                 response = initResponse;
                 // console.log(`"Line 68 - openai.js - Regex: No match found"`);
             }
-            
-            if(response.length > 1999){
-                response = response.substring(0, 1999);
+
+            // Calculate cost of response
+            function calculateCost(total_tokens) {
+                let cost_per_1000_tokens = 0.002;
+                return (total_tokens/1000) * cost_per_1000_tokens;
             }
-            // console.log(`openai.js - Line 72 - response: ${response}`);
+
+            let total_tokens = (gptResponse.data.usage.total_tokens);
+            let prompt_tokens = (gptResponse.data.usage.prompt_tokens);
+            let completion_tokens = (gptResponse.data.usage.completion_tokens);
+            let cost = calculateCost(total_tokens);
+            let costTrimmed = parseFloat(cost.toFixed(6));
+            const lastMessagesString = lastMessages.map(message => `${message.sender}: ${message.message}`).join('\n');
+            // Save cost record with lastMessagesString
+            console.log(`\n\nopenai.js - Line 101 - \x1b[33mData Usage Completion Tokens:\x1b[0m ${gptResponse.data.usage.completion_tokens}`)
+            console.log(`openai.js - Line 102 - \x1b[33mData Usage Prompt Tokens:\x1b[0m ${gptResponse.data.usage.prompt_tokens}`)
+            console.log(`openai.js - Line 103 - \x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`)
+            
+            // await updateUserInfo(sender, costTrimmed);
+            await saveCostRecord(message, response, total_tokens, prompt_tokens, completion_tokens, max_tokens, temperature, costTrimmed, sender, persona, preprompttext, lastMessagesString );
+            // console.log(`openai.js - Line 107 - \x1b[33mCost Record Saved\x1b[0m: Message: ${message} - Response: ${response} - Total Tokens: ${total_tokens} - Cost Trimmed: ${costTrimmed} - Sender: ${sender}`);
+            
             return response;
 
         } catch (error) {

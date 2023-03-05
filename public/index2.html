@@ -9,14 +9,14 @@
   </head>
   <body>
     <div id="app-container" class="container-fluid">
-      <div id="header-frame" class="row">
-        <div id="logo-container" class="col-6 col-md-4">
+      <div id="header-frame">
+        <div id="logo-container">
             <select id="persona-dropdown" class="form-control-plaintext form-select"></select>
         </div>
-        <div id="persona-container" class="col-2 col-md-4">
+        <div id="persona-container">
           <img id="persona-image" src="" alt="" class="img-fluid" />
         </div>
-        <div id="username-frame" class="col-4 col-md-4 username-frame-container">
+        <div id="username-frame" class="username-frame-container">
           <div id="username-container">
             <div id="username-input-container" class="input-group">
               <input type="text" id="username-input" class="form-control" placeholder="Name:">
@@ -26,25 +26,19 @@
         </div>
       </div>
       <div id="content-container">
-        <div class="row">
-          <div class="col-auto">
-            <div id="left-frame">
-              <button class="btn btn-primary">New</button>
-              <button class="btn btn-primary" id="todays-chats-btn">Today's Chats</button>
-              <button class="btn btn-primary" id="clear-btn">Clear</button>
-            </div>
+        <div id="frame-container">
+          <div id="left-frame">
+            <button class="btn btn-primary">New</button>
+            <button class="btn btn-primary" id="todays-chats-btn">Today's Chats</button>
+            <button class="btn btn-primary" id="clear-btn">Clear</button>
           </div>
-          <div class="col">
-            <div id="frame-container">
-              <div id="chat-container">
-                <div id="chat-window"></div>
-              </div>
-              <div id="history-frame"></div>
-            </div>
+          <div id="chat-container">
+            <div id="chat-window"></div>
           </div>
+          <div id="history-frame"></div>
         </div>
       </div>
-      <div id="bottom-frame" class="row">
+      <div id="bottom-frame">
         <div id="input-container" class="col-12 col-md-8">
           <div class="input-group">
             <input type="text" id="user-input" class="form-control" placeholder="Ask me anything!">

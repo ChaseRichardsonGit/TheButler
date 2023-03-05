@@ -122,6 +122,10 @@ client.on('messageCreate', async function(message){
           console.error(err);
         });
         setTimeout(() => {
+        // Trim response if it's 2000 characters or more down to 1999 for Discord.
+        if(response.length > 1999){
+          response = response.substring(0, 1999);
+        }
         message.channel.send(response);
         }, 5000); // wait for 5 seconds before sending the response
       } catch (error) {
