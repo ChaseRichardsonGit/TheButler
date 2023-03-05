@@ -122,7 +122,7 @@ personaDropdown.addEventListener('change', async (event) => {
 });
 
 // userInfo Updates
-import { updateUserInfo, UserInfo } from '..src\mongo.js';
+// import { updateUserInfo, UserInfo } from '..src\mongo.js';
 
 
 // addMessage function
