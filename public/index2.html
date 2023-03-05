@@ -9,7 +9,7 @@
   </head>
   <body>
     <div id="app-container" class="container-fluid">
-      <div id="header-frame" class="row">
+      <div id="header-frame">
         <div id="logo-container" class="col-6 col-md-4">
             <select id="persona-dropdown" class="form-control-plaintext form-select"></select>
         </div>
@@ -26,25 +26,19 @@
         </div>
       </div>
       <div id="content-container">
-        <div class="row">
-          <div class="col-auto">
-            <div id="left-frame">
-              <button class="btn btn-primary">New</button>
-              <button class="btn btn-primary" id="todays-chats-btn">Today's Chats</button>
-              <button class="btn btn-primary" id="clear-btn">Clear</button>
-            </div>
+        <div id="frame-container">
+          <div id="left-frame">
+            <button class="btn btn-primary">New</button>
+            <button class="btn btn-primary" id="todays-chats-btn">Today's Chats</button>
+            <button class="btn btn-primary" id="clear-btn">Clear</button>
           </div>
-          <div class="col">
-            <div id="frame-container">
-              <div id="chat-container">
-                <div id="chat-window"></div>
-              </div>
-              <div id="history-frame"></div>
-            </div>
+          <div id="chat-container">
+            <div id="chat-window"></div>
           </div>
+          <div id="history-frame"></div>
         </div>
       </div>
-      <div id="bottom-frame" class="row">
+      <div id="bottom-frame">
         <div id="input-container" class="col-12 col-md-8">
           <div class="input-group">
             <input type="text" id="user-input" class="form-control" placeholder="Ask me anything!">

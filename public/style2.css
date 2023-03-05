@@ -68,6 +68,7 @@ body {
   background-color: #ffffff;
   color: #f2f2f2;
   border: none;
+  border-radius: .375rem;
   padding: 8px;
   margin-right: 8px;
   caret-color: black;
@@ -101,6 +102,14 @@ body {
   background-color: #1d1d1d;
   color: black;
 }
+
+
+#content-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  }
 
 #frame-container {
   display: flex;
@@ -151,6 +160,7 @@ body {
   overflow-y: auto;
   padding-right: 16px;
   padding-left: 16px;
+  width: 90%;
 }
 
 #history-frame {
@@ -257,8 +267,8 @@ body {
 #username-submit-button {
   position: absolute;
   top: 0;
-  right: 0;
-  width: 80px;
+  right: 6px;
+  width: 60px;
   height: 100%;
   background-color: transparent;
   border: none;
@@ -302,16 +312,16 @@ body {
 
 #bottom-frame #input-container input {
   flex: 1;
-  margin-right: 16px;
   padding-right: 80px;
+  border-radius: .375rem;
 }  
 
 #bottom-frame #input-container button {
   position: absolute;
   right: 0;
-  top: 0;
+  top: 7px;
   bottom: 0;
-  width: 80px;
+  width: 70px;
   margin-top: 0;
   background-color: transparent;
   border: none;
@@ -321,6 +331,7 @@ body {
   background-size: contain;
   background-position: center;
   height: 24px;
+  z-index: 5;
 }
 
 ::-webkit-scrollbar {
