@@ -75,9 +75,6 @@
             When someone posts a link with more than two reactions move/repost it to links for later channel. 
             User has been inactive for 24 hours, check in on them.
 
-            Rename butler.js to discordbot.js
-            Add total cost back in and make it work for web, just log it not show it on screen.
-            Frontend Item - Username-input box floating down
             Post every link we write to the database goes to the links for later channel.
     
 
