@@ -15,7 +15,8 @@
     "mime": "^3.0.0",
     "mongoose": "^6.9.1",
     "openai": "^3.2.1",
-    "send": "^0.18.0"
+    "send": "^0.18.0",
+    "undici": "^5.20.0"
   },
   "keywords": [],
   "description": ""
