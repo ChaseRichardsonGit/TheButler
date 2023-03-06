@@ -45,6 +45,7 @@ client.on('messageCreate', async function(message){
     if(persona == 'Butler') {
     if(message.channel.type !== Discord.ChannelType.DM) {
     if(message.author.bot) return;
+    if(message.author.name == persona) return;
     if(!message.content.trim()) return;
     await updateUserInfo(message);
   
