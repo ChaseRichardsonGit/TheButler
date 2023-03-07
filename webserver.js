@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 // Load the Environment Variables from .env
 require('dotenv').config(); 
@@ -321,6 +321,48 @@ app.get('/api/sender-stats', async (req, res) => {
     res.status(500).send({ error: `Failed to get sender statistics from MongoDB: ${error}` });
   }
 });
+
+// Get server statistics from MongoDB
+app.get('/api/server-stats', async (req, res) => {
+  try {
+    const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
+    const db = client.db(dbName);
+    const collection = db.collection('costs');
+
+    const results = await collection.aggregate([
+      {
+        $sort: {
+          time: -1
+        }
+      },
+      {
+        $group: {
+          _id: "$sender",
+          total_messages: { $sum: 1 },
+          total_cost: { $sum: { $toDouble: "$cost" } },
+          last_message: { $first: "$time" },
+          total_tokens_used: { $sum: { $toInt: "$total_tokens" } }
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          sender: "$_id",
+          totalMessages: "$total_messages",
+          totalCost: "$total_cost",
+          lastMessage: "$last_message"
+        },
+      },
+    ]).toArray();
+
+    client.close();
+    res.send(results);
+  } catch (error) {
+    console.error(`Failed to get server statistics from MongoDB: ${error}`);
+    res.status(500).send({ error: `Failed to get server statistics from MongoDB: ${error}` });
+  }
+});
+
 
 // Serve the index.html file
 app.get('/', (req, res) => { 

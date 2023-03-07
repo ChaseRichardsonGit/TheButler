@@ -180,19 +180,94 @@ $('#sender-stats-btn').on('click', async () => {
   try {
     // Send the request to the server
     const response = await $.get(`/api/sender-stats?username=${username}`);
-
+  
     // Display the results in the sender-stats-container
     const container = $('#sender-stats-container');
     container.empty(); // Clear previous search results
     const div = $('<div>');
     div.append($('<p>').text(`Total messages sent by ${username}: ${response.totalMessages}`));
     div.append($('<p>').text(`Total cost: ${response.totalCost}`));
-    div.append($('<p>').text(`Total tokens used by ${username}: ${response.totalTokensUsed}`));
     div.append($('<p>').text(`Last message sent by ${username}: ${response.lastMessage}`));
-
+    div.append($('<p>').text(`Total tokens used by ${username}: ${response.totalTokensUsed}`));
     container.append(div);
   } catch (error) {
-    console.error(`Failed to retrieve sender stats for ${username}:`, error);
+    if (error.status === 404) {
+      alert(`No such user exists in the database.`);
+    } else {
+      console.error(`Failed to retrieve sender stats for ${username}:`, error);
+    }
+  }
+});
+
+// Add event listener for "Enter" key press on input field
+$('#username-input').on('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent form submission
+    $('#sender-stats-btn').click(); // Trigger search button click event
+  }
+});
+
+// When the "Server Stats" button is clicked, retrieve and display server stats
+$(document).ready(async function () {
+  try {
+    // Send the request to the server
+    const response = await $.get('/api/server-stats');
+
+    // Display the results in the server-stats-container
+    const container = $('#server-stats-body');
+    container.empty(); // Clear previous search results
+    response.forEach(result => {
+      const tr = $('<tr>');
+      tr.append($('<td>').text(result.sender));
+      tr.append($('<td>').text(result.totalMessages));
+      tr.append($('<td>').text(result.totalCost));
+      tr.append($('<td>').text(result.lastMessage));
+      container.append(tr);
+    });
+  } catch (error) {
+    console.error(`Failed to retrieve server stats:`, error);
+  }
+});
+
+// Get sender statistics for a given username from MongoDB
+app.get('/api/server-stats', async (req, res) => {
+  try {
+    const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
+    const db = client.db(dbName);
+    const collection = db.collection('costs');
+
+    // Aggregate the collection by sender
+    const results = await collection.aggregate([
+      {
+        $sort: {
+          time: -1
+        }
+      },
+      {
+        $group: {
+          _id: "$sender",
+          total_messages: { $sum: 1 },
+          total_cost: { $sum: { $toDouble: "$cost" } },
+          last_message: { $first: "$time" },
+          total_tokens_used: { $sum: { $toInt: "$total_tokens" } }
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          sender: "$_id",
+          totalMessages: "$total_messages",
+          totalCost: "$total_cost",
+          lastMessage: "$last_message"
+        },
+      },
+    ]).toArray();
+
+    client.close();
+    res.send(results);
+  } catch (error) {
+    console.error(`Failed to get server statistics from MongoDB: ${error}`);
+    res.status(500).send({ error: `Failed to get server statistics from MongoDB: ${error}` });
   }
 });
 
