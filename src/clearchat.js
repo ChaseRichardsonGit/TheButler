@@ -1,4 +1,4 @@
-module.exports = async function(message){
+module.exports = async function(message){ 
     if(!message) {
         console.error("message is not defined");
         return;
