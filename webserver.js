@@ -128,7 +128,6 @@ app.post('/api/save-message', async (req, res) => {
     }
   }
 });
-
   
 // Call OpenAI API and save response to MongoDB
 app.post('/api/response', async (req, res) => { 
@@ -151,7 +150,6 @@ app.post('/api/response', async (req, res) => {
   }
   }
 });
-
 
 // Get persona data from MongoDB for web
 app.get('/api/personas/:personaName', (req, res) => {

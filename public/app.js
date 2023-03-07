@@ -187,6 +187,12 @@ sendButton.addEventListener('click', async () => {
   const message = userInput.value.trim();
   if (message) { 
     userInput.value = '';
+
+        // Set username to "anonymous" if it is not set already
+        if (!username) {
+          username = "anonymous";
+        }
+
     try {
       const addMessagePromise = new Promise((resolve, reject) => {
         addMessage(username, message, selectedPersona, null, 'sent');
