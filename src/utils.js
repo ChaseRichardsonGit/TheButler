@@ -1,4 +1,5 @@
 const { Cost, UserInfo } = require("./mongo.js");
+const http = require('http');
 
 async function updateUserInfo(sender, message, costTrimmed) {
   // Find the UserInfo in the database and update it with the cost
