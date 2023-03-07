@@ -19,7 +19,7 @@ if (persona == 'Butler') {
 // Load the Discord API and Mongo Database
 const Discord = require('discord.js');
 const { Client, GatewayIntentBits, Partials, Utils } = require('discord.js');
-const { UserInfo, Link, Cost, Log, updateUserInfo } = require('./mongo.js'); 
+const { Link, Cost, Log, updateUserInfo } = require('./mongo.js'); 
 
 // Define Intents and Partials for Discord
 const client = new Client({ 
@@ -42,86 +42,104 @@ const client = new Client({
 
 // Listener for General (Butler Only)
 client.on('messageCreate', async function(message){
-    if(persona == 'Butler') {
-    if(message.channel.type !== Discord.ChannelType.DM) {
-    if(message.author.bot) return;
-    if(message.author.name == persona) return;
-    if(!message.content.trim()) return;
-    await updateUserInfo(message);
-  
-    // Check if the message contains a link
-    if(message.content.includes("http"))
-        {
-      const link = new Link({
-        server: message.guild.name,
-        channel: message.channel.id,
-        sender: message.author.username,
-        link: message.content,
-        time: message.createdAt.toString()
-      });
-  
-      link.save().then(() => {
+  if(persona == 'Butler') {
+  if(message.channel.type !== Discord.ChannelType.DM) {
+  if(message.author.bot) return;
+  if(!message.content.trim()) return;
+
+
+  // Check if the message contains a link
+  if(message.content.includes("http"))
+      {
+    const link = new Link({
+      server: message.guild.name,
+      channel: message.channel.id,
+      sender: message.author.username,
+      link: message.content,
+      time: message.createdAt.toString()
+    });
+
+    link.save().then(() => {
 //        console.log(`Link saved for user ${message.author.username} with link: ${link.link}\n`);
-      }).catch(err => {
-        console.error(err);
-      });
-    }
+    }).catch(err => {
+      console.error(err);
+    });
+  }
 
 // Log the message to MongoDB    
-    const log = new Log({ 
-        createdBy: persona,
-        server: message.guild.name,
-        channel: message.channel.name,
-        sender: message.author.username,
-        receiver: "all",
-        message: message.content,
-        time: new Date().toString()
-      });
-      log.save().then(() => {
+  const log = new Log({ 
+      createdBy: persona,
+      server: message.guild.name,
+      channel: message.channel.name,
+      sender: message.author.username,
+      receiver: "all",
+      message: message.content,
+      time: new Date().toString()
+    });
+    log.save().then(() => {
 //       console.log(`Message logged to MongoDB: ${message.author.username}: ${message.content}\n`);
-      }).catch(err => {
-        console.error(err);
-        });
-    }}
+    }).catch(err => {
+      console.error(err);
+      });
+  }}
 });
 
 // Listener for your name in channel messages and start an OpenAI Dialogue
 client.on('messageCreate', async function(message){
-  if(message.channel.type !== Discord.ChannelType.DM) {
-    // if(message.author.bot) return;
-    if(message.author.name == persona) return;
-    if(message.content.includes(persona)) {
-      try {
-        let response = await openai.callopenai(message, message.author.username, persona);
-        // Log the bot's response to MongoDB
-        const log = new Log({
-          createdBy: persona,
-          server: message.guild.name,
-          channel: message.channel.name,
-          sender: persona,
-          receiver: message.author.username,
-          message: response,
-          time: new Date().toString()
-        });
-        log.save().then(() => {
-          // console.log(`Message logged to MongoDB: ${persona}: ${response}\n`);
-        }).catch(err => {
-          console.error(err);
-        });
-        setTimeout(() => {
-        // Trim response if it's 2000 characters or more down to 1999 for Discord.
-        if(response.length > 1999){
-          response = response.substring(0, 1999);
-        }
-        message.channel.send(response);
-        }, 5000); // wait for 5 seconds before sending the response
-      } catch (error) {
-        console.error(error);
-        message.channel.send("Sorry your request could not be processed at this time, please try again.");
+if(message.channel.type !== Discord.ChannelType.DM) {
+  if(message.author.username !== persona) {
+     if(message.content.includes(persona)) {
+        try {
+      let response = await openai.callopenai(message, message.author.username, persona);
+      // Log the bot's response to MongoDB
+      const log = new Log({
+        createdBy: persona,
+        server: message.guild.name,
+        channel: message.channel.name,
+        sender: persona,
+        receiver: message.author.username,
+        message: response,
+        time: new Date().toString()
+      });
+      log.save().then(() => {
+        // console.log(`Message logged to MongoDB: ${persona}: ${response}\n`);
+      }).catch(err => {
+        console.error(err);
+      });
+      setTimeout(() => {
+      // Trim response if it's 2000 characters or more down to 1999 for Discord.
+      if(response.length > 1999){
+        response = response.substring(0, 1999);
       }
+      message.channel.send(response);
+      }, 5000); // wait for 5 seconds before sending the response
+    } catch (error) {
+      console.error(error);
+      message.channel.send("Sorry your request could not be processed at this time, please try again.");
     }
+    
+    // Log the user's message to MongoDB
+    const log = new Log({
+        createdBy: persona,
+        server: message.guild.name,
+        channel: message.channel.name,
+        sender: message.author.username,
+        receiver: persona,
+        message: message.content,
+        time: new Date().toString()
+    });
+    log.save().then(() => {
+        // console.log(`Message logged to MongoDB: ${message.author.username}: ${message.content}\n`);
+    }).catch(err => {
+        console.error(err);
+    });
   }
-});
+}
+}});
+
+
+
+
 
 
 // Listens for DM's, Log the message and starts an OpenAI Dialogue
@@ -164,30 +182,6 @@ client.on('messageCreate', async function(message){
     console.error(err);
   }
 }      
-});
-
-// Listener to Log Direct Messages UserInfo to MongoDB
-client.on('messageCreate', async function(message){
-  if(message.channel.type === Discord.ChannelType.DM) {
-  let userInfo = await UserInfo.findOne({ userId: message.author.id });
-  if(!userInfo) {
-  userInfo = new UserInfo({
-  server: "-",
-  userId: message.author.id,
-  username: message.author.username,
-  sender: message.author.username,
-  messagesSent: 1,
-  time: new Date()
-  });
-  } else {
-  userInfo.time = new Date();
-  }
-  userInfo.save().then(() => {
-  console.log(`butler.js - Line181 - UserInfo updated for user ${message.author.username} with messagesSent: ${userInfo.messagesSent}\n`);
-  }).catch(err => {
-  console.error(err);
-  });
-  }
 });
 
 // Listner for Slash Commands
