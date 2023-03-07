@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.WEBSERVER_PORT || 3001;
 
 // Load the Environment Variables from .env
 require('dotenv').config(); 
