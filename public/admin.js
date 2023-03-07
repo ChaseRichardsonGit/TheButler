@@ -207,11 +207,14 @@ $('#username-input').on('keydown', (event) => {
   }
 });
 
-// When the "Server Stats" button is clicked, retrieve and display server stats
+// When the page loads, retrieve and display server stats
 $(document).ready(async function () {
   try {
     // Send the request to the server
     const response = await $.get('/api/server-stats');
+
+    // Sort the results by lastMessage in descending order
+    response.sort((a, b) => new Date(b.lastMessage) - new Date(a.lastMessage));
 
     // Display the results in the server-stats-container
     const container = $('#server-stats-body');
@@ -229,20 +232,14 @@ $(document).ready(async function () {
   }
 });
 
-// Get sender statistics for a given username from MongoDB
+// Get server statistics from MongoDB
 app.get('/api/server-stats', async (req, res) => {
   try {
     const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
     const db = client.db(dbName);
     const collection = db.collection('costs');
 
-    // Aggregate the collection by sender
     const results = await collection.aggregate([
-      {
-        $sort: {
-          time: -1
-        }
-      },
       {
         $group: {
           _id: "$sender",
@@ -261,6 +258,11 @@ app.get('/api/server-stats', async (req, res) => {
           lastMessage: "$last_message"
         },
       },
+      {
+        $sort: {
+          lastMessage: -1
+        }
+      }
     ]).toArray();
 
     client.close();
@@ -270,4 +272,3 @@ app.get('/api/server-stats', async (req, res) => {
     res.status(500).send({ error: `Failed to get server statistics from MongoDB: ${error}` });
   }
 });
-
