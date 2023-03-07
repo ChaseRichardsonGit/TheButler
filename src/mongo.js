@@ -8,59 +8,7 @@ const { MongoClient } = require("mongodb");
 const mongoUrl = process.env.MONGO_URI;
 const dbName = process.env.MONGO_DBNAME;
 const { ObjectId } = require('mongodb');
-
-const userInfoSchema = new mongoose.Schema({
-  sessionId: {
-      type: String,
-      required: false,
-      unique: true
-  },
-  username: {
-      type: String,
-      required: true
-  },
-  latestSource: {
-      type: String,
-      required: false
-  },
-  messagesSent: {
-      type: Number,
-      default: 0,
-      required: false
-  },
-  total_cost: {
-      type: Number,
-      default: 0,
-      required: false
-  },
-  lastUpdated: {
-      type: Date,
-      required: false
-  }
-});
 mongoose.set('strictQuery', true);
-const UserInfo = mongoose.model("UserInfo", userInfoSchema);
-
-async function updateUserInfo(message) {
-  let userInfo = await UserInfo.findOne({ server: message.guild.name, userId: message.author.id });
-  if(!userInfo) {
-      userInfo = new UserInfo({
-          server: message.guild.name,
-          username: message.author.username,
-          sender: message.author.username,
-          messagesSent: 1
-      });
-  } else {
-      userInfo.messagesSent += 1;
-  }
-  userInfo.save().then(() => {
-      console.log(`UserInfo updated for user ${message.author.username} with messagesSent: ${userInfo.messagesSent}\n`);
-  }).catch(err => {
-      console.error(err);
-  });
-}
-
-
 
 const messageSchema = new mongoose.Schema({
     createdBy: {
@@ -263,4 +211,4 @@ async function updatePersonaData(name, data) {
 }
 
 // Export the Log, UserInfo, PersonData, getChatLog, and Link models
-module.exports = { Log, UserInfo, Link, Cost, getPersonaData, getChatLog, updateUserInfo };
+module.exports = { Log, Link, Cost, getPersonaData, getChatLog };

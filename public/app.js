@@ -121,10 +121,6 @@ personaDropdown.addEventListener('change', async (event) => {
   }
 });
 
-// userInfo Updates
-// import { updateUserInfo, UserInfo } from '..src\mongo.js';
-
-
 // addMessage function
 async function addMessage(sender, message, selectedPersona, response, messageType = '') {
   const timestamp = Date.now();
@@ -178,15 +174,7 @@ async function addMessage(sender, message, selectedPersona, response, messageTyp
     })
       .done((response) => {
         // console.log('Message saved to database:', response);
-
-        const message = {
-          guild: { name: "web" },
-          author: { id: username }
-        };
-        
-        updateUserInfo(message);
-        console.log('app.js - Line 188 - User info updated:', UserInfo)
-      })
+   })
       .fail((error) => {
         console.error('Error saving message to database:', error);
         console.log('app.js - Line 192 - User info updated:', UserInfo)
@@ -302,6 +290,3 @@ async function loadTodayChatHistory() {
     console.error('Error loading chat history:', error);
   }
 }
-
-
-

@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 // Load the Environment Variables from .env
 require('dotenv').config(); 
@@ -46,7 +46,7 @@ async function saveMessageToDB(createdBy, sender, receiver, message) {
       time: new Date().toString(),
     });
     await userLog.save();
-    // console.log(`webserver.js - Line 62 - Message saved to MongoDB: ${message}, ${time}, ${createdBy}, ${sender}, ${receiver}, ${server}, ${channel}`);
+    console.log(`webserver.js - Line 68 - Message saved to MongoDB: ${message}, ${time}, ${createdBy}, ${sender}, ${receiver}, ${server}, ${channel}`);
   } catch (error) {
     console.error(err);
     throw new Error(`An error occurred while saving the message: ${error}`);
