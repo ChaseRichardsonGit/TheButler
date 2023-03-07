@@ -109,7 +109,7 @@ const costSchema = new mongoose.Schema({
     },
     lastmessages: {
       type: String,
-      required: true
+      required: false
     },
     time: {
       type: String,

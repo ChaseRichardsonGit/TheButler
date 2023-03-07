@@ -29,8 +29,10 @@ $(document).ready(async () => {
 
     // Populate the persona data fields
     const personaName = dropdown.val();
-    const personaData = await getPersonaData(personaName);
-    populatePersonaData(personaData);
+    if (personaName) { // Check if personaName is defined before making the API call
+      const personaData = await getPersonaData(personaName);
+      populatePersonaData(personaData);
+    }
 
     // Trigger the change event to populate the persona name and data
     dropdown.on('change', async (event) => {
@@ -170,3 +172,27 @@ $(document).ready(() => {
     }
   });
 });
+
+// When the "Sender Stats" button is clicked, retrieve and display sender stats
+$('#sender-stats-btn').on('click', async () => {
+  const username = $('#username-input').val().trim();
+  
+  try {
+    // Send the request to the server
+    const response = await $.get(`/api/sender-stats?username=${username}`);
+
+    // Display the results in the sender-stats-container
+    const container = $('#sender-stats-container');
+    container.empty(); // Clear previous search results
+    const div = $('<div>');
+    div.append($('<p>').text(`Total messages sent by ${username}: ${response.totalMessages}`));
+    div.append($('<p>').text(`Total cost: ${response.totalCost}`));
+    div.append($('<p>').text(`Total tokens used by ${username}: ${response.totalTokensUsed}`));
+    div.append($('<p>').text(`Last message sent by ${username}: ${response.lastMessage}`));
+
+    container.append(div);
+  } catch (error) {
+    console.error(`Failed to retrieve sender stats for ${username}:`, error);
+  }
+});
+

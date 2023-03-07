@@ -104,8 +104,8 @@ module.exports = {
             let costTrimmed = parseFloat(cost.toFixed(6));
             const lastMessagesString = lastMessages.map(message => `${message.sender}: ${message.message}`).join('\n');
             // Save cost record with lastMessagesString
-            console.log(`\n\nopenai.js - Line 101 - \x1b[33mData Usage Completion Tokens:\x1b[0m ${gptResponse.data.usage.completion_tokens}`)
-            console.log(`openai.js - Line 102 - \x1b[33mData Usage Prompt Tokens:\x1b[0m ${gptResponse.data.usage.prompt_tokens}`)
+            console.log(`\n\nopenai.js - Line 101 - \x1b[33mUsage Completion Tokens:\x1b[0m ${gptResponse.data.usage.completion_tokens}`)
+            console.log(`openai.js - Line 102 - \x1b[33mUsage Prompt Tokens:\x1b[0m ${gptResponse.data.usage.prompt_tokens}`)
             console.log(`openai.js - Line 103 - \x1b[33mToken:${total_tokens}\x1b[0m,\x1b[32mTransCost:${costTrimmed}\x1b[0m`)
             
             // await updateUserInfo(sender, costTrimmed);

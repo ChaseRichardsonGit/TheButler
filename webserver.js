@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 // Load the Environment Variables from .env
 require('dotenv').config(); 
@@ -264,6 +264,62 @@ app.post('/api/chat-history', (req, res) => {
       res.json(messages);
     }
   );
+});
+
+// Get sender statistics for a given username from MongoDB
+app.get('/api/sender-stats', async (req, res) => {
+  try {
+    const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
+    const db = client.db(dbName);
+    const collection = db.collection('costs');
+
+    const username = req.query.username;
+    if (!username) {
+      throw new Error('No username provided');
+    }
+
+    // Aggregate the collection by sender for the given username
+    const results = await collection.aggregate([
+      {
+        $match: {
+          sender: username,
+        },
+      },
+      {
+        $sort: {
+          time: -1
+        }
+      },
+      {
+        $group: {
+          _id: "$sender",
+          total_messages: { $sum: 1 },
+          total_cost: { $sum: { $toDouble: "$cost" } },
+          last_message: { $first: "$time" },
+          total_tokens_used: { $sum: { $toInt: "$total_tokens" } }
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalMessages: "$total_messages",
+          totalCost: "$total_cost",
+          lastMessage: "$last_message",
+          totalTokensUsed: "$total_tokens_used"
+        },
+      },
+    ]).toArray();
+
+    client.close();
+    if (results.length === 0) {
+      res.status(404).send({ error: `No stats found for user ${username}` });
+    } else {
+      res.send(results[0]);
+    }
+  } catch (error) {
+    console.error(`Failed to get sender statistics from MongoDB: ${error}`);
+    res.status(500).send({ error: `Failed to get sender statistics from MongoDB: ${error}` });
+  }
 });
 
 // Serve the index.html file
