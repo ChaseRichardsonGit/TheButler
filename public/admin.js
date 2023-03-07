@@ -223,7 +223,7 @@ $(document).ready(async function () {
       const tr = $('<tr>');
       tr.append($('<td>').text(result.sender));
       tr.append($('<td>').text(result.totalMessages));
-      tr.append($('<td>').text(result.totalCost));
+      tr.append($('<td>').text(result.totalCost.toFixed(5)));
       tr.append($('<td>').text(result.lastMessage));
       container.append(tr);
     });
