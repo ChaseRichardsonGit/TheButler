@@ -108,8 +108,6 @@ if(message.channel.type !== Discord.ChannelType.DM) {
         console.error(err);
       });
     }
-    
-
       setTimeout(() => {
       // Trim response if it's 2000 characters or more down to 1999 for Discord.
       if(response.length > 1999){
