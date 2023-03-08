@@ -392,7 +392,9 @@ app.get('/sender-stats/:sender', async (req, res) => {
           total_tokens: { $first: "$total_tokens" },
           prompt_tokens: { $first: "$prompt_tokens" },
           completion_tokens: { $first: "$completion_tokens" },
-          max_tokens: { $first: "$max_tokens" }
+          max_tokens: { $first: "$max_tokens" },
+          preprompttext: { $first: "$preprompttext" },
+          lastmessages: { $last: "$message" },
         },
       },
       {
@@ -407,7 +409,9 @@ app.get('/sender-stats/:sender', async (req, res) => {
           total_tokens: "$total_tokens",
           prompt_tokens: "$prompt_tokens",
           completion_tokens: "$completion_tokens",
-          max_tokens: "$max_tokens"
+          max_tokens: "$max_tokens",
+          preprompttext: "$preprompttext",
+          lastmessages: "$lastmessages",
         },
       }
     ]).toArray();
@@ -418,7 +422,7 @@ app.get('/sender-stats/:sender', async (req, res) => {
       sender: sender,
       messages: messages
     };
-
+    
     if (results.length > 0) {
       data.totalMessages = results[0].totalMessages;
       data.totalCost = results[0].totalCost.toFixed(5);
@@ -429,6 +433,8 @@ app.get('/sender-stats/:sender', async (req, res) => {
       data.prompt_tokens = results[0].prompt_tokens;
       data.completion_tokens = results[0].completion_tokens;
       data.max_tokens = results[0].max_tokens;
+      data.preprompttext = results[0].preprompttext;
+      data.lastmessages = results[0].lastmessages;
     } else {
       data.totalMessages = 0;
       data.totalCost = 0;
@@ -439,6 +445,8 @@ app.get('/sender-stats/:sender', async (req, res) => {
       data.prompt_tokens = '';
       data.completion_tokens = '';
       data.max_tokens = '';
+      data.preprompttext = '';
+      data.lastmessages = '';
     }
 
     res.render('sender-stats', data);

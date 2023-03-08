@@ -33,24 +33,28 @@
 	<p>Total Messages: <%= totalMessages %></p>
 	<p>Total Cost: $<%= totalCost %></p>
 	<p>Total Tokens Used: <%= totalTokensUsed %></p>
-	<p>Persona: <%= persona %></p>
+	<!-- <p>Persona: <%= persona %></p>
 	<p>Characters: <%= characters %></p>
 	<p>Total Tokens: <%= total_tokens %></p>
 	<p>Prompt Tokens: <%= prompt_tokens %></p>
 	<p>Completion Tokens: <%= completion_tokens %></p>
 	<p>Max Tokens: <%= max_tokens %></p>
+	<p>Pre-prompt Text: <%= preprompttext %></p>
+	<p>Last Messages: <%= lastmessages %></p> -->
 	<div class="table-responsive">
-		<table class="table">
+		<table class="table" id="messagesTable">
 		  <thead>
 			<tr>
 			  <th>Time</th>
-			  <th>Message</th>
 			  <th>Persona</th>
+			  <th>Message</th>
 			  <th>Characters</th>
 			  <th>Total_Tokens</th>
 			  <th>Prompt_Tokens</th>
 			  <th>Completion_Tokens</th>
 			  <th>Max_Tokens</th>
+			  <th>Preprompt_Text</th>
+			  <th>Last_Messages</th>
 			</tr>
 		  </thead>
 		  <tbody>
@@ -64,10 +68,17 @@
 				<td><%= message.prompt_tokens %></td>
 				<td><%= message.completion_tokens %></td>
 				<td><%= message.max_tokens %></td>
+				<td title="<%= message.preprompttext %>"><%= message.preprompttext.slice(0, 25) %>...</td>
+				<td title="<%= message.lastmessages %>"><%= message.lastmessages.slice(0, 25) %>...</td>
 			  </tr>
 			<% }); %>
 		  </tbody>
 		</table>
 	  </div>
 </body>
+<script>
+	$(document).ready(function() {
+	  $('#messagesTable').DataTable();
+	});
+  </script>
 </html>
