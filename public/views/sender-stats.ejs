@@ -57,9 +57,9 @@
 		  <tbody>
 			<% messages.forEach(message => { %>
 			  <tr>
-				<td><%= message.time %></td>
+				<td title="<%= message.time %>"><%= message.time.slice(0, 25) %>...</td>
 				<td><%= message.persona %></td>
-				<td><%= message.message %></td>
+				<td title="<%= message.message %>"><%= message.message.slice(0, 25) %>...</td>
 				<td><%= message.characters %></td>
 				<td><%= message.total_tokens %></td>
 				<td><%= message.prompt_tokens %></td>
