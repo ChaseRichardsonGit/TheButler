@@ -33,21 +33,23 @@
 	<p>Total Messages: <%= totalMessages %></p>
 	<p>Total Cost: $<%= totalCost %></p>
 	<p>Total Tokens Used: <%= totalTokensUsed %></p>
-	<table>
-		<thead>
-		  <tr>
-			<th>Time</th>
-			<th>Message</th>
-		  </tr>
-		</thead>
-		<tbody>
-		  <% messages.forEach(message => { %>
+	<div class="table-responsive">
+		<table class="table">
+		  <thead>
 			<tr>
-			  <td><%= message.time %></td>
-			  <td><%= message.message %></td>
+			  <th>Time</th>
+			  <th>Message</th>
 			</tr>
-		  <% }); %>
-		</tbody>
-	  </table>
+		  </thead>
+		  <tbody>
+			<% messages.forEach(message => { %>
+			  <tr>
+				<td><%= message.time %></td>
+				<td><%= message.message %></td>
+			  </tr>
+			<% }); %>
+		  </tbody>
+		</table>
+	  </div>
 </body>
 </html>
