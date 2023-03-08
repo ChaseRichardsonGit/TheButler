@@ -12,5 +12,5 @@ done
 # Loop through each persona again and run the desired command in the corresponding screen
 for personaName in "${personas[@]}"
 do
-    screen -S "$personaName" -X stuff $"node ..\index.js $personaName\n"
+    screen -S "$personaName" -X stuff $"node ../index.js $personaName\n"
 done
