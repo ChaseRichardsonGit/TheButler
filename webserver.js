@@ -386,7 +386,13 @@ app.get('/sender-stats/:sender', async (req, res) => {
           _id: "$sender",
           total_messages: { $sum: 1 },
           total_cost: { $sum: { $toDouble: "$cost" } },
-          total_tokens_used: { $sum: { $toInt: "$total_tokens" } }
+          total_tokens_used: { $sum: { $toInt: "$total_tokens" } },
+          persona: { $first: "$persona" },
+          characters: { $first: "$characters" },
+          total_tokens: { $first: "$total_tokens" },
+          prompt_tokens: { $first: "$prompt_tokens" },
+          completion_tokens: { $first: "$completion_tokens" },
+          max_tokens: { $first: "$max_tokens" }
         },
       },
       {
@@ -395,7 +401,13 @@ app.get('/sender-stats/:sender', async (req, res) => {
           sender: "$_id",
           totalMessages: "$total_messages",
           totalCost: "$total_cost",
-          totalTokensUsed: "$total_tokens_used"
+          totalTokensUsed: "$total_tokens_used",
+          persona: "$persona",
+          characters: "$characters",
+          total_tokens: "$total_tokens",
+          prompt_tokens: "$prompt_tokens",
+          completion_tokens: "$completion_tokens",
+          max_tokens: "$max_tokens"
         },
       }
     ]).toArray();
@@ -411,10 +423,22 @@ app.get('/sender-stats/:sender', async (req, res) => {
       data.totalMessages = results[0].totalMessages;
       data.totalCost = results[0].totalCost.toFixed(5);
       data.totalTokensUsed = results[0].totalTokensUsed;
+      data.persona = results[0].persona;
+      data.characters = results[0].characters;
+      data.total_tokens = results[0].total_tokens;
+      data.prompt_tokens = results[0].prompt_tokens;
+      data.completion_tokens = results[0].completion_tokens;
+      data.max_tokens = results[0].max_tokens;
     } else {
       data.totalMessages = 0;
       data.totalCost = 0;
       data.totalTokensUsed = 0;
+      data.persona = '';
+      data.characters = '';
+      data.total_tokens = '';
+      data.prompt_tokens = '';
+      data.completion_tokens = '';
+      data.max_tokens = '';
     }
 
     res.render('sender-stats', data);
@@ -423,6 +447,7 @@ app.get('/sender-stats/:sender', async (req, res) => {
     res.status(500).send({ error: `Failed to get sender statistics and messages from MongoDB: ${error}` });
   }
 });
+
 
 
 // Serve the index.html file

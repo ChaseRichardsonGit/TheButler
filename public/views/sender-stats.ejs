@@ -33,19 +33,37 @@
 	<p>Total Messages: <%= totalMessages %></p>
 	<p>Total Cost: $<%= totalCost %></p>
 	<p>Total Tokens Used: <%= totalTokensUsed %></p>
+	<p>Persona: <%= persona %></p>
+	<p>Characters: <%= characters %></p>
+	<p>Total Tokens: <%= total_tokens %></p>
+	<p>Prompt Tokens: <%= prompt_tokens %></p>
+	<p>Completion Tokens: <%= completion_tokens %></p>
+	<p>Max Tokens: <%= max_tokens %></p>
 	<div class="table-responsive">
 		<table class="table">
 		  <thead>
 			<tr>
 			  <th>Time</th>
 			  <th>Message</th>
+			  <th>Persona</th>
+			  <th>Characters</th>
+			  <th>Total_Tokens</th>
+			  <th>Prompt_Tokens</th>
+			  <th>Completion_Tokens</th>
+			  <th>Max_Tokens</th>
 			</tr>
 		  </thead>
 		  <tbody>
 			<% messages.forEach(message => { %>
 			  <tr>
 				<td><%= message.time %></td>
+				<td><%= message.persona %></td>
 				<td><%= message.message %></td>
+				<td><%= message.characters %></td>
+				<td><%= message.total_tokens %></td>
+				<td><%= message.prompt_tokens %></td>
+				<td><%= message.completion_tokens %></td>
+				<td><%= message.max_tokens %></td>
 			  </tr>
 			<% }); %>
 		  </tbody>
