@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.WEBSERVER_PORT;
+const path = require('path');
 
 const MongoClient = require('mongodb').MongoClient;
 const { Log, getChatLog, getPersonaData, updatePersonaData, getChatToday } = require('./src/mongo.js');
@@ -358,6 +359,57 @@ app.get('/api/server-stats', async (req, res) => {
   } catch (error) {
     console.error(`Failed to get server statistics from MongoDB: ${error}`);
     res.status(500).send({ error: `Failed to get server statistics from MongoDB: ${error}` });
+  }
+});
+
+app.set('views', path.join(__dirname, 'public', 'views'));
+app.set('view engine', 'ejs');
+
+// Get sender stats for a specific sender
+app.get('/sender-stats/:sender', async (req, res) => {
+  const sender = req.params.sender;
+
+  try {
+    const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
+    const db = client.db(dbName);
+    const collection = db.collection('costs');
+
+    const results = await collection.aggregate([
+      {
+        $match: {
+          sender: sender
+        }
+      },
+      {
+        $group: {
+          _id: "$sender",
+          total_messages: { $sum: 1 },
+          total_cost: { $sum: { $toDouble: "$cost" } },
+          total_tokens_used: { $sum: { $toInt: "$total_tokens" } }
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          sender: "$_id",
+          totalMessages: "$total_messages",
+          totalCost: "$total_cost",
+          totalTokensUsed: "$total_tokens_used"
+        },
+      }
+    ]).toArray();
+
+    client.close();
+    const data = {
+      sender: sender,
+      totalMessages: results[0].totalMessages,
+      totalCost: results[0].totalCost.toFixed(5),
+      totalTokensUsed: results[0].totalTokensUsed
+    };
+    res.render('sender-stats', data);
+  } catch (error) {
+    console.error(`Failed to get sender statistics from MongoDB: ${error}`);
+    res.status(500).send({ error: `Failed to get sender statistics from MongoDB: ${error}` });
   }
 });
 

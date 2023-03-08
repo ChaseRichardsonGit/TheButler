@@ -217,7 +217,8 @@ $(document).ready(async function() {
     container.empty();
     response.forEach(result => {
       const tr = $('<tr>');
-      tr.append($('<td>').text(result.sender));
+      const senderName = $('<a>').attr('href', `/sender-stats/${result.sender}`).text(result.sender);
+      tr.append($('<td>').append(senderName));
       tr.append($('<td>').text(result.totalMessages));
       tr.append($('<td>').text(result.totalCost.toFixed(5)));
       tr.append($('<td>').text(result.lastMessage));
@@ -225,7 +226,7 @@ $(document).ready(async function() {
     });
 
     // Initialize DataTables on the table
-    $('#server-stats-table').DataTable().dataTable();
+    $('#server-stats-table').DataTable();
   } catch (error) {
     console.error(`Failed to retrieve server stats:`, error);
   }
