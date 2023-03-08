@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChaseGPT</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <div id="app-container">
+      <div id="header-frame">
+        <div id="logo-container">
+          <select id="persona-dropdown"></select>
+        </div>
+        <div id="persona-container">
+          <img id="persona-image" src="" alt="" />
+        </div>
+        <div id="username-frame" class="username-frame-container">
+          <div id="username-container">
+            <div id="username-input-container">
+              <input type="text" id="username-input" placeholder="Name:">
+              <button id="username-submit-button"><img src="/img/send-btn.svg" alt="send"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="content-container">
+        <div id="frame-container">
+          <div id="left-frame">
+            <button>New</button>
+            <button id="clear-btn" class="btn btn-secondary">Clear</button>
+            <button id="todays-chats-btn">Today's Chats</button>
+        </div>
+        <div id="chat-container">
+          <div id="chat-window"></div>
+        </div>
+        <div id="history-frame">
+        </div>
+        </div>
+      </div>
+      <div id="bottom-frame">
+        <div id="input-container">
+          <input type="text" id="user-input" placeholder="Ask me anything!">
+          <button id="send-button"></button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+  </body>
+</html>
