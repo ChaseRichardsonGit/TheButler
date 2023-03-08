@@ -1,10 +1,10 @@
+// Load the Environment Variables from .env
+require('dotenv').config(); 
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.WEBSERVER_PORT || 3001;
-
-// Load the Environment Variables from .env
-require('dotenv').config(); 
+const port = process.env.WEBSERVER_PORT;
 
 const MongoClient = require('mongodb').MongoClient;
 const { Log, getChatLog, getPersonaData, updatePersonaData, getChatToday } = require('./src/mongo.js');
