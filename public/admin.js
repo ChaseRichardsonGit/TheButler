@@ -208,17 +208,13 @@ $('#username-input').on('keydown', (event) => {
 });
 
 // When the page loads, retrieve and display server stats
-$(document).ready(async function () {
+$(document).ready(async function() {
   try {
-    // Send the request to the server
     const response = await $.get('/api/server-stats');
-
-    // Sort the results by lastMessage in descending order
     response.sort((a, b) => new Date(b.lastMessage) - new Date(a.lastMessage));
 
-    // Display the results in the server-stats-container
     const container = $('#server-stats-body');
-    container.empty(); // Clear previous search results
+    container.empty();
     response.forEach(result => {
       const tr = $('<tr>');
       tr.append($('<td>').text(result.sender));
@@ -227,6 +223,9 @@ $(document).ready(async function () {
       tr.append($('<td>').text(result.lastMessage));
       container.append(tr);
     });
+
+    // Initialize DataTables on the table
+    $('#server-stats-table').DataTable().dataTable();
   } catch (error) {
     console.error(`Failed to retrieve server stats:`, error);
   }
