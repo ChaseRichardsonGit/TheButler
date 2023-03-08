@@ -14,5 +14,5 @@ done
 for personaName in "${personas[@]}"
 do
     echo "Running command 'node index.js $personaName' in screen $personaName"
-    screen -S "$personaName" -X stuff $"node index.js $personaName\n"
+    screen -S "$personaName" -X stuff $"node scripts/../index.js $personaName\n"
 done
