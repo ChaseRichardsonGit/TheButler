@@ -29,6 +29,8 @@ const openai = new OpenAIApi(configuration);
 app.use(bodyParser.urlencoded({ extended: false })); 
 app.use(bodyParser.json()); 
 app.use(express.static('public')); 
+app.set('views', path.join(__dirname, 'public', 'views'));
+app.set('view engine', 'ejs');
 
 // Save message to MongoDB async function
 async function saveMessageToDB(createdBy, sender, receiver, message) {
@@ -362,10 +364,7 @@ app.get('/api/server-stats', async (req, res) => {
   }
 });
 
-app.set('views', path.join(__dirname, 'public', 'views'));
-app.set('view engine', 'ejs');
-
-// Get sender stats for a specific sender
+// Get sender stats and messages for a specific sender
 app.get('/sender-stats/:sender', async (req, res) => {
   const sender = req.params.sender;
 
@@ -373,6 +372,8 @@ app.get('/sender-stats/:sender', async (req, res) => {
     const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
     const db = client.db(dbName);
     const collection = db.collection('costs');
+
+    const messages = await collection.find({ sender: sender }).toArray();
 
     const results = await collection.aggregate([
       {
@@ -400,16 +401,26 @@ app.get('/sender-stats/:sender', async (req, res) => {
     ]).toArray();
 
     client.close();
+
     const data = {
       sender: sender,
-      totalMessages: results[0].totalMessages,
-      totalCost: results[0].totalCost.toFixed(5),
-      totalTokensUsed: results[0].totalTokensUsed
+      messages: messages
     };
+
+    if (results.length > 0) {
+      data.totalMessages = results[0].totalMessages;
+      data.totalCost = results[0].totalCost.toFixed(5);
+      data.totalTokensUsed = results[0].totalTokensUsed;
+    } else {
+      data.totalMessages = 0;
+      data.totalCost = 0;
+      data.totalTokensUsed = 0;
+    }
+
     res.render('sender-stats', data);
   } catch (error) {
-    console.error(`Failed to get sender statistics from MongoDB: ${error}`);
-    res.status(500).send({ error: `Failed to get sender statistics from MongoDB: ${error}` });
+    console.error(`Failed to get sender statistics and messages from MongoDB: ${error}`);
+    res.status(500).send({ error: `Failed to get sender statistics and messages from MongoDB: ${error}` });
   }
 });
 

@@ -5,14 +5,49 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>   <link rel="stylesheet" href="admin.css"> 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css"/>
     <script type="text/javascript" src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="admin.css"/>
-<head>
+    <link rel="stylesheet" type="text/css" href="/admin.css"/>
+	<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+		  <a class="navbar-brand" href="/admin.html">Admin Panel</a>
+		  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ms-auto">
+			  <li class="nav-item">
+				<a class="nav-link btn btn-primary" href="/personas.html">Persona Edit</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link btn btn-primary" href="/history.html">Chat History</a>
+			  </li>
+			  <li class="nav-item">
+				<a id="new-persona-btn" class="nav-link btn btn-primary" href="#">New Persona</a>
+			  </li>
+			</ul>
+		  </div>
+		</div>
+	  </nav>
 	<title><%= sender %> Statistics</title>
-</head>
-<body>
 	<h1><%= sender %> Statistics</h1>
 	<p>Total Messages: <%= totalMessages %></p>
 	<p>Total Cost: $<%= totalCost %></p>
 	<p>Total Tokens Used: <%= totalTokensUsed %></p>
+	<table>
+		<thead>
+		  <tr>
+			<th>Time</th>
+			<th>Message</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  <% messages.forEach(message => { %>
+			<tr>
+			  <td><%= message.time %></td>
+			  <td><%= message.message %></td>
+			</tr>
+		  <% }); %>
+		</tbody>
+	  </table>
 </body>
 </html>
