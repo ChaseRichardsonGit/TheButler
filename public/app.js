@@ -296,3 +296,9 @@ async function loadTodayChatHistory() {
     console.error('Error loading chat history:', error);
   }
 }
+
+$(document).ready(function() {
+  $('#messagesTable').DataTable({
+    order: [[0, "desc"]] // sort by first column (time) in descending order
+  });
+});

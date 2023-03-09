@@ -173,40 +173,6 @@ $(document).ready(() => {
   });
 });
 
-// When the "Sender Stats" button is clicked, retrieve and display sender stats
-$('#sender-stats-btn').on('click', async () => {
-  const username = $('#username-input').val().trim();
-  
-  try {
-    // Send the request to the server
-    const response = await $.get(`/api/sender-stats?username=${username}`);
-  
-    // Display the results in the sender-stats-container
-    const container = $('#sender-stats-container');
-    container.empty(); // Clear previous search results
-    const div = $('<div>');
-    div.append($('<p>').text(`Total messages sent by ${username}: ${response.totalMessages}`));
-    div.append($('<p>').text(`Total cost: ${response.totalCost}`));
-    div.append($('<p>').text(`Last message sent by ${username}: ${response.lastMessage}`));
-    div.append($('<p>').text(`Total tokens used by ${username}: ${response.totalTokensUsed}`));
-    container.append(div);
-  } catch (error) {
-    if (error.status === 404) {
-      alert(`No such user exists in the database.`);
-    } else {
-      console.error(`Failed to retrieve sender stats for ${username}:`, error);
-    }
-  }
-});
-
-// Add event listener for "Enter" key press on input field
-$('#username-input').on('keydown', (event) => {
-  if (event.key === 'Enter') {
-    event.preventDefault(); // Prevent form submission
-    $('#sender-stats-btn').click(); // Trigger search button click event
-  }
-});
-
 // When the page loads, retrieve and display server stats
 $(document).ready(async function() {
   try {
