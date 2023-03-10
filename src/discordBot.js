@@ -85,7 +85,6 @@ client.on('messageCreate', async function(message){
 });
 
 
-
 // Listener for persona messages
 client.on('messageCreate', async function(message) {
   if (message.channel.type !== Discord.ChannelType.DM && message.author.username !== persona && message.content.includes(persona)) {

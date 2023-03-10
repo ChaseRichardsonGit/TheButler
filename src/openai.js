@@ -29,7 +29,7 @@ module.exports = {
       chatLog.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   
       // Get the last 10 messages
-      const lastMessages = chatLog.slice(-12);
+      const lastMessages = chatLog.slice(-10);
   
       // Initialize userMessages and assistantMessages variables as empty strings
       let userMessages = "";
