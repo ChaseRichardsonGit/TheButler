@@ -84,8 +84,9 @@ client.on('messageCreate', async function(message){
   }}
 });
 
+// Listener for name to create new thread.
 client.on('messageCreate', async function(message) {
-  if (message.channel.type !== Discord.ChannelType.DM && message.author.username !== persona && message.content.includes(persona)) {
+  if (message.channel && message.channel.type !== Discord.ChannelType.DM && message.author.username !== persona && message.content.includes(persona)) {
     try {
       const thread = await message.channel.threads.create({
         name: 'conversation',
@@ -97,7 +98,7 @@ client.on('messageCreate', async function(message) {
 
       const isThreadCreationMessage = message.content.includes(`${persona} has created a thread:`);
 
-      const response = isThreadCreationMessage ? '' : await openai.callopenai(message, message.author.username, persona);
+      let response = isThreadCreationMessage ? '' : await openai.callopenai(message, message.author.username, persona);
 
       if (!message.author.bot && !isThreadCreationMessage) {
         const log = new Log({
@@ -147,22 +148,24 @@ client.on('messageCreate', async function(message) {
     }
   }
 });
+
 
 
 // Listener for Threads (all personas)
 client.on('messageCreate', async function(message) {
   if (message.channel.type !== Discord.ChannelType.DM && message.author.username !== persona && message.content.includes(persona) && message.channel.isThread()) {
     try {
+      const thread = message.channel;
+      console.log(`Joined thread: ${thread.name}`);
+      
+      // Add the following if statement to check for "We are done here." in the message content
       if (message.content.includes("We are done here.")) {
         return;
       }
 
-      const thread = message.channel;
-      console.log(`Joined thread: ${thread.name}`);
-
       const isThreadCreationMessage = message.content.includes(`${persona} has created a thread:`);
 
-      const response = isThreadCreationMessage ? '' : await openai.callopenai(message, message.author.username, persona);
+      let response = isThreadCreationMessage ? '' : await openai.callopenai(message, message.author.username, persona);
 
       if (!message.author.bot && !isThreadCreationMessage) {
         const log = new Log({
@@ -212,6 +215,8 @@ client.on('messageCreate', async function(message) {
     }
   }
 });
+
+
 
 
 
