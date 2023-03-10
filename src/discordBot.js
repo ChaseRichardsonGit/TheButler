@@ -84,64 +84,125 @@ client.on('messageCreate', async function(message){
   }}
 });
 
-// Listener for name to create new thread.
+
+
+// Listener for persona messages
 client.on('messageCreate', async function(message) {
-  if (message.channel && message.channel.type !== Discord.ChannelType.DM && message.author.username !== persona && message.content.includes(persona)) {
+  if (message.channel.type !== Discord.ChannelType.DM && message.author.username !== persona && message.content.includes(persona)) {
     try {
-      const thread = await message.channel.threads.create({
-        name: 'conversation',
-        autoArchiveDuration: 60,
-        reason: 'New conversation started with ' + message.author.username,
-      });
-      await thread.members.add(message.author.id);
-      console.log(`Created thread: ${thread.name}`);
-
-      const isThreadCreationMessage = message.content.includes(`${persona} has created a thread:`);
-
-      let response = isThreadCreationMessage ? '' : await openai.callopenai(message, message.author.username, persona);
-
-      if (!message.author.bot && !isThreadCreationMessage) {
-        const log = new Log({
-          createdBy: persona,
-          server: message.guild.name,
-          channel: message.channel.name,
-          sender: persona,
-          receiver: message.author.username,
-          message: response,
-          time: new Date().toString()
-        });
-        log.save().then(() => {
-          // console.log(`Message logged to MongoDB: ${persona}: ${response}\n`);
-        }).catch(err => {
-          console.error(err);
-        });
-      }
-
-      setTimeout(() => {
-        // Trim response if it's 2000 characters or more down to 1999 for Discord.
-        if (response.length > 1999) {
-          response = response.substring(0, 1999);
+      if (message.channel.isThread()) {
+        // Reply to existing thread
+        const thread = message.channel;
+        console.log(`Joined thread: ${thread.name}`);
+        
+        // Add the following if statement to check for "We are done here." in the message content
+        if (message.content.includes("We are done here.")) {
+          return;
         }
+
+        const isThreadCreationMessage = message.content.includes(`${persona} has created a thread:`);
+
+        let response = isThreadCreationMessage ? '' : await openai.callopenai(message, message.author.username, persona);
+
+        if (!message.author.bot && !isThreadCreationMessage) {
+          const log = new Log({
+            createdBy: persona,
+            server: message.guild.name,
+            channel: message.channel.name,
+            sender: persona,
+            receiver: message.author.username,
+            message: response,
+            time: new Date().toString()
+          });
+          log.save().then(() => {
+            // console.log(`Message logged to MongoDB: ${persona}: ${response}\n`);
+          }).catch(err => {
+            console.error(err);
+          });
+        }
+
+        setTimeout(() => {
+          // Trim response if it's 2000 characters or more down to 1999 for Discord.
+          if (response.length > 1999) {
+            response = response.substring(0, 1999);
+          }
+          if (!isThreadCreationMessage) {
+            thread.send(response);
+          }
+        }, 5000); // wait for 5 seconds before sending the response
+
         if (!isThreadCreationMessage) {
-          thread.send(response);
+          const log = new Log({
+            createdBy: persona,
+            server: message.guild.name,
+            channel: message.channel.name,
+            sender: message.author.username,
+            receiver: persona,
+            message: message.content,
+            time: new Date().toString()
+          });
+          log.save().then(() => {
+
+          }).catch(err => {
+            console.error(err); 
+          });
         }
-      }, 5000); // wait for 5 seconds before sending the response
-
-      if (!isThreadCreationMessage) {
-        const log = new Log({
-          createdBy: persona,
-          server: message.guild.name,
-          channel: message.channel.name,
-          sender: message.author.username,
-          receiver: persona,
-          message: message.content,
-          time: new Date().toString()
+      } else {
+        // Create new thread
+        const thread = await message.channel.threads.create({
+          name: 'conversation',
+          autoArchiveDuration: 60,
+          reason: 'New conversation started with ' + message.author.username,
         });
-        log.save().then(() => {
+        await thread.members.add(message.author.id);
+        console.log(`Created thread: ${thread.name}`);
 
-        }).catch(err => {
-          console.error(err); 
-        });
+        const isThreadCreationMessage = message.content.includes(`${persona} has created a thread:`);
+
+        let response = isThreadCreationMessage ? '' : await openai.callopenai(message, message.author.username, persona);
+
+        if (!message.author.bot && !isThreadCreationMessage) {
+          const log = new Log({
+            createdBy: persona,
+            server: message.guild.name,
+            channel: message.channel.name,
+            sender: persona,
+            receiver: message.author.username,
+            message: response,
+            time: new Date().toString()
+          });
+          log.save().then(() => {
+            // console.log(`Message logged to MongoDB: ${persona}: ${response}\n`);
+          }).catch(err => {
+            console.error(err);
+          });
+        }
+          setTimeout(() => {
+            // Trim response if it's 2000 characters or more down to 1999 for Discord.
+            if (response.length > 1999) {
+              response = response.substring(0, 1999);
+            }
+            if (!isThreadCreationMessage) {
+              thread.send(response);
+            }
+          }, 5000); // wait for 5 seconds before sending the response
+          
+          if (!isThreadCreationMessage) {
+            const log = new Log({
+              createdBy: persona,
+              server: message.guild.name,
+              channel: message.channel.name,
+              sender: message.author.username,
+              receiver: persona,
+              message: message.content,
+              time: new Date().toString()
+            });
+            log.save().then(() => {
+          
+            }).catch(err => {
+              console.error(err); 
+            });
+          }
       }
     } catch (error) {
       console.error(error);
@@ -149,72 +210,6 @@ client.on('messageCreate', async function(message) {
   }
 });
 
-
-
-// Listener for Threads (all personas)
-client.on('messageCreate', async function(message) {
-  if (message.channel.type !== Discord.ChannelType.DM && message.author.username !== persona && message.content.includes(persona) && message.channel.isThread()) {
-    try {
-      const thread = message.channel;
-      console.log(`Joined thread: ${thread.name}`);
-      
-      // Add the following if statement to check for "We are done here." in the message content
-      if (message.content.includes("We are done here.")) {
-        return;
-      }
-
-      const isThreadCreationMessage = message.content.includes(`${persona} has created a thread:`);
-
-      let response = isThreadCreationMessage ? '' : await openai.callopenai(message, message.author.username, persona);
-
-      if (!message.author.bot && !isThreadCreationMessage) {
-        const log = new Log({
-          createdBy: persona,
-          server: message.guild.name,
-          channel: message.channel.name,
-          sender: persona,
-          receiver: message.author.username,
-          message: response,
-          time: new Date().toString()
-        });
-        log.save().then(() => {
-          // console.log(`Message logged to MongoDB: ${persona}: ${response}\n`);
-        }).catch(err => {
-          console.error(err);
-        });
-      }
-
-      setTimeout(() => {
-        // Trim response if it's 2000 characters or more down to 1999 for Discord.
-        if (response.length > 1999) {
-          response = response.substring(0, 1999);
-        }
-        if (!isThreadCreationMessage) {
-          thread.send(response);
-        }
-      }, 5000); // wait for 5 seconds before sending the response
-
-      if (!isThreadCreationMessage) {
-        const log = new Log({
-          createdBy: persona,
-          server: message.guild.name,
-          channel: message.channel.name,
-          sender: message.author.username,
-          receiver: persona,
-          message: message.content,
-          time: new Date().toString()
-        });
-        log.save().then(() => {
-
-        }).catch(err => {
-          console.error(err); 
-        });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-});
 
 
 
