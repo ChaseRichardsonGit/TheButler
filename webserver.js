@@ -456,37 +456,46 @@ app.get('/sender-stats/:sender', async (req, res) => {
   }
 });
 
-// Update History for selected user and count
-app.put('/api/history/:sender/:count', async (req, res) => {
+app.put('/api/history/:sender/:receiver/:count', async (req, res) => {
   const sender = req.params.sender;
+  const receiver = req.params.receiver;
   const count = parseInt(req.params.count);
-  
+
   try {
     const client = await MongoClient.connect(mongoUrl, { useUnifiedTopology: true });
     const db = client.db(dbName);
     const collection = db.collection('logs');
-    
-    // Find the most recent N documents to update
-    const docsToUpdate = await collection.find({ sender: sender, history: true })
-                                          .sort({ timestamp: -1 })
-                                          .limit(count)
-                                          .toArray();
+
+    // Find the N most recent documents to update
+    const recentDocs = await collection.find({
+      $or: [
+        { sender: sender, receiver: receiver },
+        { sender: receiver, receiver: sender },
+      ],
+    })
+      .sort({ time: -1 })
+      .limit(12)
+      .toArray();
+    const recentDocIds = recentDocs.map(doc => doc._id);
 
     // Update the history field of the selected documents
+    const docsToUpdate = await collection.find({ _id: { $in: recentDocIds }, history: true })
+      .sort({ time: 1 })
+      .limit(count)
+      .toArray();
     const idsToUpdate = docsToUpdate.map(doc => doc._id);
     const result = await collection.updateMany(
       { _id: { $in: idsToUpdate } },
       { $set: { history: false } }
     );
-    
+
     client.close();
     res.send({ success: true });
   } catch (error) {
-    console.error(`Failed to update history for ${sender}: ${error}`);
-    res.status(500).send({ error: `Failed to update history for ${sender}: ${error}` });
+    console.error(`Failed to update history for ${sender} and ${receiver}: ${error}`);
+    res.status(500).send({ error: `Failed to update history for ${sender} and ${receiver}: ${error}` });
   }
 });
-
 
 
 // Serve the index.html file
