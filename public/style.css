@@ -164,10 +164,10 @@ body {
 }
 
 #chat-window {
-  max-height: 70vh;
+  max-height: 60vh;
   overflow-y: auto;
-  padding-right: 16px;
-  padding-left: 16px;
+  padding-right: 3px;
+  padding-left: 0px;
   width: 90%;
 }
 
