@@ -38,6 +38,11 @@ const messageSchema = new mongoose.Schema({
     time: {
         type: String,
         required: true
+    },
+    history: {
+        type: Boolean,
+        required: true,
+        default: true
     }
 });
 const Log = mongoose.model("Log", messageSchema);
@@ -175,13 +180,18 @@ const getChatLog = async (sender, receiver) => {
   const client = await MongoClient.connect(url, { useNewUrlParser: true });
   const db = client.db(dbName);
   const chatLog = await db.collection(collectionName).find(
-      {
-        $or: [
-          { $and: [{sender: receiver},{receiver: sender}]},
-          { $and: [{sender: sender},{receiver: receiver}]},
-        ]
-      }
-    ).sort({ _id: -1 }).limit(20).toArray();
+    {
+      $and: [
+        {
+          $or: [
+            { $and: [{sender: receiver},{receiver: sender}]},
+            { $and: [{sender: sender},{receiver: receiver}]},
+          ]
+        },
+        { history: { $not: { $in: [false, "false", 0, "0"] } } }
+      ]
+    }
+  ).sort({ _id: -1 }).limit(20).toArray();
 //    console.log("mongo.js - Line 179 - sender: " + sender + " receiver: " + receiver);
   client.close();
   return chatLog; 
