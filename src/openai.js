@@ -8,6 +8,8 @@ if (persona) {
 
 const { Configuration, OpenAIApi } = require('openai');
 
+const axios = require('axios');
+
 const { getPersonaData, getChatLog, Cost, UserInfo } = require('./mongo.js');
 const { updateUserInfo, saveCostRecord } = require('./utils.js');
 
@@ -114,9 +116,19 @@ module.exports = {
             
             return response;
 
-        } catch (error) {
-            console.error(`An error occurred while calling OpenAI API: ${error}`);
-            return "I'm sorry it seems an error occured, please try again.";
-          }
+          } catch (error) {
+            if (error.response && error.response.status === 400) {
+                // trim the persona's history
+                const historyCount = 1; // the number of messages to trim from the persona's history
+                const historyUpdateUrl = `/api/history/${sender}/${historyCount}`;
+                await axios.put(historyUpdateUrl);
+                
+                // reprocess the message through OpenAI with the new history
+                return await module.exports.callopenai(message, sender, persona);
+            } else {
+                console.error(`An error occurred while calling OpenAI API: ${error}`);
+                return "I'm sorry it seems an error occured, please try again.";
+            }
+        }
     }
 }
