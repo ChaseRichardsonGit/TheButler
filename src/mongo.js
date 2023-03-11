@@ -172,30 +172,44 @@ const getPersonaData = async (persona) => {
 };
 
 //getChatLog from Mongo for context
-const getChatLog = async (sender, receiver) => { 
-//  console.log(`mongo.js - Line 165 - sender: ${sender} receiver: ${receiver}`)
+const getChatLog = async (sender, receiver) => {
   const url = process.env.MONGO_URI;
   const dbName = process.env.MONGO_DB_NAME;
   const collectionName = process.env.MONGO_COLLECTION_LOGS_NAME;
   const client = await MongoClient.connect(url, { useNewUrlParser: true });
   const db = client.db(dbName);
-  const chatLog = await db.collection(collectionName).find(
-    {
+  const recentLogs = await db.collection(collectionName)
+    .find({
+      $or: [
+        { sender: sender, receiver: receiver },
+        { sender: receiver, receiver: sender }
+      ]
+    })
+    .sort({ _id: -1 })
+    .limit(12)
+    .toArray();
+
+  const recentLogIds = recentLogs.map(log => log._id);
+  
+  const chatLog = await db.collection(collectionName)
+    .find({
       $and: [
-        {
-          $or: [
-            { $and: [{sender: receiver},{receiver: sender}]},
-            { $and: [{sender: sender},{receiver: receiver}]},
+        { _id: { $in: recentLogIds } },
+        { $or: [
+            { sender: sender, receiver: receiver },
+            { sender: receiver, receiver: sender }
           ]
         },
-        { history: { $not: { $in: [false, "false", 0, "0"] } } }
+        { history: true }
       ]
-    }
-  ).sort({ _id: -1 }).limit(20).toArray();
-//    console.log("mongo.js - Line 179 - sender: " + sender + " receiver: " + receiver);
+    })
+    .sort({ _id: -1 })
+    .toArray();
+
   client.close();
-  return chatLog; 
+  return chatLog;
 };
+
 
 //updatePersonaData in MongoDB
 async function updatePersonaData(name, data) {
