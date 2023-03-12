@@ -23,7 +23,7 @@ const openai = new OpenAIApi(configuration);
 
 module.exports = { 
     callopenai: async function(message, sender, persona) { 
-      console.log(`openai.js - Line 22 - message: ${message} sender: ${sender} persona: ${persona}\n`);
+      console.log(`openai.js - Line 26 message: ${message} sender: ${sender} persona: ${persona}\n`);
   
       let chatLog = await getChatLog(sender, persona);
   
@@ -49,8 +49,8 @@ module.exports = {
           }
         }
   
-        console.log(` \x1b[33mopenai.js - Line 48 - User Messages:\x1b[0m \n${userMessages}`);
-        console.log(` \x1b[33mopenai.js - Line 49 - Assistant Messages:\x1b[0m \n${assistantMessages}`);
+        console.log(` \x1b[33mopenai.js - Line 52 - User Messages:\x1b[0m \n${userMessages}`);
+        console.log(` \x1b[33mopenai.js - Line 53 - Assistant Messages:\x1b[0m \n${assistantMessages}`);
 
         let preprompttext = await getPersonaData(persona).then(personaData => { 
             return (personaData);   
@@ -116,9 +116,31 @@ module.exports = {
             
             return response;
 
-        } catch (error) {
+          } catch (error) {
             console.error(`An error occurred while calling OpenAI API: ${error}`);
-            return "I'm sorry it seems an error occured, please try again.";
+          
+            // Call the route to update history
+            const historyUrl = `http://chat.chaserich.com:3001/api/history/${sender}/${persona}/2`;
+            axios.put(historyUrl)
+              .then(response => {
+                console.log(`\n\n\x1b[33mHistory update succeeded:\x1b[0m ${JSON.stringify(response.data)}\n\n`);
+          
+                // Retry OpenAI API call after history update
+                return module.exports.callopenai(message, sender, persona)
+                  .then(response => {
+                    console.log(`\n\n\x1b [33mLine 130 - OpenAI API call succeeded:\x1b[0m ${response}\n\n`);
+                    return response;
+                  })
+                  .catch(error => {
+                    console.error(`An error occurred while calling OpenAI API: ${error}`);
+                    return "I'm sorry it seems an error occured while calling OpenAI, please try again.";
+                  });
+              })
+              .catch(error => {
+                console.error(`Failed to update history: ${error}`);
+                return "I'm sorry it seems an error occured while updating history, please try again.";
+              });
           }
     }
-}
+  }
+  
