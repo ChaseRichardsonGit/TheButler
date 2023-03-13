@@ -128,7 +128,7 @@ client.on('messageCreate', async function(message) {
           if (!isThreadCreationMessage) {
             thread.send(response);
           }
-        }, 5000); // wait for 5 seconds before sending the response
+        }, message.author.bot ? 2500 : 0);
 
         if (!isThreadCreationMessage) {
           const log = new Log({
@@ -184,7 +184,7 @@ client.on('messageCreate', async function(message) {
             if (!isThreadCreationMessage) {
               thread.send(response);
             }
-          }, 5000); // wait for 5 seconds before sending the response
+          }, message.author.bot ? 2500 : 0); // wait for 5 seconds before sending the response
           
           if (!isThreadCreationMessage) {
             const log = new Log({

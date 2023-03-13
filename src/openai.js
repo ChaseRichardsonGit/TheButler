@@ -121,16 +121,15 @@ module.exports = {
           
             // Call the route to update history
             const historyUrl = `http://chat.chaserich.com:3001/api/history/${sender}/${persona}/2`;
-            axios.put(historyUrl)
+            return axios.put(historyUrl)
               .then(response => {
                 console.log(`\n\n\x1b[33mHistory update succeeded:\x1b[0m ${JSON.stringify(response.data)}\n\n`);
           
                 // Retry OpenAI API call after history update
-                //return module.exports.callopenai(message, sender, persona)
-                return callopenai(message, sender, persona)
+                return module.exports.callopenai(message, sender, persona)
                   .then(response => {
                     console.log(`\n\n\x1b [33mLine 130 - OpenAI API call succeeded:\x1b[0m ${response}\n\n`);
-                  //return response;
+                    return response;
                   })
                   .catch(error => {
                     console.error(`An error occurred while calling OpenAI API: ${error}`);
