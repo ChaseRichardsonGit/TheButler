@@ -31,7 +31,7 @@ module.exports = {
       chatLog.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   
       // Get the last 10 messages
-      const lastMessages = chatLog.slice(-12);
+      const lastMessages = chatLog.slice(-20);
   
       // Initialize userMessages and assistantMessages variables as empty strings
       let userMessages = "";
@@ -117,7 +117,7 @@ module.exports = {
             return response;
 
           } catch (error) {
-            console.error(`An error occurred while calling OpenAI API: ${error}`);
+            console.error(`\x1b[31mAn error occurred while calling OpenAI API: ${error}\x1b[0m`);
           
             // Call the route to update history
             const historyUrl = `http://chat.chaserich.com:3001/api/history/${sender}/${persona}/2`;
@@ -128,7 +128,7 @@ module.exports = {
                 // Retry OpenAI API call after history update
                 return module.exports.callopenai(message, sender, persona)
                   .then(response => {
-                    console.log(`\n\n\x1b [33mLine 130 - OpenAI API call succeeded:\x1b[0m ${response}\n\n`);
+                    console.log(`\n\n\x1b[33mLine 130 - OpenAI API call succeeded:\x1b[0m ${response}\n\n`);
                     return response;
                   })
                   .catch(error => {
