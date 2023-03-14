@@ -31,7 +31,7 @@ module.exports = {
       chatLog.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   
       // Get the last 10 messages
-      const lastMessages = chatLog.slice(-20);
+      const lastMessages = chatLog.slice(-16);
   
       // Initialize userMessages and assistantMessages variables as empty strings
       let userMessages = "";
@@ -120,7 +120,7 @@ module.exports = {
             console.error(`\x1b[31mAn error occurred while calling OpenAI API: ${error}\x1b[0m`);
           
             // Call the route to update history
-            const historyUrl = `http://chat.chaserich.com:${process.env.WEBSERVER_PORT}/api/history/${sender}/${persona}/12`;
+            const historyUrl = `http://chat.chaserich.com:${process.env.WEBSERVER_PORT}/api/history/${sender}/${persona}/2`;
             return axios.put(historyUrl)
               .then(response => {
                 console.log(`\n\n\x1b[33mHistory update succeeded:\x1b[0m ${JSON.stringify(response.data)}\n\n`);

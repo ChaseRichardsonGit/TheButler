@@ -474,7 +474,7 @@ app.put('/api/history/:sender/:receiver/:count', async (req, res) => {
       ],
     })
       .sort({ time: -1 })
-      .limit(20)
+      .limit(16)
       .toArray();
     const recentDocIds = recentDocs.map(doc => doc._id);
 
