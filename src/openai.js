@@ -120,7 +120,7 @@ module.exports = {
             console.error(`\x1b[31mAn error occurred while calling OpenAI API: ${error}\x1b[0m`);
           
             // Call the route to update history
-            const historyUrl = `http://chat.chaserich.com:3001/api/history/${sender}/${persona}/6`;
+            const historyUrl = `http://chat.chaserich.com:3001/api/history/${sender}/${persona}/12`;
             return axios.put(historyUrl)
               .then(response => {
                 console.log(`\n\n\x1b[33mHistory update succeeded:\x1b[0m ${JSON.stringify(response.data)}\n\n`);
