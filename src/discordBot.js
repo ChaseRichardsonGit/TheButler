@@ -120,15 +120,23 @@ client.on('messageCreate', async function(message) {
           });
         }
 
-        setTimeout(() => {
+        setTimeout(async () => {
           // Trim response if it's 2000 characters or more down to 1999 for Discord.
           if (response.length > 1999) {
             response = response.substring(0, 1999);
           }
           if (!isThreadCreationMessage) {
-            thread.send(response);
+            try {
+              await thread.send(response);
+            } catch (error) {
+              if (error.code === 10003) {
+                console.error("Thread not found. The thread might have been closed or deleted.");
+              } else {
+                console.error(error);
+              }
+            }
           }
-        }, 5000); // wait for 5 seconds before sending the response
+        }, message.author.bot ? 2500 : 0);
 
         if (!isThreadCreationMessage) {
           const log = new Log({
@@ -176,15 +184,24 @@ client.on('messageCreate', async function(message) {
             console.error(err);
           });
         }
-          setTimeout(() => {
-            // Trim response if it's 2000 characters or more down to 1999 for Discord.
-            if (response.length > 1999) {
-              response = response.substring(0, 1999);
+        setTimeout(async () => {
+          // Trim response if it's 2000 characters or more down to 1999 for Discord.
+          if (response.length > 1999) {
+            response = response.substring(0, 1999);
+          }
+          if (!isThreadCreationMessage) {
+            try {
+              await thread.send(response);
+            } catch (error) {
+              if (error.code === 10003) {
+                console.error("Thread not found. The thread might have been closed or deleted.");
+              } else {
+                console.error(error);
+              }
             }
-            if (!isThreadCreationMessage) {
-              thread.send(response);
-            }
-          }, 5000); // wait for 5 seconds before sending the response
+          }
+        }, message.author.bot ? 2500 : 0); // wait for 5 seconds before sending the response
+        
           
           if (!isThreadCreationMessage) {
             const log = new Log({

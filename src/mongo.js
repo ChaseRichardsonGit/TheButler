@@ -186,7 +186,7 @@ const getChatLog = async (sender, receiver) => {
       ]
     })
     .sort({ _id: -1 })
-    .limit(12)
+    .limit(16)
     .toArray();
 
   const recentLogIds = recentLogs.map(log => log._id);
