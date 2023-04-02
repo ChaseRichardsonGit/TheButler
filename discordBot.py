@@ -1,47 +1,37 @@
 import os
-import openai
 import discord
-import re
 from discord.ext import commands
 from dotenv import load_dotenv
+from langchain.agents import load_tools
+from langchain.agents import initialize_agent
+from langchain.llms import OpenAIChat
+from langchain.utilities import GoogleSearchAPIWrapper
 
 load_dotenv()
-OPENAI_API_KEY = os.environ.get("OPENAI_KEY")
-DISCORD_BOT_TOKEN = os.environ.get("Puerus_TOKEN")
-BOT_NAME = 'Puerus'
-
-print("Initializing bot...")
+DISCORD_BOT_TOKEN = os.environ.get("Jarvis_TOKEN")
+BOT_NAME = 'Jarvis'
 
 intents = discord.Intents.default()
 intents.typing = False
 intents.presences = False
-bot = commands.Bot(command_prefix='!', intents=intents) 
+intents.message_content = True
+bot = commands.Bot(command_prefix='!', intents=intents)
 
-print("Bot initialized.")
+os.environ["OPENAI_API_KEY"] = "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"
+os.environ["GOOGLE_CSE_ID"] = "a7cd60a9b57f34133"
+os.environ["GOOGLE_API_KEY"] = "AIzaSyAY2V7r-EOshEw0RMjI4ZGArxrEycnxiNk"
 
-print("Initializing OpenAI API...")
-openai.api_key = OPENAI_API_KEY
-print("OpenAI API initialized.")
+prefix_messages = [{"role": "system", "content": "You are a helpful discord Chatbot."}]
 
-async def generate_response(user_message):
-    print("Generating response for user message:", user_message)
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": user_message},
-    ]
-
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        max_tokens=500,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-
-    result = response.choices[0].message['content'].strip()
-    print("Generated response:", result)
-    return result
+llm = OpenAIChat(model_name='gpt-3.5-turbo', 
+             temperature=0.5, 
+             prefix_messages=prefix_messages,
+             max_tokens = 2000)
+tools = load_tools(["google-search", "llm-math"], llm=llm)
+agent = initialize_agent(tools,
+                         llm,
+                         agent="zero-shot-react-description",
+                         verbose=True)
 
 @bot.event
 async def on_ready():
@@ -52,21 +42,21 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    # Split the message content into words and convert to lowercase
-    words = [word.lower() for word in message.content.split()]
-
-    # Check if the bot's name (in lowercase) is in the list of words
-    if BOT_NAME.lower() in words:
+    if BOT_NAME.lower() in message.content.lower():
         print("Detected bot name in message:", message.content)
-        prompt = message.content
-        response_text = await generate_response(prompt)
-        print("Sending response to the message channel...")
-        await message.channel.send(response_text)
+        
+        # Capture the output of agent.run() in the response variable
+        response = agent.run(message.content) 
+
+        while response:
+            chunk, response = response[:2000], response[2000:]
+            await message.channel.send(chunk)
         print("Response sent.")
     else:
         print("Bot name not detected in message:", message.content)
 
     await bot.process_commands(message)
+
 
 if __name__ == "__main__":
     print("Starting the bot...")
